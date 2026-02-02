@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* UCS Ethiopia Brand Colors - Navy & Gold */
+  --navy-950: oklch(0.18 0.04 255);
+  --navy-900: oklch(0.22 0.045 255);
+  --navy-800: oklch(0.28 0.05 255);
+  --navy-700: oklch(0.35 0.055 255);
+  --navy-600: oklch(0.45 0.06 255);
+  --gold-500: oklch(0.75 0.14 85);
+  --gold-400: oklch(0.82 0.12 85);
+  --gold-600: oklch(0.65 0.15 85);
+  
+  --background: oklch(0.99 0.002 90);
+  --foreground: var(--navy-950);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--navy-950);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--navy-950);
+  --primary: var(--navy-900);
+  --primary-foreground: oklch(0.99 0.002 90);
+  --secondary: oklch(0.97 0.005 90);
+  --secondary-foreground: var(--navy-900);
+  --muted: oklch(0.96 0.005 90);
+  --muted-foreground: oklch(0.45 0.02 255);
+  --accent: var(--gold-500);
+  --accent-foreground: var(--navy-950);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.90 0.01 90);
+  --input: oklch(0.92 0.005 90);
+  --ring: var(--gold-500);
+  --chart-1: var(--navy-900);
+  --chart-2: var(--gold-500);
+  --chart-3: var(--navy-600);
+  --chart-4: var(--gold-400);
+  --chart-5: var(--navy-700);
+  --radius: 0.375rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: var(--navy-950);
+  --sidebar-primary: var(--navy-900);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: var(--navy-900);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: var(--gold-500);
+}
+
+.dark {
+  --background: var(--navy-950);
+  --foreground: oklch(0.98 0.005 90);
+  --card: var(--navy-900);
+  --card-foreground: oklch(0.98 0.005 90);
+  --popover: var(--navy-900);
+  --popover-foreground: oklch(0.98 0.005 90);
+  --primary: oklch(0.98 0.005 90);
+  --primary-foreground: var(--navy-950);
+  --secondary: var(--navy-800);
+  --secondary-foreground: oklch(0.98 0.005 90);
+  --muted: var(--navy-800);
+  --muted-foreground: oklch(0.7 0.02 255);
+  --accent: var(--gold-500);
+  --accent-foreground: var(--navy-950);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: var(--navy-700);
+  --input: var(--navy-800);
+  --ring: var(--gold-500);
+  --chart-1: var(--gold-400);
+  --chart-2: oklch(0.7 0.15 200);
+  --chart-3: var(--gold-500);
+  --chart-4: oklch(0.6 0.12 180);
+  --chart-5: var(--gold-600);
+  --sidebar: var(--navy-900);
+  --sidebar-foreground: oklch(0.98 0.005 90);
+  --sidebar-primary: var(--gold-500);
+  --sidebar-primary-foreground: var(--navy-950);
+  --sidebar-accent: var(--navy-800);
+  --sidebar-accent-foreground: oklch(0.98 0.005 90);
+  --sidebar-border: var(--navy-700);
+  --sidebar-ring: var(--gold-500);
+}
+
+@theme inline {
+  --font-sans: 'Source Sans 3', 'Source Sans 3 Fallback', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', 'Playfair Display Fallback', Georgia, serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  
+  /* Navy scale */
+  --color-navy-950: var(--navy-950);
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-navy-600: var(--navy-600);
+  
+  /* Gold scale */
+  --color-gold-600: var(--gold-600);
+  --color-gold-500: var(--gold-500);
+  --color-gold-400: var(--gold-400);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
