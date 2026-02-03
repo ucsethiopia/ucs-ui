@@ -27,7 +27,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Megaphone,
 };
 
-export function TrainingPrograms() {
+export function ServicesOverview() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({
     threshold: 0.1,
     rootMargin: "0px 0px -100px 0px",

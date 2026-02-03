@@ -1,7 +1,7 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Source_Sans_3, Playfair_Display } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+
 import './globals.css'
 
 const _sourceSans = Source_Sans_3({ 
@@ -19,7 +19,7 @@ const _playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: 'UCS Ethiopia | Ultimate Consultancy Service',
   description: 'Driving growth and transformation for Ethiopian enterprises. Strategic advisory, training, research, and communications services based in Bole, Addis Ababa.',
-  generator: 'v0.app',
+
   keywords: ['consultancy', 'Ethiopia', 'business advisory', 'training', 'Addis Ababa', 'enterprise'],
   icons: {
     icon: [
@@ -55,7 +55,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans antialiased bg-background text-foreground">
         {children}
-        <Analytics />
+
       </body>
     </html>
   )

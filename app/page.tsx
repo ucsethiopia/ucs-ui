@@ -4,7 +4,7 @@ import { Hero } from "@/components/home/hero";
 import { EconomicDashboard } from "@/components/home/economic-dashboard";
 import { CoreValues } from "@/components/home/core-values";
 import { NewsCarousel } from "@/components/home/news-carousel";
-import { TrainingPrograms } from "@/components/home/training-programs";
+import { ServicesOverview } from "@/components/home/services-overview";
 import { ClientMarquee } from "@/components/home/client-marquee";
 
 export default function HomePage() {
@@ -16,7 +16,7 @@ export default function HomePage() {
         <EconomicDashboard />
         <CoreValues />
         <NewsCarousel />
-        <TrainingPrograms />
+        <ServicesOverview />
         <ClientMarquee />
       </main>
       <Footer />
