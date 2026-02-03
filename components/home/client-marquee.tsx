@@ -13,7 +13,7 @@ function ClientLogo({ name }: { name: string }) {
   return (
     <div className="flex h-16 w-40 flex-shrink-0 items-center justify-center rounded-lg bg-card border border-border px-6 transition-all hover:border-gold-500/50 hover:shadow-md">
       <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded bg-navy-900/10 text-navy-900 text-xs font-bold">
+        <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 text-primary text-xs font-bold">
           {initials}
         </div>
         <span className="text-sm font-medium text-foreground truncate max-w-24">

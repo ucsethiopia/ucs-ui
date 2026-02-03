@@ -12,17 +12,17 @@ Each new ChatGPT conversation corresponds to **one phase**.
 
 ### Tasks
 
-- [ ] Define brand colors as CSS variables (navy, gold, base neutrals)
-- [ ] Replace hardcoded Tailwind colors with design tokens
-- [ ] Configure dark / light mode at the root level
-- [ ] Add theme toggle to the navbar
-- [ ] Finalize global typography
-  - [ ] Headline font (serif)
-  - [ ] Body font (sans-serif)
-  - [ ] Type scale (H1–H6, body, captions)
-- [ ] Lock base spacing rules (section padding, max-widths)
-- [ ] Review and finalize navbar (desktop + mobile)
-- [ ] Review and finalize footer
+- [x] Define brand colors as CSS variables (navy, gold, base neutrals)
+- [x] Replace hardcoded Tailwind colors with design tokens
+- [x] Configure dark / light mode at the root level
+- [x] Add theme toggle to the navbar
+- [x] Finalize global typography
+  - [x] Headline font (serif)
+  - [x] Body font (sans-serif)
+  - [x] Type scale (H1–H6, body, captions)
+- [x] Lock base spacing rules (section padding, max-widths)
+- [x] Review and finalize navbar (desktop + mobile)
+- [x] Review and finalize footer
 
 ### Constraints
 
@@ -39,9 +39,9 @@ Each new ChatGPT conversation corresponds to **one phase**.
 
 ### Tasks
 
-- [ ] Rebuild Hero section visually (inspired by Canva)
-  - [ ] Background image
-  - [ ] Headline + tagline
+- [x] Rebuild Hero section visually (inspired by Canva)
+  - [x] Background image
+  - [x] Headline + tagline
   - [ ] Primary CTA
 - [ ] Replace “Training” section with **Services Overview**
   - [ ] Four service pillars summary
@@ -112,4 +112,69 @@ This phase introduces realism and perceived depth.
 
 **Goal:** Clearly communicate enterprise offerings.
 
-###
+### Tasks
+
+- [ ] Implement four service pillars
+  - [ ] Training
+  - [ ] Advisory
+  - [ ] Research & Publication
+  - [ ] Communication & Promotion
+- [ ] Choose layout pattern (tabs, alternating rows, or sections)
+- [ ] Add service-specific bullet lists
+- [ ] End-of-page CTA banner (“Get in Touch”)
+
+---
+
+## Phase 6 – News Page (Full Archive)
+
+**Goal:** Build a scalable content system.
+
+### Tasks
+
+- [ ] News grid layout (reusing Home cards)
+- [ ] Category filter pills
+- [ ] Initial load (top N items)
+- [ ] “Load More” pagination
+- [ ] Modal-based article reading (no navigation)
+- [ ] Mock API pagination behavior
+
+---
+
+## Phase 7 – Contact Page
+
+**Goal:** Optimize for conversion and clarity.
+
+### Tasks
+
+- [ ] Contact form
+  - [ ] Name
+  - [ ] Email
+  - [ ] Phone
+  - [ ] Company
+  - [ ] Service of interest
+  - [ ] Message
+- [ ] Client-side validation
+- [ ] Success / error toast feedback
+- [ ] Office information panel
+  - [ ] Address (Bole, Addis Ababa)
+  - [ ] Phone
+  - [ ] Email
+  - [ ] Hours
+
+---
+
+## Phase 8 – Polish & Refinement
+
+**Goal:** Make the site feel premium and complete.
+
+### Tasks
+
+- [ ] Scroll-triggered reveal animations
+- [ ] Motion tuning (durations, easing, stagger)
+- [ ] Spacing and alignment audit
+- [ ] Typography fine-tuning
+- [ ] Mobile UX pass
+- [ ] Accessibility pass (contrast, focus states)
+
+---
+

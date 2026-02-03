@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/news", label: "News" },
-  { href: "/contact", label: "Contact" },
+  // { href: "/contact", label: "Contact" }, // Commented out - using "Get in Touch" button instead
 ];
 
 export function Navbar() {

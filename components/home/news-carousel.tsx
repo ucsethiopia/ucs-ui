@@ -29,7 +29,7 @@ function NewsCard({
     <article
       className={cn(
         "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
         transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
@@ -44,7 +44,7 @@ function NewsCard({
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
-        
+
         {/* Category Tag */}
         <span className="absolute top-4 left-4 px-3 py-1 bg-gold-500 text-navy-950 text-xs font-semibold rounded-sm uppercase tracking-wide">
           {item.category}
@@ -115,7 +115,7 @@ export function NewsCarousel() {
 
   const visibleNews = news.slice(
     currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
+    (currentPage + 1) * itemsPerPage,
   );
 
   return (
@@ -150,7 +150,7 @@ export function NewsCarousel() {
             </div>
             <Link
               href="/news"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-all hover:text-gold-600 hover:gap-3"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all hover:text-gold-600 hover:gap-3"
             >
               View All News
               <ArrowRight className="h-4 w-4" />
@@ -163,7 +163,10 @@ export function NewsCarousel() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-card border border-border rounded-lg overflow-hidden">
+                <div
+                  key={i}
+                  className="bg-card border border-border rounded-lg overflow-hidden"
+                >
                   <div className="aspect-video bg-muted animate-pulse" />
                   <div className="p-5 space-y-3">
                     <div className="h-4 w-24 bg-muted animate-pulse rounded" />
@@ -202,7 +205,7 @@ export function NewsCarousel() {
                 "h-2 w-2 rounded-full transition-all",
                 currentPage === index
                   ? "w-6 bg-gold-500"
-                  : "bg-border hover:bg-gold-500/50"
+                  : "bg-border hover:bg-gold-500/50",
               )}
               aria-label={`Go to page ${index + 1}`}
             />
@@ -233,11 +236,13 @@ export function NewsCarousel() {
               <span className="px-3 py-1 bg-gold-500/10 text-gold-600 font-semibold rounded-sm">
                 {selectedNews.category}
               </span>
-              <span>{new Date(selectedNews.date).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}</span>
+              <span>
+                {new Date(selectedNews.date).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
               <span>By {selectedNews.author}</span>
             </div>
 

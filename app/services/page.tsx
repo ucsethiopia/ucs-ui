@@ -1,9 +1,16 @@
 "use client";
 
-import React from "react"
+import React from "react";
 
 import Link from "next/link";
-import { ArrowRight, Check, GraduationCap, Compass, BookOpen, Megaphone } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  GraduationCap,
+  Compass,
+  BookOpen,
+  Megaphone,
+} from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
@@ -40,7 +47,7 @@ function ServiceSection({
       id={sectionId}
       className={cn(
         "py-24 lg:py-32",
-        index % 2 === 0 ? "bg-background" : "bg-secondary/50"
+        index % 2 === 0 ? "bg-background" : "bg-secondary/50",
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -49,14 +56,14 @@ function ServiceSection({
           className={cn(
             "grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center transition-all duration-700",
             isReversed && "lg:flex-row-reverse",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
           )}
         >
           {/* Image */}
           <div
             className={cn(
               "relative aspect-4/3 rounded-lg overflow-hidden bg-muted",
-              isReversed && "lg:order-2"
+              isReversed && "lg:order-2",
             )}
           >
             <div
@@ -100,7 +107,7 @@ function ServiceSection({
             {/* CTA */}
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-all hover:text-gold-600 hover:gap-3"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all hover:text-gold-600 hover:gap-3"
             >
               Inquire About This Service
               <ArrowRight className="h-4 w-4" />
@@ -129,14 +136,16 @@ export default function ServicesPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {servicePillars.map((pillar) => {
                 const Icon = iconMap[pillar.title] || GraduationCap;
-                const sectionId = pillar.title.toLowerCase().replace(/[^a-z]/g, "");
+                const sectionId = pillar.title
+                  .toLowerCase()
+                  .replace(/[^a-z]/g, "");
                 return (
                   <a
                     key={pillar.id}
                     href={`#${sectionId}`}
                     className="group flex flex-col items-center text-center p-6 rounded-lg border border-border bg-card transition-all hover:border-gold-500 hover:shadow-lg"
                   >
-                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-navy-900/10 text-navy-900 transition-colors group-hover:bg-gold-500 group-hover:text-navy-950">
+                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-gold-500 group-hover:text-navy-950">
                       <Icon className="h-6 w-6" />
                     </div>
                     <span className="font-semibold text-foreground group-hover:text-gold-600 transition-colors">
@@ -166,8 +175,8 @@ export default function ServicesPage() {
               Ready to Transform Your Organization?
             </h2>
             <p className="text-lg text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Let{"'"}s discuss how UCS Ethiopia can help you achieve your strategic 
-              objectives and build lasting capabilities.
+              Let{"'"}s discuss how UCS Ethiopia can help you achieve your
+              strategic objectives and build lasting capabilities.
             </p>
             <Link
               href="/contact"
