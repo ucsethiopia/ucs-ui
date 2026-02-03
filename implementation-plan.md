@@ -1,121 +1,115 @@
-Phase 1 – Design System Lock
+# UCS UI Redesign Roadmap
 
-Goal: Freeze foundations.
+This document tracks the phased redesign of the UCS Ethiopia frontend.
+Each phase should be completed in order.  
+Each new ChatGPT conversation corresponds to **one phase**.
 
-Tasks:
+---
 
-Colors into CSS variables
+## Phase 1 – Design System Lock
 
-Dark/light mode working
+**Goal:** Freeze all foundations so future work is consistent and scalable.
 
-Navbar + footer finalized
+### Tasks
 
-Typography locked
+- [ ] Define brand colors as CSS variables (navy, gold, base neutrals)
+- [ ] Replace hardcoded Tailwind colors with design tokens
+- [ ] Configure dark / light mode at the root level
+- [ ] Add theme toggle to the navbar
+- [ ] Finalize global typography
+  - [ ] Headline font (serif)
+  - [ ] Body font (sans-serif)
+  - [ ] Type scale (H1–H6, body, captions)
+- [ ] Lock base spacing rules (section padding, max-widths)
+- [ ] Review and finalize navbar (desktop + mobile)
+- [ ] Review and finalize footer
 
-No new features.
-No animations.
-No Canva yet.
+### Constraints
 
-Phase 2 – Home Page Core
+- No new features
+- No animations
+- No Canva-inspired visuals yet
+- No layout experimentation
 
-Goal: Make Home structurally perfect.
+---
 
-Tasks:
+## Phase 2 – Home Page Core Structure
 
-Hero section rebuilt from Canva visually
+**Goal:** Make the Home page structurally correct and aligned with product logic.
 
-Services overview (replacing training)
+### Tasks
 
-Core values
+- [ ] Rebuild Hero section visually (inspired by Canva)
+  - [ ] Background image
+  - [ ] Headline + tagline
+  - [ ] Primary CTA
+- [ ] Replace “Training” section with **Services Overview**
+  - [ ] Four service pillars summary
+  - [ ] Clear “Learn More” links to `/services`
+- [ ] Implement Core Values section
+- [ ] Implement Client / Partner marquee
+  - [ ] Continuous horizontal scroll
+  - [ ] Pause on hover
+- [ ] Ensure responsive layout integrity (mobile / tablet / desktop)
 
-Client marquee
+### Constraints
 
-Static layout only
+- Static layout only
+- No API simulation
+- No economic data yet
+- Minimal motion (layout only)
 
-No API simulation yet.
+---
 
-Phase 3 – Economic Dashboard + News
+## Phase 3 – Economic Dashboard + News (Home)
 
-Goal: Make site feel “alive”.
+**Goal:** Make the site feel live, credible, and data-driven.
 
-Tasks:
+### Tasks
 
-Economic rates row
+- [ ] Economic Dashboard
+  - [ ] FX rates row (with flags and directional change)
+  - [ ] Graph row (GDP, policy rate)
+  - [ ] Desktop-only sparklines
+  - [ ] “LIVE” indicator
+- [ ] News Carousel (firm news only)
+  - [ ] Card-based layout
+  - [ ] Category tags
+  - [ ] “Read More” action
+- [ ] Reusable Modal system
+  - [ ] News modal
+  - [ ] Shared overlay logic
+- [ ] Mock API behavior
+  - [ ] Simulated loading delay
+  - [ ] Placeholder JSON data
 
-Graph row
+### Notes
 
-News carousel
+This phase introduces realism and perceived depth.
 
-Modal system
+---
 
-Mock API delays
+## Phase 4 – About Page
 
-This is where realism kicks in.
+**Goal:** Establish editorial authority and trust.
 
-Phase 4 – About Page
+### Tasks
 
-Goal: Editorial authority.
+- [ ] Page hero (shorter than Home)
+- [ ] “Our Story” narrative section
+- [ ] Team section
+  - [ ] CEO highlighted (larger card or row)
+  - [ ] Remaining team in grid
+  - [ ] Profile modal with full bio
+- [ ] Stats section
+  - [ ] Years of experience
+  - [ ] Projects completed
+  - [ ] Clients served
 
-Tasks:
+---
 
-Story section
+## Phase 5 – Services Page
 
-Team grid
+**Goal:** Clearly communicate enterprise offerings.
 
-CEO highlight
-
-Stats row
-
-Phase 5 – Services Page
-
-Goal: Enterprise clarity.
-
-Tasks:
-
-Four pillars
-
-Clean layout
-
-CTA banner
-
-Phase 6 – News Page
-
-Goal: Product-grade content system.
-
-Tasks:
-
-Filters
-
-Pagination
-
-Load more
-
-Reusable cards
-
-Phase 7 – Contact Page
-
-Goal: Conversion.
-
-Tasks:
-
-Form UX
-
-Validation
-
-Toast feedback
-
-Map/address block
-
-Phase 8 – Polish
-
-Goal: Make it feel expensive.
-
-Tasks:
-
-Motion tuning
-
-Spacing audits
-
-Font size refinement
-
-Mobile UX pass
+###
