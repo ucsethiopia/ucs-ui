@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -13,7 +13,7 @@
   --gold-500: oklch(0.75 0.14 85);
   --gold-400: oklch(0.82 0.12 85);
   --gold-600: oklch(0.65 0.15 85);
-  
+
   --background: oklch(0.99 0.002 90);
   --foreground: var(--navy-950);
   --card: oklch(1 0 0);
@@ -30,7 +30,7 @@
   --accent-foreground: var(--navy-950);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.90 0.01 90);
+  --border: oklch(0.9 0.01 90);
   --input: oklch(0.92 0.005 90);
   --ring: var(--gold-500);
   --chart-1: var(--navy-900);
@@ -85,17 +85,17 @@
 }
 
 @theme inline {
-  --font-sans: 'Source Sans 3', 'Source Sans 3 Fallback', system-ui, sans-serif;
-  --font-serif: 'Playfair Display', 'Playfair Display Fallback', Georgia, serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
-  
+  --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Playfair Display Fallback", Georgia, serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+
   /* Navy scale */
   --color-navy-950: var(--navy-950);
   --color-navy-900: var(--navy-900);
   --color-navy-800: var(--navy-800);
   --color-navy-700: var(--navy-700);
   --color-navy-600: var(--navy-600);
-  
+
   /* Gold scale */
   --color-gold-600: var(--gold-600);
   --color-gold-500: var(--gold-500);
@@ -153,8 +153,25 @@
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
   }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-33.333%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 50s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 .animate-marquee {

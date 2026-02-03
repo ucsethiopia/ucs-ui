@@ -1,30 +1,24 @@
 "use client";
 
 import React from "react";
-
 import Link from "next/link";
 import {
-  Crown,
-  Users,
   GraduationCap,
-  Monitor,
-  Calculator,
-  Heart,
+  Lightbulb,
+  FileSearch,
   Megaphone,
   ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
-import { trainingPrograms } from "@/lib/mock-data";
+import { servicePillars } from "@/lib/mock-data";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Crown,
-  Users,
-  GraduationCap,
-  Monitor,
-  Calculator,
-  Heart,
-  Megaphone,
+  Training: GraduationCap,
+  Advisory: Lightbulb,
+  "Research & Publication": FileSearch,
+  "Communication & Promotion": Megaphone,
 };
 
 export function ServicesOverview() {
@@ -34,66 +28,111 @@ export function ServicesOverview() {
   });
 
   return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-24 lg:py-32 bg-secondary/30 relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-            Build Capabilities
+            Our Expertise
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 text-balance">
-            Training Programs
+            Comprehensive Business Solutions
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Comprehensive learning programs designed to develop skills and
-            enhance performance across all levels of your organization.
+            We provide integrated services across four key pillars to drive
+            sustainable growth and organizational excellence for Ethiopian
+            enterprises.
           </p>
         </div>
 
-        {/* Programs Grid */}
+        {/* Service Pillars Grid */}
         <div
           ref={ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {trainingPrograms.map((program, index) => {
-            const Icon = iconMap[program.icon] || GraduationCap;
+          {servicePillars.map((pillar, index) => {
+            const Icon = iconMap[pillar.title] || GraduationCap;
             return (
-              <Link
-                key={program.id}
-                href="/services#training"
+              <div
+                key={pillar.id}
                 className={cn(
-                  "group relative flex flex-col items-center text-center p-6 bg-card border border-border rounded-lg transition-all duration-500 hover:border-gold-500 hover:shadow-lg",
+                  "group relative bg-card border border-border rounded-xl overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl hover:border-gold-500/50 hover:-translate-y-1",
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-8",
                 )}
                 style={{
-                  transitionDelay: isVisible ? `${index * 75}ms` : "0ms",
+                  transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
                 }}
               >
-                {/* Icon */}
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-navy-900 text-white transition-colors group-hover:bg-gold-500 group-hover:text-navy-950">
-                  <Icon className="h-7 w-7" />
+                {/* Header with Icon */}
+                <div className="relative p-6 pb-4 border-b border-border/50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-gold-500 group-hover:text-navy-950 group-hover:scale-110">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-foreground mb-2 group-hover:text-gold-600 transition-colors">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    {pillar.description}
+                  </p>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-2 group-hover:text-gold-600 transition-colors">
-                  {program.title}
-                </h3>
+                {/* Offerings List */}
+                <div className="flex-grow p-6 pt-4">
+                  <ul className="space-y-2.5">
+                    {pillar.offerings.slice(0, 5).map((offering, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start text-xs text-muted-foreground group-hover:text-foreground transition-colors"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5 text-gold-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="leading-tight">{offering}</span>
+                      </li>
+                    ))}
+                    {pillar.offerings.length > 5 && (
+                      <li className="flex items-start text-xs text-muted-foreground/60 italic">
+                        <span className="ml-5">
+                          +{pillar.offerings.length - 5} more
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
 
-                {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  {program.description}
-                </p>
+                {/* Action Link */}
+                <div className="p-6 pt-4 border-t border-border/50">
+                  <Link
+                    href="/services"
+                    className="inline-flex items-center text-sm font-semibold text-foreground group-hover:text-gold-600 transition-all"
+                  >
+                    Learn More
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
 
-                {/* Learn More */}
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-all group-hover:text-gold-600 group-hover:gap-2 mt-auto">
-                  Learn More
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
+                {/* Hover Accent Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 to-gold-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+              </div>
             );
           })}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-12">
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-gold-600 transition-colors"
+          >
+            View All Services & Offerings
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
