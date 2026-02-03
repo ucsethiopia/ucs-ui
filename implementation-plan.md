@@ -43,13 +43,13 @@ Each new ChatGPT conversation corresponds to **one phase**.
   - [x] Background image
   - [x] Headline + tagline
   - [ ] Primary CTA
-- [ ] Replace “Training” section with **Services Overview**
-  - [ ] Four service pillars summary
-  - [ ] Clear “Learn More” links to `/services`
-- [ ] Implement Core Values section
-- [ ] Implement Client / Partner marquee
-  - [ ] Continuous horizontal scroll
-  - [ ] Pause on hover
+- [x] Replace “Training” section with **Services Overview**
+  - [x] Four service pillars summary
+  - [x] Clear “Learn More” links to `/services`
+- [x] Implement Core Values section
+- [x] Implement Client / Partner marquee
+  - [x] Continuous horizontal scroll
+  - [x] Pause on hover
 - [ ] Ensure responsive layout integrity (mobile / tablet / desktop)
 
 ### Constraints

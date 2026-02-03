@@ -13,11 +13,11 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
+        <ClientMarquee />
         <EconomicDashboard />
+        <ServicesOverview />
         <CoreValues />
         <NewsCarousel />
-        <ServicesOverview />
-        <ClientMarquee />
       </main>
       <Footer />
     </>
