@@ -97,13 +97,13 @@ export function ClientMarquee() {
       isPaused = false;
     };
 
-    scrollContainer.addEventListener('mouseenter', handleMouseEnter);
-    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
+    scrollContainer.addEventListener("mouseenter", handleMouseEnter);
+    scrollContainer.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
       cancelAnimationFrame(animationId);
-      scrollContainer.removeEventListener('mouseenter', handleMouseEnter);
-      scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
+      scrollContainer.removeEventListener("mouseenter", handleMouseEnter);
+      scrollContainer.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -138,20 +138,14 @@ export function ClientMarquee() {
           <div
             ref={scrollRef}
             className="flex overflow-x-hidden"
-            style={{ 
-              scrollBehavior: 'auto',
-              whiteSpace: 'nowrap'
+            style={{
+              scrollBehavior: "auto",
+              whiteSpace: "nowrap",
             }}
           >
             {duplicatedClients.map((client, index) => (
-              <div 
-                key={`${client.id}-${index}`} 
-                className="inline-block px-4" 
-              >
-                <ClientLogo
-                  name={client.name}
-                  logo={client.logo}
-                />
+              <div key={`${client.id}-${index}`} className="inline-block px-4">
+                <ClientLogo name={client.name} logo={client.logo} />
               </div>
             ))}
           </div>

@@ -50,7 +50,7 @@ Each new ChatGPT conversation corresponds to **one phase**.
 - [x] Implement Client / Partner marquee
   - [x] Continuous horizontal scroll
   - [x] Pause on hover
-- [ ] Ensure responsive layout integrity (mobile / tablet / desktop)
+- [x] Ensure responsive layout integrity (mobile / tablet / desktop)
 
 ### Constraints
 
