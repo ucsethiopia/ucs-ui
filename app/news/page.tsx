@@ -38,7 +38,7 @@ function NewsCard({
     <article
       className={cn(
         "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
         transitionDelay: isVisible ? `${(index % 9) * 75}ms` : "0ms",
@@ -81,7 +81,7 @@ function NewsCard({
         {/* Read More */}
         <button
           onClick={() => onReadMore(item)}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-navy-900 transition-all hover:text-gold-600 hover:gap-3"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all hover:text-gold-600 hover:gap-3"
         >
           Read More
           <ArrowRight className="h-4 w-4" />
@@ -108,7 +108,10 @@ export default function NewsPage() {
   // Initial load - first 9 items
   useEffect(() => {
     async function fetchInitialNews() {
-      const data = await simulateApiDelay(newsItems.slice(0, INITIAL_ITEMS), 800);
+      const data = await simulateApiDelay(
+        newsItems.slice(0, INITIAL_ITEMS),
+        800,
+      );
       setNews(data);
       setAllNews(data);
       setIsLoading(false);
@@ -119,7 +122,10 @@ export default function NewsPage() {
   // Load more handler
   const handleLoadMore = async () => {
     setIsLoadingMore(true);
-    const moreNews = await simulateApiDelay(newsItems.slice(INITIAL_ITEMS), 600);
+    const moreNews = await simulateApiDelay(
+      newsItems.slice(INITIAL_ITEMS),
+      600,
+    );
     setAllNews((prev) => [...prev, ...moreNews]);
     setHasLoadedAll(true);
     setIsLoadingMore(false);
@@ -158,7 +164,7 @@ export default function NewsPage() {
                     "px-4 py-2 text-sm font-medium rounded-sm transition-all",
                     selectedCategory === category
                       ? "bg-navy-900 text-white"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
                   )}
                 >
                   {category}

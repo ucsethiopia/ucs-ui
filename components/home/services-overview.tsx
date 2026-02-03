@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react"
+import React from "react";
 
 import Link from "next/link";
 import {
@@ -45,8 +45,8 @@ export function ServicesOverview() {
             Training Programs
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Comprehensive learning programs designed to develop skills and enhance 
-            performance across all levels of your organization.
+            Comprehensive learning programs designed to develop skills and
+            enhance performance across all levels of your organization.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export function ServicesOverview() {
                   "group relative flex flex-col items-center text-center p-6 bg-card border border-border rounded-lg transition-all duration-500 hover:border-gold-500 hover:shadow-lg",
                   isVisible
                     ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
+                    : "opacity-0 translate-y-8",
                 )}
                 style={{
                   transitionDelay: isVisible ? `${index * 75}ms` : "0ms",
@@ -87,7 +87,7 @@ export function ServicesOverview() {
                 </p>
 
                 {/* Learn More */}
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-navy-900 transition-all group-hover:text-gold-600 group-hover:gap-2 mt-auto">
+                <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-all group-hover:text-gold-600 group-hover:gap-2 mt-auto">
                   Learn More
                   <ArrowRight className="h-4 w-4" />
                 </span>

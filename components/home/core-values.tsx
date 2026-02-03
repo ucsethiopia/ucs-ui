@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react"
+import React from "react";
 
 import { Shield, Star, Users, Lightbulb, Target } from "lucide-react";
 import { coreValues } from "@/lib/mock-data";
@@ -33,8 +33,8 @@ export function CoreValues() {
             The Values That Guide Us
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Our core values shape every engagement, every recommendation, and every 
-            relationship we build with our clients.
+            Our core values shape every engagement, every recommendation, and
+            every relationship we build with our clients.
           </p>
         </div>
 
@@ -52,14 +52,14 @@ export function CoreValues() {
                   "group relative p-6 bg-card border border-border rounded-lg transition-all duration-500 hover:border-gold-500/50 hover:shadow-lg",
                   isVisible
                     ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
+                    : "opacity-0 translate-y-8",
                 )}
                 style={{
                   transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
                 }}
               >
                 {/* Icon */}
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-navy-900/10 text-navy-900 transition-colors group-hover:bg-gold-500/10 group-hover:text-gold-600">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-gold-500/10 group-hover:text-gold-600">
                   <Icon className="h-6 w-6" />
                 </div>
 

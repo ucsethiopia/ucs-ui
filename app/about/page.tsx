@@ -6,7 +6,11 @@ import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
 import { Modal } from "@/components/ui/modal";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { teamMembers, simulateApiDelay, type TeamMember } from "@/lib/mock-data";
+import {
+  teamMembers,
+  simulateApiDelay,
+  type TeamMember,
+} from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 function TeamMemberCard({
@@ -27,7 +31,7 @@ function TeamMemberCard({
       className={cn(
         "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30",
         isOwner && "lg:col-span-2 lg:flex lg:items-center",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
         transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
@@ -37,7 +41,9 @@ function TeamMemberCard({
       <div
         className={cn(
           "relative overflow-hidden bg-muted",
-          isOwner ? "aspect-square lg:aspect-auto lg:w-1/3 lg:h-full" : "aspect-square"
+          isOwner
+            ? "aspect-square lg:aspect-auto lg:w-1/3 lg:h-full"
+            : "aspect-square",
         )}
       >
         <div
@@ -51,16 +57,20 @@ function TeamMemberCard({
 
       {/* Content */}
       <div className={cn("p-6", isOwner && "lg:flex-1 lg:p-8")}>
-        <h3 className={cn(
-          "font-serif font-semibold text-foreground mb-1",
-          isOwner ? "text-2xl" : "text-xl"
-        )}>
+        <h3
+          className={cn(
+            "font-serif font-semibold text-foreground mb-1",
+            isOwner ? "text-2xl" : "text-xl",
+          )}
+        >
           {member.name}
         </h3>
-        <p className={cn(
-          "text-gold-600 font-medium mb-4",
-          isOwner ? "text-base" : "text-sm"
-        )}>
+        <p
+          className={cn(
+            "text-gold-600 font-medium mb-4",
+            isOwner ? "text-base" : "text-sm",
+          )}
+        >
           {member.title}
         </p>
         {isOwner && (
@@ -70,7 +80,7 @@ function TeamMemberCard({
         )}
         <button
           onClick={() => onViewProfile(member)}
-          className="inline-flex items-center text-sm font-semibold text-navy-900 transition-colors hover:text-gold-600"
+          className="inline-flex items-center text-sm font-semibold text-foreground transition-colors hover:text-gold-600"
         >
           View Profile
         </button>
@@ -84,10 +94,12 @@ export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
-  const { ref: storyRef, isVisible: storyVisible } = useScrollAnimation<HTMLDivElement>();
-  const { ref: teamRef, isVisible: teamVisible } = useScrollAnimation<HTMLDivElement>({
-    rootMargin: "0px 0px -50px 0px",
-  });
+  const { ref: storyRef, isVisible: storyVisible } =
+    useScrollAnimation<HTMLDivElement>();
+  const { ref: teamRef, isVisible: teamVisible } =
+    useScrollAnimation<HTMLDivElement>({
+      rootMargin: "0px 0px -50px 0px",
+    });
 
   useEffect(() => {
     async function fetchTeam() {
@@ -118,7 +130,9 @@ export default function AboutPage() {
               ref={storyRef}
               className={cn(
                 "grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center transition-all duration-700",
-                storyVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                storyVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8",
               )}
             >
               {/* Image */}
@@ -143,22 +157,27 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    Founded in 2011, Ultimate Consultancy Service (UCS) Ethiopia has grown to become 
-                    one of the country{"'"}s most trusted management consulting firms. Based in the heart 
-                    of Bole, Addis Ababa, we serve a diverse portfolio of clients including major banks, 
-                    leading corporations, and government institutions.
+                    Founded in 2011, Ultimate Consultancy Service (UCS) Ethiopia
+                    has grown to become one of the country{"'"}s most trusted
+                    management consulting firms. Based in the heart of Bole,
+                    Addis Ababa, we serve a diverse portfolio of clients
+                    including major banks, leading corporations, and government
+                    institutions.
                   </p>
                   <p>
-                    Our mission is to drive sustainable growth and transformation for Ethiopian 
-                    enterprises by delivering world-class advisory, training, and research services. 
-                    We combine deep local expertise with international best practices to help our 
-                    clients achieve their strategic objectives.
+                    Our mission is to drive sustainable growth and
+                    transformation for Ethiopian enterprises by delivering
+                    world-class advisory, training, and research services. We
+                    combine deep local expertise with international best
+                    practices to help our clients achieve their strategic
+                    objectives.
                   </p>
                   <p>
-                    Over the years, we have partnered with more than 150 organizations, trained 
-                    thousands of professionals, and contributed to some of the most significant 
-                    business transformations in the country. Our success is measured by the 
-                    success of our clients.
+                    Over the years, we have partnered with more than 150
+                    organizations, trained thousands of professionals, and
+                    contributed to some of the most significant business
+                    transformations in the country. Our success is measured by
+                    the success of our clients.
                   </p>
                 </div>
               </div>
@@ -173,35 +192,62 @@ export default function AboutPage() {
               {/* Mission */}
               <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                 </div>
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
                   Our Mission
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To empower Ethiopian organizations with the knowledge, tools, and strategies 
-                  they need to compete effectively in a rapidly evolving business landscape, 
-                  while fostering a culture of excellence and continuous improvement.
+                  To empower Ethiopian organizations with the knowledge, tools,
+                  and strategies they need to compete effectively in a rapidly
+                  evolving business landscape, while fostering a culture of
+                  excellence and continuous improvement.
                 </p>
               </div>
 
               {/* Vision */}
               <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-navy-900/10 text-navy-900 mb-6">
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mb-6">
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
                   </svg>
                 </div>
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
                   Our Vision
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To be the premier consultancy partner for organizations across Ethiopia and 
-                  East Africa, recognized for our integrity, excellence, and the measurable 
-                  impact we deliver for our clients and the communities they serve.
+                  To be the premier consultancy partner for organizations across
+                  Ethiopia and East Africa, recognized for our integrity,
+                  excellence, and the measurable impact we deliver for our
+                  clients and the communities they serve.
                 </p>
               </div>
             </div>
@@ -220,8 +266,9 @@ export default function AboutPage() {
                 Meet Our Team
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Our experienced team combines deep local expertise with international 
-                best practices to deliver exceptional results for our clients.
+                Our experienced team combines deep local expertise with
+                international best practices to deliver exceptional results for
+                our clients.
               </p>
             </div>
 
@@ -230,7 +277,10 @@ export default function AboutPage() {
               {isLoading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="bg-card border border-border rounded-lg overflow-hidden">
+                    <div
+                      key={i}
+                      className="bg-card border border-border rounded-lg overflow-hidden"
+                    >
                       <div className="aspect-square bg-muted animate-pulse" />
                       <div className="p-6 space-y-3">
                         <div className="h-6 w-32 bg-muted animate-pulse rounded" />
@@ -292,7 +342,9 @@ export default function AboutPage() {
 
             {/* Meta */}
             <div className="border-b border-border pb-4">
-              <p className="text-gold-600 font-semibold">{selectedMember.title}</p>
+              <p className="text-gold-600 font-semibold">
+                {selectedMember.title}
+              </p>
             </div>
 
             {/* Bio */}
