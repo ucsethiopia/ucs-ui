@@ -73,16 +73,16 @@ Each new ChatGPT conversation corresponds to **one phase**.
   - [x] Desktop-only sparklines
   - [x] “LIVE” indicator
   - [ ] x and y coordinate values for reference 
-- [ ] News Carousel (firm news only)
-  - [ ] Card-based layout
-  - [ ] Category tags
-  - [ ] “Read More” action
-- [ ] Reusable Modal system
-  - [ ] News modal
-  - [ ] Shared overlay logic
-- [ ] Mock API behavior
+- [x] News Carousel (firm news only)
+  - [x] Card-based layout
+  - [x] Category tags
+  - [x] “Read More” action
+- [x] Reusable Modal system
+  - [x] News modal
+  - [x] Shared overlay logic
+- [x] Mock API behavior
   - [ ] Simulated loading delay
-  - [ ] Placeholder JSON data
+  - [x] Placeholder JSON data
 
 ### Notes
 
@@ -164,12 +164,27 @@ This phase introduces realism and perceived depth.
 
 ---
 
+## Phase 8 – Mock Data to API Requests
+
+**Goal:** Use all API docs and fully integrate backend and frontend
+
+### Tasks
+
+- [ ] Econ dash API
+- [ ] Economic News API
+- [ ] Firm News API
+- [ ] team + team/member API
+
+
+---
+
 ## Phase 8 – Polish & Refinement
 
 **Goal:** Make the site feel premium and complete.
 
 ### Tasks
 
+- [ ] Decide on order of sections in the home page - include @jaft24 in this
 - [ ] Scroll-triggered reveal animations
 - [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window
 - [ ] Motion tuning (durations, easing, stagger)
