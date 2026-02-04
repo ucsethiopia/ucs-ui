@@ -67,11 +67,12 @@ Each new ChatGPT conversation corresponds to **one phase**.
 
 ### Tasks
 
-- [ ] Economic Dashboard
-  - [ ] FX rates row (with flags and directional change)
-  - [ ] Graph row (GDP, policy rate)
-  - [ ] Desktop-only sparklines
-  - [ ] “LIVE” indicator
+- [x] Economic Dashboard
+  - [x] FX rates row (with flags and directional change)
+  - [x] Graph row (GDP, policy rate)
+  - [x] Desktop-only sparklines
+  - [x] “LIVE” indicator
+  - [ ] x and y coordinate values for reference 
 - [ ] News Carousel (firm news only)
   - [ ] Card-based layout
   - [ ] Category tags
@@ -170,6 +171,7 @@ This phase introduces realism and perceived depth.
 ### Tasks
 
 - [ ] Scroll-triggered reveal animations
+- [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window
 - [ ] Motion tuning (durations, easing, stagger)
 - [ ] Spacing and alignment audit
 - [ ] Typography fine-tuning
