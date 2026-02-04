@@ -3,7 +3,8 @@ import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/home/hero";
 import { EconomicDashboard } from "@/components/home/economic-dashboard";
 import { CoreValues } from "@/components/home/core-values";
-import { NewsCarousel } from "@/components/home/news-carousel";
+import { FirmNews } from "@/components/home/firm-news";
+import { EconomicNews } from "@/components/home/economic-news";
 import { ServicesOverview } from "@/components/home/services-overview";
 import { ClientMarquee } from "@/components/home/client-marquee";
 
@@ -17,7 +18,8 @@ export default function HomePage() {
         <EconomicDashboard />
         <ServicesOverview />
         <CoreValues />
-        <NewsCarousel />
+        <FirmNews />
+        <EconomicNews />
       </main>
       <Footer />
     </>
