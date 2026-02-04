@@ -1,177 +1,266 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown, Minus, Radio } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
-import {
-  exchangeRates,
-  economicIndicators,
-  simulateApiDelay,
-  type ExchangeRate,
-  type EconomicIndicator,
-} from "@/lib/mock-data";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
+import { MiniLineChart, Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
-function TrendIcon({ change }: { change: number }) {
-  if (change > 0) return <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />;
-  if (change < 0) return <TrendingDown className="h-3.5 w-3.5 text-red-500" />;
-  return <Minus className="h-3.5 w-3.5 text-muted-foreground" />;
-}
+// Country flags
+const FLAGS = {
+  usd: "🇺🇸",
+  eur: "🇪🇺",
+  jpy: "🇯🇵",
+};
 
-function Sparkline({ data }: { data: number[] }) {
-  const chartData = data.map((value, index) => ({ value, index }));
-
-  return (
-    <div className="h-8 w-20 hidden lg:block">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData}>
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="var(--color-gold-500)"
-            strokeWidth={1.5}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-function ExchangeRateCard({ rate, isLoading }: { rate: ExchangeRate; isLoading: boolean }) {
-  return (
-    <div className="flex items-center gap-4 px-4 py-3 lg:px-6">
-      {isLoading ? (
-        <div className="h-10 w-32 animate-pulse rounded bg-muted" />
-      ) : (
-        <>
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">{rate.pair}</span>
-            <span className="text-lg font-semibold text-foreground">{rate.rate.toFixed(2)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <TrendIcon change={rate.change} />
-            <span
-              className={cn(
-                "text-xs font-medium",
-                rate.change > 0 && "text-emerald-500",
-                rate.change < 0 && "text-red-500",
-                rate.change === 0 && "text-muted-foreground"
-              )}
-            >
-              {rate.change >= 0 ? "+" : ""}
-              {rate.changePercent.toFixed(2)}%
-            </span>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-function IndicatorCard({
-  indicator,
-  isLoading,
+// Compact rate item (Bloomberg-style)
+function RateItem({
+  flag,
+  label,
+  value,
+  change,
+  trend,
 }: {
-  indicator: EconomicIndicator;
-  isLoading: boolean;
+  flag?: string;
+  label: string;
+  value: string;
+  change: number;
+  trend: "up" | "down" | "unchanged";
 }) {
   return (
-    <div className="flex items-center gap-4 px-4 py-3 lg:px-6">
-      {isLoading ? (
-        <div className="h-10 w-40 animate-pulse rounded bg-muted" />
-      ) : (
-        <>
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">{indicator.name}</span>
-            <span className="text-lg font-semibold text-foreground">{indicator.value}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {indicator.change !== 0 && (
-              <div className="flex items-center gap-1">
-                <TrendIcon change={indicator.change} />
-                <span
-                  className={cn(
-                    "text-xs font-medium",
-                    indicator.change > 0 && "text-emerald-500",
-                    indicator.change < 0 && "text-red-500"
-                  )}
-                >
-                  {indicator.change > 0 ? "+" : ""}
-                  {indicator.change}%
-                </span>
-              </div>
-            )}
-            <Sparkline data={indicator.history} />
-          </div>
-        </>
-      )}
+    <div className="flex items-center justify-center gap-2 px-3 py-1.5 hover:bg-muted/50 transition-colors whitespace-nowrap flex-1">
+      {flag && <span className="text-lg">{flag}</span>}
+      <span className="text-xs text-muted-foreground font-medium min-w-[50px]">
+        {label}
+      </span>
+      <span className="text-sm font-semibold text-foreground">{value}</span>
+      <span
+        className={cn(
+          "text-[10px] font-medium ml-2",
+          trend === "up" && "text-emerald-500",
+          trend === "down" && "text-red-500",
+          trend === "unchanged" && "text-muted-foreground",
+        )}
+      >
+        {change >= 0 ? "+" : ""}
+        {change.toFixed(2)}%
+      </span>
     </div>
   );
 }
 
 export function EconomicDashboard() {
-  const [rates, setRates] = useState<ExchangeRate[]>([]);
-  const [indicators, setIndicators] = useState<EconomicIndicator[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      const [ratesData, indicatorsData] = await Promise.all([
-        simulateApiDelay(exchangeRates, 600),
-        simulateApiDelay(economicIndicators, 800),
-      ]);
-      setRates(ratesData);
-      setIndicators(indicatorsData);
-      setIsLoading(false);
-    }
-
-    fetchData();
-  }, []);
+  const { data, loading } = useEconomicDashboard();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="bg-card border-y border-border">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-          {/* Live Indicator */}
-          <div className="flex items-center gap-2 px-4 py-3 lg:px-6 lg:border-r border-border">
-            <div className="flex items-center gap-2">
-              <Radio className="h-3.5 w-3.5 text-emerald-500 animate-pulse" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-500">
-                Live
-              </span>
-            </div>
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              Market Data
+    <section ref={ref} className="py-6 lg:py-10 border-b bg-muted/30">
+      <div className="w-full px-4 md:px-6 max-w-[90vw] mx-auto">
+        {/* Header */}
+        <motion.div
+          className="flex items-center justify-between mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <div>
+            <h2 className="text-base lg:text-lg font-serif font-semibold text-foreground">
+              Economic Dashboard
+            </h2>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              {loading
+                ? "Loading..."
+                : `Updated: ${new Date(
+                    data?.lastUpdated || "",
+                  ).toLocaleTimeString()}`}
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-muted-foreground font-medium text-[10px] hidden sm:inline">
+              LIVE
             </span>
           </div>
+        </motion.div>
 
-          {/* Exchange Rates */}
-          <div className="flex flex-wrap lg:flex-nowrap divide-x divide-border border-t lg:border-t-0 border-border">
-            {(isLoading ? [{}, {}, {}] : rates).map((rate, index) => (
-              <ExchangeRateCard
-                key={isLoading ? index : (rate as ExchangeRate).pair}
-                rate={rate as ExchangeRate}
-                isLoading={isLoading}
-              />
-            ))}
-          </div>
+        <div className="space-y-5">
+          {/* ROW 1: Compact Rates Strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-card border rounded-lg overflow-hidden"
+          >
+            {loading ? (
+              <div className="space-y-1 p-2">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-7 w-full" />
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center py-0.5 overflow-x-auto scrollbar-hide">
+                {/* FX Rates */}
+                {Object.entries(data?.fxRates || {}).map(
+                  ([code, fx], index) => (
+                    <>
+                      <RateItem
+                        key={code}
+                        flag={FLAGS[code as keyof typeof FLAGS]}
+                        label={code.toUpperCase()}
+                        value={fx.rate.toFixed(2)}
+                        change={fx.change}
+                        trend={fx.trend}
+                      />
+                      {index < Object.keys(data?.fxRates || {}).length - 1 && (
+                        <div className="w-px bg-border h-4" />
+                      )}
+                    </>
+                  ),
+                )}
+                {/* Thicker & Taller Divider between FX and Commodities */}
+                <div className="w-0.5 bg-border h-6 mx-1" />
+                {/* Commodities */}
+                {Object.values(data?.commodities || {}).map(
+                  (commodity, index) => (
+                    <>
+                      <RateItem
+                        key={commodity.symbol}
+                        label={commodity.name}
+                        value={commodity.price.toLocaleString("en-US", {
+                          maximumFractionDigits: 0,
+                        })}
+                        change={commodity.change}
+                        trend={commodity.trend}
+                      />
+                      {index <
+                        Object.values(data?.commodities || {}).length - 1 && (
+                        <div className="w-px bg-border h-4" />
+                      )}
+                    </>
+                  ),
+                )}
+              </div>
+            )}
+          </motion.div>
 
-          {/* Divider */}
-          <div className="hidden lg:block h-12 w-px bg-border" />
+          {/* ROW 2: Full-Width Charts */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex gap-4 overflow-x-auto scrollbar-hide"
+          >
+            {/* Interest Rate Chart */}
+            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
+              {loading ? (
+                <>
+                  <Skeleton className="h-4 w-28 mb-3" />
+                  <Skeleton className="h-40 w-full" />
+                </>
+              ) : (
+                <>
+                  <div className="mb-4">
+                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
+                      NBE Interest Rate
+                    </h3>
+                    <div className="text-3xl font-bold text-foreground">
+                      {data?.interestRate.current}%
+                    </div>
+                  </div>
+                  <MiniLineChart
+                    data={data?.interestRate.history || []}
+                    height={140}
+                    color="var(--color-navy-600)"
+                  />
+                </>
+              )}
+            </div>
 
-          {/* Economic Indicators */}
-          <div className="flex flex-wrap lg:flex-nowrap divide-x divide-border border-t lg:border-t-0 border-border">
-            {(isLoading ? [{}, {}] : indicators).map((indicator, index) => (
-              <IndicatorCard
-                key={isLoading ? index : (indicator as EconomicIndicator).name}
-                indicator={indicator as EconomicIndicator}
-                isLoading={isLoading}
-              />
-            ))}
-          </div>
+            {/* GDP Chart */}
+            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
+              {loading ? (
+                <>
+                  <Skeleton className="h-4 w-28 mb-3" />
+                  <Skeleton className="h-40 w-full" />
+                </>
+              ) : (
+                <>
+                  <div className="mb-4">
+                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
+                      Ethiopia GDP
+                    </h3>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-foreground">
+                        ${data?.gdp.current}B
+                      </span>
+                      <span className="text-sm font-medium text-emerald-500">
+                        +{data?.gdp.growth}%
+                      </span>
+                    </div>
+                  </div>
+                  <MiniLineChart
+                    data={data?.gdp.history || []}
+                    height={140}
+                    color="var(--color-gold-500)"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* ESX Chart */}
+            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
+              {loading ? (
+                <>
+                  <Skeleton className="h-4 w-28 mb-3" />
+                  <Skeleton className="h-40 w-full" />
+                </>
+              ) : (
+                <>
+                  <div className="mb-4">
+                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
+                      ESX Aggregate
+                    </h3>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-foreground">
+                        {data?.esx.current.toFixed(2)}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-sm font-medium",
+                          data?.esx.changePercent && data.esx.changePercent > 0
+                            ? "text-emerald-500"
+                            : "text-red-500",
+                        )}
+                      >
+                        {data?.esx.changePercent && data.esx.changePercent > 0
+                          ? "+"
+                          : ""}
+                        {data?.esx.changePercent.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                  <MiniLineChart
+                    data={data?.esx.history || []}
+                    height={140}
+                    color="var(--color-navy-700)"
+                  />
+                </>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }
