@@ -97,17 +97,17 @@ This phase introduces realism and perceived depth.
 
 ### Tasks
 
-- [ ] Page hero (shorter than Home)
-- [ ] Team centric background image
-- [ ] “Our Story” narrative section
-- [ ] Team section
-  - [ ] CEO highlighted (larger card or row)
-  - [ ] Remaining team in grid
-  - [ ] Profile modal with full bio
-- [ ] Stats section
-  - [ ] Years of experience
-  - [ ] Projects completed
-  - [ ] Clients served
+- [x] Page hero (shorter than Home)
+- [x] Team centric background image
+- [x] “Our Story” narrative section
+- [x] Team section
+  - [x] CEO highlighted (larger card or row)
+  - [x] Remaining team in grid
+  - [x] Profile separate endpoint with better representaion - /team/[member_name]
+- [x] Stats section
+  - [x] Years of experience
+  - [x] Projects completed
+  - [x] Clients served
 
 ---
 
@@ -177,10 +177,11 @@ This phase introduces realism and perceived depth.
 - [ ] Decide on order of sections in the home page - include @jaft24 in this - Reorder IN NEED
 - [ ] Scroll-triggered reveal animations
 - [ ] Better Motto or wtv it is
+- [ ] Imporve overall padding of website - too much empty space
 - [ ] Stats Counter animated - et consultuncy web ins
 - [ ] Testimonials and Results 
 - [ ] Something Coherent with the services of the website and not just fancy display material
-- [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window
+- [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window (inpso: infisical.com)
 - [ ] Motion tuning (durations, easing, stagger)
 - [ ] Spacing and alignment audit
 - [ ] Typography fine-tuning

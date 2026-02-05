@@ -34,6 +34,12 @@ export interface TeamMember {
   image: string;
   bio: string;
   isOwner?: boolean;
+  yearsOfExperience?: number;
+  email?: string;
+  linkedinUrl?: string;
+  expertise?: string[];
+  achievements?: string[];
+  certifications?: string[];
 }
 
 export interface TrainingProgram {
@@ -336,12 +342,35 @@ export const teamMembers: TeamMember[] = [
     name: "Dr. Alemayehu Bekele",
     title: "Founder & Chief Executive Officer",
     image: "/images/team/ceo.jpg",
-    bio: `Dr. Alemayehu Bekele is the founder and CEO of UCS Ethiopia, bringing over 25 years of experience in management consulting and executive leadership. Prior to founding UCS, he held senior positions at international consulting firms and served as an advisor to multiple government ministries.
+    bio: `Dr. Alemayehu Bekele is the founder and CEO of UCS Ethiopia, bringing over 25 years of experience in management consulting and executive leadership. Prior to founding UCS in 2011, he held senior positions at international consulting firms including roles in strategy development and organizational transformation. He has also served as an advisor to multiple government ministries on economic policy and institutional reform.
 
-Dr. Bekele holds a PhD in Business Administration from Addis Ababa University and an MBA from London Business School. He is a frequent speaker at industry conferences and has authored numerous articles on business strategy and organizational transformation.
+His career spans diverse industries including financial services, manufacturing, telecommunications, and public sector development. Dr. Bekele has led transformational engagements with Ethiopia's largest banks, helped design national development strategies, and advised multinational corporations entering the Ethiopian market. His expertise encompasses strategic planning, organizational design, change management, and capacity building at scale.
 
-Under his leadership, UCS Ethiopia has grown from a small advisory practice to the country's leading consultancy firm, serving major corporations, banks, and government institutions across Ethiopia and the region.`,
+Dr. Bekele holds a PhD in Business Administration from Addis Ababa University, where his dissertation focused on competitive strategy in emerging markets, and an MBA from London Business School. He is a frequent speaker at industry conferences across Africa and has authored numerous articles on business strategy, organizational transformation, and economic development published in leading journals.
+
+Under his visionary leadership, UCS Ethiopia has grown from a small advisory practice to the country's premier consultancy firm, serving over 150 major corporations, banks, insurance companies, and government institutions across Ethiopia and the East African region. He remains deeply committed to developing local consulting talent and contributing to Ethiopia's economic transformation.`,
     isOwner: true,
+    yearsOfExperience: 25,
+    email: "alemayehu@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Business Strategy",
+      "Organizational Transformation",
+      "Executive Leadership",
+      "Change Management",
+      "Public Sector Advisory",
+    ],
+    achievements: [
+      "Founded UCS Ethiopia, which has grown to serve 150+ clients",
+      "Led transformations for Ethiopia's largest financial institutions",
+      "Advisor to multiple government ministries on economic policy",
+      "Published over 20 articles on business strategy and transformation",
+      "Recognized thought leader in African management consulting",
+    ],
+    certifications: [
+      "PhD in Business Administration - Addis Ababa University",
+      "MBA - London Business School",
+    ],
   },
   {
     id: "2",
@@ -353,6 +382,27 @@ Under his leadership, UCS Ethiopia has grown from a small advisory practice to t
 Prior to joining UCS, Tigist worked at a Big Four firm and held corporate strategy roles at leading Ethiopian corporations. She holds an MBA from the Ethiopian Civil Service University and is a certified project management professional.
 
 Tigist is passionate about developing the next generation of Ethiopian business leaders and actively mentors young professionals within and outside the firm.`,
+    yearsOfExperience: 18,
+    email: "tigist@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Organizational Development",
+      "Strategy Implementation",
+      "Banking & Financial Services",
+      "Process Optimization",
+      "Talent Management",
+    ],
+    achievements: [
+      "Led strategic engagements with Ethiopia's top 5 banks",
+      "Managed organizational transformation for 50+ companies",
+      "Developed leadership programs for 2,000+ professionals",
+      "Mentors 15+ junior consultants at UCS",
+      "Published research on organizational change in East Africa",
+    ],
+    certifications: [
+      "MBA - Ethiopian Civil Service University",
+      "PMP - Project Management Professional",
+    ],
   },
   {
     id: "3",
@@ -364,6 +414,27 @@ Tigist is passionate about developing the next generation of Ethiopian business 
 Yohannes specializes in executive development, leadership training, and skills-based learning programs. He holds a Master's degree in Human Resource Development and has obtained certifications from leading international training institutions.
 
 He is committed to making quality professional development accessible to Ethiopian businesses of all sizes and regularly contributes thought leadership on learning and development topics.`,
+    yearsOfExperience: 15,
+    email: "yohannes@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Executive Development",
+      "Leadership Training",
+      "Curriculum Design",
+      "Organizational Learning",
+      "Change Facilitation",
+    ],
+    achievements: [
+      "Trained over 5,000 professionals across Ethiopia",
+      "Designed 20+ customized training programs",
+      "Developed executive development curriculum for 5 banks",
+      "Speaker at 10+ international training conferences",
+      "Created digital learning platform for remote training",
+    ],
+    certifications: [
+      "Master's in Human Resource Development",
+      "International Training Certification - Dublin Institute",
+    ],
   },
   {
     id: "4",
@@ -375,6 +446,27 @@ He is committed to making quality professional development accessible to Ethiopi
 Sara brings 12 years of research experience and has authored numerous published studies on Ethiopian economic and business topics. She holds a Master's degree in Economics from Addis Ababa University and has completed advanced research methodology training internationally.
 
 She is committed to producing research that meets the highest standards of rigor while remaining practical and actionable for decision-makers.`,
+    yearsOfExperience: 12,
+    email: "sara@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Economic Research",
+      "Market Analysis",
+      "Feasibility Studies",
+      "Quantitative Research",
+      "Data Analytics",
+    ],
+    achievements: [
+      "Published 15+ research studies on Ethiopian economy",
+      "Completed feasibility studies for 25+ infrastructure projects",
+      "Established UCS Research Division from scratch",
+      "Collaborated with World Bank on economic studies",
+      "Cited expert in major business publications",
+    ],
+    certifications: [
+      "Master's in Economics - Addis Ababa University",
+      "Advanced Research Methodology - Stanford University",
+    ],
   },
   {
     id: "5",
@@ -386,6 +478,24 @@ She is committed to producing research that meets the highest standards of rigor
 With 10 years of consulting experience, Bereket brings deep knowledge of the Ethiopian financial sector and strong analytical capabilities. He holds an MBA with a concentration in finance and is a CFA charterholder.
 
 Bereket is known for his ability to translate complex financial concepts into practical recommendations that drive results for clients.`,
+    yearsOfExperience: 10,
+    email: "bereket@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Banking Strategy",
+      "Financial Operations",
+      "Risk Management",
+      "Digital Banking",
+      "Cost Optimization",
+    ],
+    achievements: [
+      "Led strategy engagements with 8 major Ethiopian banks",
+      "Implemented cost reduction initiatives saving $10M+",
+      "Designed digital banking platform for 2 banks",
+      "Managed operations improvement projects for 5 institutions",
+      "Recognized expert in Ethiopian banking sector",
+    ],
+    certifications: ["MBA in Finance", "CFA Charterholder", "CPA"],
   },
   {
     id: "6",
@@ -397,6 +507,27 @@ Bereket is known for his ability to translate complex financial concepts into pr
 Hiwot has 8 years of consulting experience and holds certifications in change management and organizational development. She completed her graduate studies at the Ethiopian Management Institute.
 
 She is passionate about helping organizations build change-ready cultures and regularly facilitates workshops on change leadership and resilience.`,
+    yearsOfExperience: 8,
+    email: "hiwot@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Change Management",
+      "Organizational Design",
+      "Stakeholder Engagement",
+      "Leadership Development",
+      "Culture Transformation",
+    ],
+    achievements: [
+      "Led change initiatives affecting 5,000+ employees",
+      "Facilitated 30+ organizational transformations",
+      "Developed change management frameworks for 10 organizations",
+      "Workshop facilitator on change leadership for 1,000+ professionals",
+      "Reduced transformation risk by average 40%",
+    ],
+    certifications: [
+      "Prosci Change Management Certification",
+      "Graduate Diploma - Ethiopian Management Institute",
+    ],
   },
   {
     id: "7",
@@ -408,6 +539,27 @@ She is passionate about helping organizations build change-ready cultures and re
 Daniel brings 7 years of experience in corporate communications and marketing. His team produces everything from annual reports and company profiles to training materials and promotional campaigns.
 
 He holds a degree in Marketing Management and has completed advanced training in corporate communications and brand strategy.`,
+    yearsOfExperience: 7,
+    email: "daniel@ucsethiopia.com",
+    linkedinUrl: "https://linkedin.com",
+    expertise: [
+      "Corporate Communications",
+      "Brand Strategy",
+      "Content Development",
+      "Marketing Communications",
+      "Stakeholder Engagement",
+    ],
+    achievements: [
+      "Produced 100+ corporate communications projects",
+      "Developed brand strategies for 15 organizations",
+      "Created annual reports for 20+ major companies",
+      "Led digital communications transformation for 3 banks",
+      "Recognized for award-winning communications campaigns",
+    ],
+    certifications: [
+      "Bachelor's in Marketing Management",
+      "Advanced Brand Strategy - International Institute",
+    ],
   },
 ];
 

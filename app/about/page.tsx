@@ -1,98 +1,135 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
-import { Modal } from "@/components/ui/modal";
+import { CoreValues } from "@/components/home/core-values";
+import { Statistics } from "@/components/statistics";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import {
-  teamMembers,
-  simulateApiDelay,
-  type TeamMember,
-} from "@/lib/mock-data";
+import { useTeamApi } from "@/hooks/use-team";
+import { type TeamMember } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 function TeamMemberCard({
   member,
-  onViewProfile,
   index,
   isVisible,
   isOwner,
 }: {
   member: TeamMember;
-  onViewProfile: (member: TeamMember) => void;
   index: number;
   isVisible: boolean;
   isOwner?: boolean;
 }) {
+  const memberSlug = member.name.toLowerCase().replace(/\s+/g, "-");
+
+  // CEO/Owner gets a special featured card layout
+  if (isOwner) {
+    return (
+      <Link href={`/team/${memberSlug}`}>
+        <div
+          className={cn(
+            "group relative bg-card border border-border rounded-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gold-500/30 cursor-pointer",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+          )}
+          style={{
+            transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
+          }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-5 lg:min-h-[400px]">
+            {/* Image - Takes 2 columns on lg */}
+            <div className="relative lg:col-span-2 aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style={{
+                  backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop')`,
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
+            </div>
+
+            {/* Content - Takes 3 columns on lg */}
+            <div className="lg:col-span-3 p-8 lg:p-10 flex flex-col justify-center">
+              <div className="inline-flex items-center gap-2 mb-4">
+                <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-gold-500/10 text-gold-600 rounded-full">
+                  Founder & CEO
+                </span>
+              </div>
+              <h3 className="font-serif text-2xl lg:text-3xl font-bold text-foreground mb-2 transition-colors group-hover:text-gold-600">
+                {member.name}
+              </h3>
+              <p className="text-gold-600 font-medium text-base mb-6">
+                {member.title}
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-4 lg:line-clamp-none lg:max-h-none">
+                {member.bio.split("\n\n")[0]}
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6 hidden lg:block line-clamp-2">
+                {member.bio.split("\n\n")[1]}
+              </p>
+              <div className="flex items-center gap-6">
+                <span className="inline-flex items-center text-sm font-semibold text-foreground transition-colors group-hover:text-gold-600">
+                  View Full Profile →
+                </span>
+                {member.yearsOfExperience && (
+                  <span className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-gold-600">
+                      {member.yearsOfExperience}+
+                    </span>{" "}
+                    years experience
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  // Regular team member card
   return (
-    <div
-      className={cn(
-        "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30",
-        isOwner && "lg:col-span-2 lg:flex lg:items-center",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
-      )}
-      style={{
-        transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
-      }}
-    >
-      {/* Image */}
+    <Link href={`/team/${memberSlug}`}>
       <div
         className={cn(
-          "relative overflow-hidden bg-muted",
-          isOwner
-            ? "aspect-square lg:aspect-auto lg:w-1/3 lg:h-full"
-            : "aspect-square",
+          "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30 cursor-pointer h-full",
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
         )}
+        style={{
+          transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
+        }}
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
-      </div>
+        {/* Image */}
+        <div className="relative aspect-square overflow-hidden bg-muted">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+            style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
+        </div>
 
-      {/* Content */}
-      <div className={cn("p-6", isOwner && "lg:flex-1 lg:p-8")}>
-        <h3
-          className={cn(
-            "font-serif font-semibold text-foreground mb-1",
-            isOwner ? "text-2xl" : "text-xl",
-          )}
-        >
-          {member.name}
-        </h3>
-        <p
-          className={cn(
-            "text-gold-600 font-medium mb-4",
-            isOwner ? "text-base" : "text-sm",
-          )}
-        >
-          {member.title}
-        </p>
-        {isOwner && (
-          <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3">
-            {member.bio.split("\n\n")[0]}
+        {/* Content */}
+        <div className="p-6">
+          <h3 className="font-serif font-semibold text-foreground mb-1 text-xl transition-colors group-hover:text-gold-600">
+            {member.name}
+          </h3>
+          <p className="text-gold-600 font-medium text-sm mb-4">
+            {member.title}
           </p>
-        )}
-        <button
-          onClick={() => onViewProfile(member)}
-          className="inline-flex items-center text-sm font-semibold text-foreground transition-colors hover:text-gold-600"
-        >
-          View Profile
-        </button>
+          <span className="inline-flex items-center text-sm font-semibold text-foreground transition-colors group-hover:text-gold-600">
+            View Profile →
+          </span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 export default function AboutPage() {
-  const [team, setTeam] = useState<TeamMember[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const { team, isLoading } = useTeamApi();
 
   const { ref: storyRef, isVisible: storyVisible } =
     useScrollAnimation<HTMLDivElement>();
@@ -101,15 +138,6 @@ export default function AboutPage() {
       rootMargin: "0px 0px -50px 0px",
     });
 
-  useEffect(() => {
-    async function fetchTeam() {
-      const data = await simulateApiDelay(teamMembers, 800);
-      setTeam(data);
-      setIsLoading(false);
-    }
-    fetchTeam();
-  }, []);
-
   const owner = team.find((m) => m.isOwner);
   const otherMembers = team.filter((m) => !m.isOwner);
 
@@ -117,10 +145,13 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main>
+        {/* Hero Section - Condensed with Taller Height */}
         <PageHero
           eyebrow="About Us"
           title="Our Story"
           description="For over 15 years, UCS Ethiopia has been a trusted partner for organizations seeking to transform and grow."
+          backgroundImage="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop"
+          condensed
         />
 
         {/* Our Story Section */}
@@ -254,8 +285,17 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Statistics Section - After Mission/Vision */}
+        <Statistics />
+
+        {/* Core Values - Reintegrated */}
+        <CoreValues />
+
         {/* Team Section */}
-        <section className="py-24 lg:py-32 bg-background">
+        <section
+          id="team"
+          className="py-24 lg:py-32 bg-background scroll-mt-20"
+        >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto mb-16">
@@ -290,25 +330,34 @@ export default function AboutPage() {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {/* Owner/CEO - Featured */}
+                <div className="space-y-16">
+                  {/* Owner/CEO - Featured with extra bottom margin */}
                   {owner && (
-                    <TeamMemberCard
-                      member={owner}
-                      onViewProfile={setSelectedMember}
-                      index={0}
-                      isVisible={teamVisible}
-                      isOwner
-                    />
+                    <div className="mb-8">
+                      <TeamMemberCard
+                        member={owner}
+                        index={0}
+                        isVisible={teamVisible}
+                        isOwner
+                      />
+                    </div>
                   )}
 
+                  {/* Divider between CEO and Team */}
+                  <div className="flex items-center gap-4 my-4">
+                    <div className="flex-1 h-px bg-border" />
+                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                      Leadership Team
+                    </p>
+                    <div className="flex-1 h-px bg-border" />
+                  </div>
+
                   {/* Other Team Members */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                     {otherMembers.map((member, index) => (
                       <TeamMemberCard
                         key={member.id}
                         member={member}
-                        onViewProfile={setSelectedMember}
                         index={index + 1}
                         isVisible={teamVisible}
                       />
@@ -321,39 +370,6 @@ export default function AboutPage() {
         </section>
       </main>
       <Footer />
-
-      {/* Team Member Modal */}
-      <Modal
-        isOpen={!!selectedMember}
-        onClose={() => setSelectedMember(null)}
-        title={selectedMember?.name}
-      >
-        {selectedMember && (
-          <div className="space-y-6">
-            {/* Image */}
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-muted -mx-6 -mt-2">
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1200&auto=format&fit=crop')`,
-                }}
-              />
-            </div>
-
-            {/* Meta */}
-            <div className="border-b border-border pb-4">
-              <p className="text-gold-600 font-semibold">
-                {selectedMember.title}
-              </p>
-            </div>
-
-            {/* Bio */}
-            <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-              {selectedMember.bio}
-            </div>
-          </div>
-        )}
-      </Modal>
     </>
   );
 }
