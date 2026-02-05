@@ -72,6 +72,7 @@ Each new ChatGPT conversation corresponds to **one phase**.
   - [x] Graph row (GDP, policy rate)
   - [x] Desktop-only sparklines
   - [x] “LIVE” indicator
+  - [ ] Symbols for commodities
   - [ ] x and y coordinate values for reference 
 - [x] News Carousel (firm news only)
   - [x] Card-based layout
@@ -97,6 +98,7 @@ This phase introduces realism and perceived depth.
 ### Tasks
 
 - [ ] Page hero (shorter than Home)
+- [ ] Team centric background image
 - [ ] “Our Story” narrative section
 - [ ] Team section
   - [ ] CEO highlighted (larger card or row)
@@ -123,6 +125,7 @@ This phase introduces realism and perceived depth.
 - [ ] Choose layout pattern (tabs, alternating rows, or sections)
 - [ ] Add service-specific bullet lists
 - [ ] End-of-page CTA banner (“Get in Touch”)
+- [ ] Hero Background image - PR-Client Based
 
 ---
 
@@ -156,25 +159,12 @@ This phase introduces realism and perceived depth.
   - [ ] Message
 - [ ] Client-side validation
 - [ ] Success / error toast feedback
+- [ ] Background iamge - Office Location Based
 - [ ] Office information panel
   - [ ] Address (Bole, Addis Ababa)
   - [ ] Phone
   - [ ] Email
   - [ ] Hours
-
----
-
-## Phase 8 – Mock Data to API Requests
-
-**Goal:** Use all API docs and fully integrate backend and frontend
-
-### Tasks
-
-- [ ] Econ dash API
-- [ ] Economic News API
-- [ ] Firm News API
-- [ ] team + team/member API
-
 
 ---
 
@@ -184,8 +174,12 @@ This phase introduces realism and perceived depth.
 
 ### Tasks
 
-- [ ] Decide on order of sections in the home page - include @jaft24 in this
+- [ ] Decide on order of sections in the home page - include @jaft24 in this - Reorder IN NEED
 - [ ] Scroll-triggered reveal animations
+- [ ] Better Motto or wtv it is
+- [ ] Stats Counter animated - et consultuncy web ins
+- [ ] Testimonials and Results 
+- [ ] Something Coherent with the services of the website and not just fancy display material
 - [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window
 - [ ] Motion tuning (durations, easing, stagger)
 - [ ] Spacing and alignment audit
@@ -195,3 +189,17 @@ This phase introduces realism and perceived depth.
 
 ---
 
+## Phase 9 – Mock Data to API Requests
+
+**Goal:** Use all API docs and fully integrate backend and frontend
+
+### Tasks
+
+- [ ] Econ dash API
+- [ ] Economic News API
+- [ ] Firm News API
+- [ ] team + team/member API
+- [ ] Scrape and Insert Data from Legacy
+
+
+---
