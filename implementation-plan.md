@@ -117,14 +117,14 @@ This phase introduces realism and perceived depth.
 
 ### Tasks
 
-- [ ] Implement four service pillars
-  - [ ] Training
-  - [ ] Advisory
-  - [ ] Research & Publication
-  - [ ] Communication & Promotion
-- [ ] Choose layout pattern (tabs, alternating rows, or sections)
-- [ ] Add service-specific bullet lists
-- [ ] End-of-page CTA banner (“Get in Touch”)
+- [x] Implement four service pillars
+  - [x] Training
+  - [x] Advisory
+  - [x] Research & Publication
+  - [x] Communication & Promotion
+- [x] Choose layout pattern (tabs, alternating rows, or sections)
+- [x] Add service-specific bullet lists
+- [x] End-of-page CTA banner (“Get in Touch”)
 - [ ] Hero Background image - PR-Client Based
 
 ---

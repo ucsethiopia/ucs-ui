@@ -62,13 +62,153 @@ export interface Partner {
   description?: string;
 }
 
+export interface TrainingCategory {
+  id: string;
+  name: string;
+  subtitle?: string;
+  courses: string[];
+}
+
 export interface ServicePillar {
   id: string;
   title: string;
   description: string;
   offerings: string[];
+  trainingCategories?: TrainingCategory[];
   image: string;
 }
+
+// Training categories with detailed courses
+export const trainingCategories: TrainingCategory[] = [
+  {
+    id: "executive",
+    name: "Executive Development",
+    courses: [
+      "Driving Strategic Innovation",
+      "Organizational Change and Transformation Management",
+      "Corporate Governance and Leadership",
+      "Digital Transformation Management",
+      "Leading with Impact: Transformational Leadership",
+      "Leading Customer Centric Strategies",
+      "Strategic Partnership Management",
+      "Risk and Compliance Management",
+      "Capital Markets and Opportunities",
+    ],
+  },
+  {
+    id: "management",
+    name: "Management Development",
+    courses: [
+      "Capital/Financial Markets",
+      "Risk Based Internal Audit",
+      "Humanistic Leadership",
+      "Strategic Thinking and Strategy Execution",
+      "Leading in the Digital Age: Leadership Skills for the Digital Age",
+      "Business Analytics for Leaders: Data Driven Decision Making",
+      "Becoming a Transformational Leader/Transformational Leadership",
+      "Leading with Emotional Intelligence",
+      "Problem Solving and Decision Making",
+      "Digital Business Leadership",
+      "Change and Knowledge Management",
+      "Enterprise Risk Management",
+      "Talent Management & Retention Strategies",
+      "Leading High Performance Teams",
+      "Customer Experience Management",
+      "Organizational Leadership: Driving Culture and Performance",
+      "Attitudinal Transformation and Ethical Leadership",
+      "Organizational Skills and Stress Management",
+      "Team Building and Coaching",
+    ],
+  },
+  {
+    id: "professional",
+    name: "Professional Development",
+    courses: [
+      "Design Thinking and Business Innovation",
+      "Marketing Skills (Product & Service Marketing)",
+      "Project Management Professional - PMP",
+      "Customer R/P Management (CEM)",
+      "Emotional Intelligence: Inner Leadership",
+      "Digital Marketing Skills",
+      "Leadership Skills Development",
+      "Attitudinal Transformation and Workplace Ethics",
+      "Team Skills: Communicating Effectively in Groups",
+      "Customer Service Excellence/Customer Centric Culture",
+    ],
+  },
+  {
+    id: "it",
+    name: "Information Technology (IT)",
+    courses: [
+      "Artificial Intelligence (AI) for Business",
+      "ITIL (Foundation and Intermediate)",
+      "Cloud Security – Certified Cloud Security Professional (CCSP)",
+      "Certified Information Systems Security Professional (CISSP)",
+      "Governance of Enterprise IT (CGEIT)",
+      "Cyber Security for the Financial Industry: Managing Risk in the Information Age",
+      "Certified Information System Auditor (CISA)",
+      "COBIT 2019 Framework: Introduction and Methodology (IT Governance)",
+      "Certified Risk and Information System Control (CRISC)",
+      "Red Hat System Administration (I, II, and III)",
+      "CCNA and CCNP",
+      "Checkpoint Certified Administrator",
+      "Big Data and Edge Computing",
+      "Business Agility, Digital Transformation and IT Strategy",
+      "Design Thinking and Business Innovation",
+      "IT Service Management",
+      "Risk and Business Continuity Planning",
+      "Others: Server, Storage, VMware, Microsoft, Oracle",
+    ],
+  },
+  {
+    id: "finance",
+    name: "Finance",
+    courses: [
+      "Financial Modeling",
+      "Capital/Financial Markets and Forex Trading",
+      "Finance for Non-Finance Managers",
+      "Accounting & Financial Analysis",
+      "Enterprise Risk and Compliance Management",
+      "Operational Risk in Time of Crisis",
+      "Project Planning and Controlling",
+      "Risk Based Auditing",
+      "Internal Audits (Risk Based)",
+    ],
+  },
+  {
+    id: "hr",
+    name: "Human Resources (HR)",
+    courses: [
+      "Communication, Emotional Intelligence & Leadership Skills",
+      "Artificial Intelligence and Machine Learning - Data, the New Currency",
+      "Navigating Uncertainty and Equipping Workers with Skills and Tools",
+      "Beyond Balance Sheet - HR Evaluation and Accounting",
+    ],
+  },
+  {
+    id: "marketing",
+    name: "Marketing & Public Relations",
+    courses: [
+      "Business Communication, Ethics and Analysis",
+      "Business Communication with Data",
+      "Critical Thinking and Innovative Skills for Competitive Advantage",
+      "Public Leadership and Management",
+      "Achieving Excellence in Customer Service",
+      "Marketing and Business Growth Strategies",
+      "Digital Marketing Strategy",
+      "Public Relation Management",
+    ],
+  },
+  {
+    id: "other",
+    name: "Other Programs",
+    courses: [
+      "Interest Free Banking (IFB) Training",
+      "Takaful Training",
+      "Executive Personal Assistant",
+    ],
+  },
+];
 
 // Exchange rates mock data
 export const exchangeRates: ExchangeRate[] = [
@@ -707,6 +847,7 @@ export const servicePillars: ServicePillar[] = [
       "Human Resources Training",
       "Marketing & Communications Training",
     ],
+    trainingCategories: trainingCategories,
     image: "/images/services/training.jpg",
   },
   {
