@@ -22,11 +22,11 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [x] **6.6** Use the UI-review skill to make sure the news page is working displaying, polished and refined
 
 ### Phase 7 — Contact Page
-- [ ] **7.1** Add React Hook Form + Zod validation to contact form
-- [ ] **7.2** Integrate `POST /contact` endpoint (or mock) with success/error toast via `sonner`
-- [ ] **7.3** Build office information panel (address, phone, email, hours)
-- [ ] **7.4** Decision: remove static map image OR embed interactive Google Maps
-- [ ] **7.5** Use the UI-review skill to make sure the contact page is working displaying, polished and refined
+- [x] **7.1** Add React Hook Form + Zod validation to contact form
+- [x] **7.2** Integrate `POST /contact` endpoint (or mock) with success/error toast via `sonner`
+- [x] **7.3** Build office information panel (address, phone, email, hours)
+- [x] **7.4** Decision: remove static map image OR embed interactive Google Maps
+- [x] **7.5** Use the UI-review skill to make sure the contact page is working displaying, polished and refined
 - [ ] **7.6** Commit changed made and note that phase 7 is complete, push code to current branch  
 
 ### Phase 8 — Polish & Refinement
@@ -71,7 +71,7 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 
 ## Current Task
 
->> **Phase 7.1** — Add React Hook Form + Zod validation to contact form at `app/contact/page.tsx`
+>> **Phase 7.6** — Commit and push Phase 7 complete
 
 ---
 
