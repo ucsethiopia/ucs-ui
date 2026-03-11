@@ -150,18 +150,11 @@ This phase introduces realism and perceived depth.
 
 ### Tasks
 
-- [ ] Contact form
-  - [ ] Name
-  - [ ] Email
-  - [ ] Phone
-  - [ ] Company
-  - [ ] Service of interest
-  - [ ] Message
 - [ ] Client-side validation
 - [ ] Success / error toast feedback
-- [ ] Background iamge - Office Location Based
+- [ ] Background iamge - Office Location Based - opt
 - [ ] Office information panel
-  - [ ] Address (Bole, Addis Ababa)
+  - [ ] Address (city-name, Addis Ababa)
   - [ ] Phone
   - [ ] Email
   - [ ] Hours
@@ -202,5 +195,20 @@ This phase introduces realism and perceived depth.
 - [ ] team + team/member API
 - [ ] Scrape and Insert Data from Legacy
 
+## Phase 10 - Issues to fix
 
 ---
+
+**Goal:** Fix UX/UI issues and introduce some components from 21st.dev. 
+
+- [ ] market-data display
+- [ ] implement native theme 404 page
+- [ ] constraint on content layout—max-width—horizontally centered
+- [ ] Scale the font of the navbar proportionally to the home page
+- [ ] Use actual logos for marquee and global partners; maybe use ai to create a version of the logo with theme and color scheme suited to our website
+- [ ] Better animation for the Training pillar under our services page
+- [ ] Remove the market new section
+- [ ] implement skeleton loaders
+- [ ] Either remove useless map image in contact section, or implement an interactive Google Maps section with actual address and link
+
+--- 

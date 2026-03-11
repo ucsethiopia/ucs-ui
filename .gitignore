@@ -41,3 +41,9 @@ integration-reference.md
 *.njsproj
 *.sln
 *.sw?
+
+
+# Other
+
+screenshots
+assets/images/inspo
