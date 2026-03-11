@@ -1,11 +1,14 @@
 "use client";
 
 import React from "react";
+import { useTheme } from "next-themes";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
 import { ContactForm } from "@/components/contact/contact-form";
+import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
 
 function ContactInfo({
   icon: Icon,
@@ -32,18 +35,21 @@ function ContactInfo({
 }
 
 export default function ContactPage() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content">
         <PageHero
           eyebrow="Get in Touch"
           title="Contact Us"
           description="Ready to transform your organization? Let's start a conversation."
         />
 
-        <section className="py-16 lg:py-24 bg-background">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="py-10 sm:py-16 lg:py-20 bg-background">
+          <Container>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
 
               {/* Contact Form */}
@@ -113,18 +119,21 @@ export default function ContactPage() {
                 {/* OpenStreetMap embed — Bole, Addis Ababa */}
                 <div className="aspect-video rounded-lg overflow-hidden border border-border">
                   <iframe
-                    title="UCS Ethiopia office location"
+                    title="Map of UCS Ethiopia office in Bole, Addis Ababa"
                     src="https://www.openstreetmap.org/export/embed.html?bbox=38.740%2C8.995%2C38.780%2C9.025&layer=mapnik&marker=9.009%2C38.758"
                     width="100%"
                     height="100%"
-                    className="w-full h-full"
+                    className={cn(
+                      "w-full h-full transition-[filter] duration-300",
+                      isDark && "invert hue-rotate-180 brightness-90 saturate-[0.85]",
+                    )}
                     loading="lazy"
                   />
                 </div>
               </div>
 
             </div>
-          </div>
+          </Container>
         </section>
       </main>
       <Footer />

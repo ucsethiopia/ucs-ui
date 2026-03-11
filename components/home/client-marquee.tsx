@@ -1,6 +1,7 @@
 "use client";
 
 import { clientLogos, strategicPartners } from "@/lib/mock-data";
+import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { useEffect, useRef } from "react";
 
@@ -108,10 +109,10 @@ export function ClientMarquee() {
   }, []);
 
   return (
-    <section className="py-20 lg:py-24 bg-secondary/30 overflow-hidden border-y border-border/50">
+    <section className="py-10 sm:py-16 lg:py-20 bg-secondary/30 overflow-hidden border-y border-border/50">
       {/* Clients Section */}
       <div className="mb-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-10">
+        <Container className="mb-10">
           <ScrollReveal>
             <div className="text-center">
               <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -126,7 +127,7 @@ export function ClientMarquee() {
               </p>
             </div>
           </ScrollReveal>
-        </div>
+        </Container>
 
         {/* Marquee Container */}
         <div className="relative">
@@ -138,6 +139,7 @@ export function ClientMarquee() {
           <div
             ref={scrollRef}
             className="flex overflow-x-hidden"
+            aria-hidden="true"
             style={{
               scrollBehavior: "auto",
               whiteSpace: "nowrap",
@@ -154,7 +156,7 @@ export function ClientMarquee() {
 
       {/* Partners Section - Static Grid */}
       <div>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="text-center mb-10">
             <p className="text-gold-600 text-sm font-semibold uppercase tracking-widest mb-2">
               Strategic Partnerships
@@ -179,7 +181,7 @@ export function ClientMarquee() {
               />
             ))}
           </div>
-        </div>
+        </Container>
       </div>
     </section>
   );

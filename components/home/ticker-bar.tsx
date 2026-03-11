@@ -57,7 +57,11 @@ export function TickerBar() {
   const { data, loading } = useEconomicDashboard();
 
   return (
-    <div className="fixed top-20 z-40 h-14 w-full bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden">
+    <div
+      className="fixed top-20 z-40 h-14 w-full bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
+      aria-label="Live financial data ticker"
+      aria-live="polite"
+    >
       {loading ? (
         <div className="flex items-center h-full px-4">
           <Skeleton className="h-4 w-full bg-white/20" />

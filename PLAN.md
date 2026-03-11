@@ -27,21 +27,21 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [x] **7.3** Build office information panel (address, phone, email, hours)
 - [x] **7.4** Decision: remove static map image OR embed interactive Google Maps
 - [x] **7.5** Use the UI-review skill to make sure the contact page is working displaying, polished and refined
-- [ ] **7.6** Commit changed made and note that phase 7 is complete, push code to current branch  
+- [x] **7.6** Commit changed made and note that phase 7 is complete, push code to current branch  
 
 ### Phase 8 — Polish & Refinement
-- [ ] **8.1** Apply global max-width constraint (~1440px, horizontally centered) — Infisical-style (`max-w-7xl` applied to EconomicDashboard and MarketAnalytics)
+- [x] **8.1** Apply global max-width constraint (~1440px, horizontally centered) — Infisical-style (`max-w-7xl` applied to EconomicDashboard and MarketAnalytics)
 - [x] **8.2** Align mock data shapes with API doc format — `interestRate.policyRate/tbillYield`, `gdp.value/year`, `esx.aggregate`, added GBP/AUD FX rates
-- [ ] **8.3** Scale navbar font proportionally to page content
-- [ ] **8.4** Remove `EconomicNews` component from home page and route
-- [ ] **8.5** Implement scroll-triggered reveal animations across all sections (Framer Motion `useInView`)
-- [ ] **8.6** Animated count-up for stats (About page)
-- [ ] **8.7** Spacing and alignment audit — reduce excessive vertical whitespace
-- [ ] **8.8** Mobile UX pass (touch targets, responsive breakpoints)
-- [ ] **8.9** Accessibility pass (contrast ratios, focus states, aria labels)
-- [ ] **8.10** Reorder home page sections (coordinate with @jaft24)
-- [ ] **8.11** Use the UI-review skill to make sure the website is working displaying, polished and refined
-- [ ] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch  
+- [x] **8.3** Scale navbar font proportionally to page content
+- [x] **8.4** Remove `EconomicNews` component from home page and route
+- [x] **8.5** Implement scroll-triggered reveal animations across all sections (Framer Motion `useInView`)
+- [x] **8.6** Animated count-up for stats (About page)
+- [x] **8.7** Spacing and alignment audit — reduce excessive vertical whitespace
+- [x] **8.8** Mobile UX pass (touch targets, responsive breakpoints)
+- [x] **8.9** Accessibility pass (contrast ratios, focus states, aria labels)
+- [ ] **8.10** Reorder home page sections (coordinate with @jaft24) — BLOCKED, skipped
+- [x] **8.11** Use the UI-review skill to make sure the website is working displaying, polished and refined
+- [ ] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch
 
 ### Phase 9 — Mock Data → Live API Integration
 - [ ] **9.1** Replace `useEconomicDashboard` mock with `GET /fx/latest`, `/commodities/latest`, `/interest`, `/gdp`, `/esx/latest`
@@ -71,7 +71,7 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 
 ## Current Task
 
->> **Phase 7.6** — Commit and push Phase 7 complete
+>> **Phase 8.12** — Commit and push Phase 8
 
 ---
 

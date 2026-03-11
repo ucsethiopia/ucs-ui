@@ -13,6 +13,7 @@ import {
 import { servicePillars } from "@/lib/mock-data";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Training: GraduationCap,
@@ -28,12 +29,12 @@ export function ServicesOverview() {
   });
 
   return (
-    <section className="py-24 lg:py-32 bg-secondary/30 relative overflow-hidden">
+    <section className="py-12 sm:py-20 lg:py-28 bg-secondary/30 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <Container className="relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -134,7 +135,7 @@ export function ServicesOverview() {
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
