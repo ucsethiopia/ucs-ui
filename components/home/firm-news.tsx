@@ -130,7 +130,7 @@ export const FirmNews = () => {
                           {news.category}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {news.date}
+                          {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                         </span>
                       </div>
 

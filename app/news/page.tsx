@@ -36,7 +36,7 @@ function NewsCard({
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
-        transitionDelay: isVisible ? `${(index % 9) * 75}ms` : "0ms",
+        transitionDelay: isVisible ? `${Math.min(index, 8) * 75}ms` : "0ms",
       }}
       onClick={() => onReadMore(item)}
     >
@@ -129,7 +129,7 @@ export default function NewsPage() {
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-sm transition-all",
+                    "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
                     selectedCategory === category
                       ? "bg-navy-900 text-white"
                       : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",

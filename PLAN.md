@@ -19,12 +19,15 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [x] **6.3** Implement initial load (top N items) with "Load More" pagination
 - [x] **6.4** Wire up `NewsModal` for article reading (no page navigation)
 - [x] **6.5** Mock API pagination behavior via `useNews` hook
+- [x] **6.6** Use the UI-review skill to make sure the news page is working displaying, polished and refined
 
 ### Phase 7 — Contact Page
 - [ ] **7.1** Add React Hook Form + Zod validation to contact form
 - [ ] **7.2** Integrate `POST /contact` endpoint (or mock) with success/error toast via `sonner`
 - [ ] **7.3** Build office information panel (address, phone, email, hours)
 - [ ] **7.4** Decision: remove static map image OR embed interactive Google Maps
+- [ ] **7.5** Use the UI-review skill to make sure the contact page is working displaying, polished and refined
+- [ ] **7.6** Commit changed made and note that phase 7 is complete, push code to current branch  
 
 ### Phase 8 — Polish & Refinement
 - [ ] **8.1** Apply global max-width constraint (~1440px, horizontally centered) — Infisical-style (`max-w-7xl` applied to EconomicDashboard and MarketAnalytics)
@@ -37,12 +40,16 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [ ] **8.8** Mobile UX pass (touch targets, responsive breakpoints)
 - [ ] **8.9** Accessibility pass (contrast ratios, focus states, aria labels)
 - [ ] **8.10** Reorder home page sections (coordinate with @jaft24)
+- [ ] **8.11** Use the UI-review skill to make sure the website is working displaying, polished and refined
+- [ ] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch  
 
 ### Phase 9 — Mock Data → Live API Integration
 - [ ] **9.1** Replace `useEconomicDashboard` mock with `GET /fx/latest`, `/commodities/latest`, `/interest`, `/gdp`, `/esx/latest`
 - [ ] **9.2** Replace `useNews` mock with `GET /news/latest` and `GET /news` (paginated)
 - [ ] **9.3** Replace `useTeam` mock with `GET /team` and `GET /team/{name}`
 - [ ] **9.4** Wire contact form to `POST /contact` (Mailgun email notification)
+- [ ] **9.5** Use the UI-review skill to make sure the website is working displaying, polished and refined
+- [ ] **9.6** Commit changed made and note that phase 9 is complete, push code to current branch  
 
 ### Phase 10 — UX/UI Fixes
 - [x] **10.1** Restructure financial data layout:
@@ -57,6 +64,8 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [ ] **10.6** Add commodity symbols to economic dashboard display
 - [ ] **10.7** Add x/y axis reference values to dashboard charts
 - [ ] **10.9** Implement a creative and artistic way to display the team-member information in the about us section under team when "learn more" is clicked. Make sure data is matched from api docs
+- [ ] **10.10** Make sure the entire website is responsive and works on all devices, use the UI iterate skill to check and fix any issues
+- [ ] **10.11** Commit changed made and note that phase 10 is complete, push code to current branch  
 
 ---
 
