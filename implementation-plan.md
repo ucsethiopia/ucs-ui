@@ -178,7 +178,7 @@ This phase introduces realism and perceived depth.
 - [ ] Scroll-triggered reveal animations
 - [ ] Better Motto or wtv it is
 - [ ] Imporve overall padding of website - too much empty space
-- [ ] Stats Counter animated - et consultuncy web ins
+- [ ] Stats Counter animated - et consultuncy web ins - @jaft24
 - [ ] Testimonials and Results 
 - [ ] Something Coherent with the services of the website and not just fancy display material
 - [ ] Consider Setting a max width of about 1440 px and a slightly less marquee window (inpso: infisical.com)
