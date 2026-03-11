@@ -29,9 +29,10 @@ export function Hero() {
       {/* Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y }}>
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-no-repeat"
           style={{
             backgroundImage: `url('/hero-background.jpg')`,
+            backgroundPosition: "center 30%",
           }}
         />
         {/* Overlay */}

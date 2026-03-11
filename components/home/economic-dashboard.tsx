@@ -3,47 +3,41 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
-import { MiniLineChart, Skeleton } from "@/components/ui/charts";
+import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
-// Country flags
-const FLAGS = {
-  usd: "🇺🇸",
-  eur: "🇪🇺",
-  jpy: "🇯🇵",
-};
-
-// Compact rate item (Bloomberg-style)
-function RateItem({
-  flag,
-  label,
-  value,
-  change,
-  trend,
-}: {
-  flag?: string;
+interface StatCardProps {
   label: string;
   value: string;
-  change: number;
-  trend: "up" | "down" | "unchanged";
-}) {
+  badge: string;
+  badgeVariant?: "neutral" | "up" | "down";
+  loading: boolean;
+}
+
+function StatCard({ label, value, badge, badgeVariant = "neutral", loading }: StatCardProps) {
+  if (loading) {
+    return (
+      <div className="bg-card border border-border rounded-lg p-5">
+        <Skeleton className="h-3 w-28 mb-3" />
+        <Skeleton className="h-9 w-36 mb-3" />
+        <Skeleton className="h-5 w-16 rounded-full" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center gap-2 px-3 py-1.5 hover:bg-muted/50 transition-colors whitespace-nowrap flex-1">
-      {flag && <span className="text-lg">{flag}</span>}
-      <span className="text-xs text-muted-foreground font-medium min-w-[50px]">
-        {label}
-      </span>
-      <span className="text-sm font-semibold text-foreground">{value}</span>
+    <div className="bg-card border border-border rounded-lg p-5">
+      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-3xl font-bold text-foreground tabular-nums mt-1">{value}</p>
       <span
         className={cn(
-          "text-[10px] font-medium ml-2",
-          trend === "up" && "text-emerald-500",
-          trend === "down" && "text-red-500",
-          trend === "unchanged" && "text-muted-foreground",
+          "inline-block mt-2 px-2 py-0.5 text-xs font-medium rounded-full",
+          badgeVariant === "neutral" && "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+          badgeVariant === "up" && "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
+          badgeVariant === "down" && "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
         )}
       >
-        {change >= 0 ? "+" : ""}
-        {change.toFixed(2)}%
+        {badge}
       </span>
     </div>
   );
@@ -55,11 +49,10 @@ export function EconomicDashboard() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-6 lg:py-10 border-b bg-muted/30">
-      <div className="w-full px-4 md:px-6 max-w-[90vw] mx-auto">
-        {/* Header */}
+    <section ref={ref} className="py-10 bg-background border-b border-border">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="flex items-center justify-between mb-4"
+          className="flex items-center justify-between mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -71,196 +64,76 @@ export function EconomicDashboard() {
             <p className="text-[10px] text-muted-foreground mt-0.5">
               {loading
                 ? "Loading..."
-                : `Updated: ${new Date(
-                    data?.lastUpdated || "",
-                  ).toLocaleTimeString()}`}
+                : `Updated: ${new Date(data?.lastUpdated || "").toLocaleTimeString()}`}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs">
+          <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-muted-foreground font-medium text-[10px] hidden sm:inline">
-              LIVE
-            </span>
+            <span className="text-muted-foreground font-medium text-[10px] hidden sm:inline">LIVE</span>
           </div>
         </motion.div>
 
-        <div className="space-y-5">
-          {/* ROW 1: Compact Rates Strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-card border rounded-lg overflow-hidden"
-          >
-            {loading ? (
-              <div className="space-y-1 p-2">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-7 w-full" />
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center py-0.5 overflow-x-auto scrollbar-hide">
-                {/* FX Rates */}
-                {Object.entries(data?.fxRates || {}).map(
-                  ([code, fx], index) => (
-                    <>
-                      <RateItem
-                        key={code}
-                        flag={FLAGS[code as keyof typeof FLAGS]}
-                        label={code.toUpperCase()}
-                        value={fx.rate.toFixed(2)}
-                        change={fx.change}
-                        trend={fx.trend}
-                      />
-                      {index < Object.keys(data?.fxRates || {}).length - 1 && (
-                        <div className="w-px bg-border h-4" />
-                      )}
-                    </>
-                  ),
-                )}
-                {/* Thicker & Taller Divider between FX and Commodities */}
-                <div className="w-0.5 bg-border h-6 mx-1" />
-                {/* Commodities */}
-                {Object.values(data?.commodities || {}).map(
-                  (commodity, index) => (
-                    <>
-                      <RateItem
-                        key={commodity.symbol}
-                        label={commodity.name}
-                        value={commodity.price.toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}
-                        change={commodity.change}
-                        trend={commodity.trend}
-                      />
-                      {index <
-                        Object.values(data?.commodities || {}).length - 1 && (
-                        <div className="w-px bg-border h-4" />
-                      )}
-                    </>
-                  ),
-                )}
-              </div>
-            )}
-          </motion.div>
+        {/* NBE Rates */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+            NBE Rates
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <StatCard
+              label="Policy Rate"
+              value={loading ? "—" : `${data?.interestRate.policyRate.toFixed(2)}%`}
+              badge="Unchanged"
+              badgeVariant="neutral"
+              loading={loading}
+            />
+            <StatCard
+              label="T-Bill Yield"
+              value={loading ? "—" : `${data?.interestRate.tbillYield.toFixed(3)}%`}
+              badge="▲ 0.1%"
+              badgeVariant="up"
+              loading={loading}
+            />
+            <StatCard
+              label="ESX Aggregate"
+              value={loading ? "—" : `${data?.esx.aggregate.toFixed(1)}`}
+              badge={loading ? "—" : `▲ ${data?.esx.changePercent.toFixed(1)}%`}
+              badgeVariant="up"
+              loading={loading}
+            />
+          </div>
+        </motion.div>
 
-          {/* ROW 2: Full-Width Charts */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex gap-4 overflow-x-auto scrollbar-hide"
-          >
-            {/* Interest Rate Chart */}
-            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
-              {loading ? (
-                <>
-                  <Skeleton className="h-4 w-28 mb-3" />
-                  <Skeleton className="h-40 w-full" />
-                </>
-              ) : (
-                <>
-                  <div className="mb-4">
-                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
-                      NBE Interest Rate
-                    </h3>
-                    <div className="text-3xl font-bold text-foreground">
-                      {data?.interestRate.current}%
-                    </div>
-                  </div>
-                  <MiniLineChart
-                    data={data?.interestRate.history || []}
-                    height={140}
-                    color="var(--color-navy-600)"
-                  />
-                </>
-              )}
-            </div>
-
-            {/* GDP Chart */}
-            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
-              {loading ? (
-                <>
-                  <Skeleton className="h-4 w-28 mb-3" />
-                  <Skeleton className="h-40 w-full" />
-                </>
-              ) : (
-                <>
-                  <div className="mb-4">
-                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
-                      Ethiopia GDP
-                    </h3>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-foreground">
-                        ${data?.gdp.current}B
-                      </span>
-                      <span className="text-sm font-medium text-emerald-500">
-                        +{data?.gdp.growth}%
-                      </span>
-                    </div>
-                  </div>
-                  <MiniLineChart
-                    data={data?.gdp.history || []}
-                    height={140}
-                    color="var(--color-gold-500)"
-                  />
-                </>
-              )}
-            </div>
-
-            {/* ESX Chart */}
-            <div className="bg-card border rounded-lg p-5 min-w-[280px] flex-1">
-              {loading ? (
-                <>
-                  <Skeleton className="h-4 w-28 mb-3" />
-                  <Skeleton className="h-40 w-full" />
-                </>
-              ) : (
-                <>
-                  <div className="mb-4">
-                    <h3 className="text-xs font-medium text-muted-foreground mb-1">
-                      ESX Aggregate
-                    </h3>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-foreground">
-                        {data?.esx.current.toFixed(2)}
-                      </span>
-                      <span
-                        className={cn(
-                          "text-sm font-medium",
-                          data?.esx.changePercent && data.esx.changePercent > 0
-                            ? "text-emerald-500"
-                            : "text-red-500",
-                        )}
-                      >
-                        {data?.esx.changePercent && data.esx.changePercent > 0
-                          ? "+"
-                          : ""}
-                        {data?.esx.changePercent.toFixed(2)}%
-                      </span>
-                    </div>
-                  </div>
-                  <MiniLineChart
-                    data={data?.esx.history || []}
-                    height={140}
-                    color="var(--color-navy-700)"
-                  />
-                </>
-              )}
-            </div>
-          </motion.div>
-        </div>
+        {/* Economic Indicators */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+            Economic Indicators
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <StatCard
+              label="Ethiopia GDP"
+              value={loading ? "—" : `$${data?.gdp.value}B`}
+              badge={loading ? "—" : data?.gdp.year ?? ""}
+              badgeVariant="neutral"
+              loading={loading}
+            />
+            <StatCard
+              label="ESX Companies"
+              value="2"
+              badge="Active"
+              badgeVariant="neutral"
+              loading={loading}
+            />
+          </div>
+        </motion.div>
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </section>
   );
 }
