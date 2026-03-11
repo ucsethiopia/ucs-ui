@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, TrendingUp } from "lucide-react";
 import { NewsItem } from "@/hooks/use-news";
@@ -13,7 +14,24 @@ interface NewsModalProps {
 }
 
 export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!news) return null;
+
+  const formattedDate = new Date(news.date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   const isEconomicNews = !!news.trend;
 
@@ -32,6 +50,9 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
           {/* Modal */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
             className="fixed inset-x-4 top-[5%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-3xl max-h-[85vh] bg-card rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col"
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -78,7 +99,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
-                    <span>{news.date}</span>
+                    <span>{formattedDate}</span>
                   </div>
 
                   {news.author && (
@@ -97,7 +118,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
+                <h2 id={titleId} className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-4">
                   {news.title}
                 </h2>
 

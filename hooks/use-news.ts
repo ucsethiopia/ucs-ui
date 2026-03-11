@@ -164,7 +164,7 @@ export const useNews = (initialLimit = 9) => {
   const loadMore = async () => {
     setIsLoadingMore(true);
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
-    setDisplayedCount(allNewsData.length);
+    setDisplayedCount((prev) => Math.min(prev + initialLimit, allNewsData.length));
     setIsLoadingMore(false);
   };
 
