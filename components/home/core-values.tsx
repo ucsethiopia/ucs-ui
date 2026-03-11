@@ -6,6 +6,7 @@ import { Shield, Star, Users, Lightbulb, Target } from "lucide-react";
 import { coreValues } from "@/lib/mock-data";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Integrity: Shield,
@@ -22,8 +23,8 @@ export function CoreValues() {
   });
 
   return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-20 lg:py-28 bg-background">
+      <Container>
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -79,7 +80,7 @@ export function CoreValues() {
             );
           })}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -66,7 +66,7 @@ export function Statistics() {
   });
 
   return (
-    <section className="py-24 lg:py-32 bg-secondary/50">
+    <section className="py-12 sm:py-20 lg:py-28 bg-secondary/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">

@@ -9,6 +9,7 @@ import { NewsModal } from "@/components/home/news-modal";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
 
 const INITIAL_ITEMS = 9;
 
@@ -39,6 +40,13 @@ function NewsCard({
         transitionDelay: isVisible ? `${Math.min(index, 8) * 75}ms` : "0ms",
       }}
       onClick={() => onReadMore(item)}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onReadMore(item);
+        }
+      }}
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
@@ -95,7 +103,7 @@ export default function NewsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({
+  const { ref, isVisible } = useScrollAnimation<HTMLElement>({
     threshold: 0.05,
     rootMargin: "0px 0px -50px 0px",
   });
@@ -113,7 +121,7 @@ export default function NewsPage() {
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content">
         <PageHero
           eyebrow="Stay Informed"
           title="News & Insights"
@@ -122,7 +130,7 @@ export default function NewsPage() {
 
         {/* Filter Section */}
         <section className="py-8 bg-background border-b border-border sticky top-20 z-30">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Container>
             <div className="flex flex-wrap gap-2">
               {newsCategories.map((category) => (
                 <button
@@ -139,12 +147,12 @@ export default function NewsPage() {
                 </button>
               ))}
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* News Grid */}
-        <section className="py-16 lg:py-24 bg-background">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section ref={ref} className="py-10 sm:py-16 lg:py-20 bg-background" role="region" aria-label="News articles">
+          <Container>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: INITIAL_ITEMS }).map((_, i) => (
@@ -177,7 +185,6 @@ export default function NewsPage() {
             ) : (
               <>
                 <div
-                  ref={ref}
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
                   {filteredNews.map((item, index) => (
@@ -215,7 +222,7 @@ export default function NewsPage() {
                 )}
               </>
             )}
-          </div>
+          </Container>
         </section>
       </main>
       <Footer />

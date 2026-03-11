@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Container } from "@/components/shared/container";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -51,13 +52,13 @@ export function Navbar() {
         navBgClass,
       )}
     >
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <Container as="nav">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <div
               className={cn(
-                "font-serif text-2xl font-bold tracking-tight transition-colors",
+                "font-serif text-xl sm:text-2xl font-bold tracking-tight transition-colors",
                 textClass,
               )}
             >
@@ -73,7 +74,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-sm font-medium tracking-wide transition-colors hover:text-gold-500",
+                  "text-sm font-medium tracking-wide transition-colors hover:text-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm",
                   textClass,
                   pathname === link.href && "text-gold-500",
                 )}
@@ -93,7 +94,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={cn("md:hidden p-2 transition-colors", textClass)}
+            className={cn("md:hidden p-3 transition-colors", textClass)}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -134,7 +135,7 @@ export function Navbar() {
             </div>
           </div>
         )}
-      </nav>
+      </Container>
     </header>
   );
 }

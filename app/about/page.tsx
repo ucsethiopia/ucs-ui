@@ -10,6 +10,8 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTeamApi } from "@/hooks/use-team";
 import { type TeamMember } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 function TeamMemberCard({
   member,
@@ -144,7 +146,7 @@ export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content">
         {/* Hero Section - Condensed with Taller Height */}
         <PageHero
           eyebrow="About Us"
@@ -155,8 +157,8 @@ export default function AboutPage() {
         />
 
         {/* Our Story Section */}
-        <section className="py-24 lg:py-32 bg-background">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 lg:py-28 bg-background">
+          <Container>
             <div
               ref={storyRef}
               className={cn(
@@ -213,12 +215,13 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-24 lg:py-32 bg-secondary/50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 lg:py-28 bg-secondary/50">
+          <Container>
+            <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Mission */}
               <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
@@ -282,7 +285,8 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-          </div>
+            </ScrollReveal>
+          </Container>
         </section>
 
         {/* Statistics Section - After Mission/Vision */}
@@ -294,9 +298,9 @@ export default function AboutPage() {
         {/* Team Section */}
         <section
           id="team"
-          className="py-24 lg:py-32 bg-background scroll-mt-20"
+          className="py-12 sm:py-20 lg:py-28 bg-background scroll-mt-20"
         >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Container>
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto mb-16">
               <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -366,7 +370,7 @@ export default function AboutPage() {
                 </div>
               )}
             </div>
-          </div>
+          </Container>
         </section>
       </main>
       <Footer />
