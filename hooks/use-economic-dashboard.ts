@@ -25,6 +25,8 @@ export interface EconomicDashboardData {
   fxRates: {
     usd: FXRate;
     eur: FXRate;
+    gbp: FXRate;
+    aud: FXRate;
     jpy: FXRate;
   };
   commodities: {
@@ -33,18 +35,18 @@ export interface EconomicDashboardData {
     coffee: Commodity;
   };
   interestRate: {
-    current: number;
-    previous: number;
+    policyRate: number;
+    tbillYield: number;
     history: TimeSeriesData[];
   };
   gdp: {
-    current: number;
+    value: number;
+    year: string;
     growth: number;
-    unit: string;
     history: TimeSeriesData[];
   };
   esx: {
-    current: number;
+    aggregate: number;
     change: number;
     changePercent: number;
     history: TimeSeriesData[];
@@ -64,66 +66,69 @@ export const useEconomicDashboard = () => {
           fxRates: {
             usd: { rate: 56.78, change: 0.23, trend: "up" },
             eur: { rate: 61.45, change: -0.12, trend: "down" },
+            gbp: { rate: 70.92, change: 0.08, trend: "up" },
+            aud: { rate: 36.70, change: 0.00, trend: "unchanged" },
             jpy: { rate: 0.38, change: 0.01, trend: "up" },
           },
           commodities: {
             gold: {
-              symbol: "XAU/ETB",
+              symbol: "XAU/USD",
               name: "Gold",
-              price: 115432.5,
-              change: 12.3,
+              price: 2650.0,
+              change: 0.4,
               trend: "up",
             },
             silver: {
-              symbol: "XAG/ETB",
+              symbol: "XAG/USD",
               name: "Silver",
-              price: 1331.45,
-              change: -0.15,
+              price: 31.25,
+              change: -0.5,
               trend: "down",
             },
             coffee: {
-              symbol: "Coffee/ETB",
+              symbol: "Coffee/USD",
               name: "Coffee",
-              price: 10632.75,
-              change: 2.5,
-              trend: "up",
+              price: 2.18,
+              change: 0.0,
+              trend: "unchanged",
             },
           },
           interestRate: {
-            current: 7.0,
-            previous: 7.0,
+            policyRate: 15.0,
+            tbillYield: 14.628,
             history: [
               { date: "2023-Q1", value: 7.0 },
               { date: "2023-Q2", value: 7.0 },
-              { date: "2023-Q3", value: 7.0 },
-              { date: "2023-Q4", value: 7.0 },
-              { date: "2024-Q1", value: 7.0 },
-              { date: "2024-Q2", value: 7.0 },
+              { date: "2023-Q3", value: 15.0 },
+              { date: "2023-Q4", value: 15.0 },
+              { date: "2024-Q1", value: 15.0 },
+              { date: "2024-Q2", value: 15.0 },
             ],
           },
           gdp: {
-            current: 126.8,
+            value: 160.5,
+            year: "2024",
             growth: 6.1,
-            unit: "Billion USD",
             history: [
               { date: "2019", value: 96.1 },
               { date: "2020", value: 107.6 },
               { date: "2021", value: 111.3 },
               { date: "2022", value: 120.4 },
-              { date: "2023", value: 126.8 },
+              { date: "2023", value: 137.8 },
+              { date: "2024", value: 160.5 },
             ],
           },
           esx: {
-            current: 3245.67,
-            change: 45.23,
+            aggregate: 125.5,
+            change: 1.75,
             changePercent: 1.41,
             history: [
-              { date: "Jan", value: 3100 },
-              { date: "Feb", value: 3050 },
-              { date: "Mar", value: 3150 },
-              { date: "Apr", value: 3200 },
-              { date: "May", value: 3180 },
-              { date: "Jun", value: 3245.67 },
+              { date: "Jan", value: 110.2 },
+              { date: "Feb", value: 108.5 },
+              { date: "Mar", value: 112.3 },
+              { date: "Apr", value: 118.0 },
+              { date: "May", value: 122.1 },
+              { date: "Jun", value: 125.5 },
             ],
           },
           lastUpdated: new Date().toISOString(),

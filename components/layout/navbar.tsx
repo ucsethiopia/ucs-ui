@@ -35,12 +35,12 @@ export function Navbar() {
   }, [pathname]);
 
   const navBgClass =
-    isHomePage && !isScrolled && !isMobileMenuOpen
-      ? "bg-transparent"
+    isHomePage && !isMobileMenuOpen
+      ? "bg-navy-950/80 backdrop-blur-sm border-b border-white/10"
       : "bg-background/95 backdrop-blur-md border-b border-border";
 
   const textClass =
-    isHomePage && !isScrolled && !isMobileMenuOpen
+    isHomePage && !isMobileMenuOpen
       ? "text-white"
       : "text-foreground";
 
