@@ -41,7 +41,7 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [x] **8.9** Accessibility pass (contrast ratios, focus states, aria labels)
 - [ ] **8.10** Reorder home page sections (coordinate with @jaft24) — BLOCKED, skipped
 - [x] **8.11** Use the UI-review skill to make sure the website is working displaying, polished and refined
-- [ ] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch
+- [x] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch
 
 ### Phase 9 — Mock Data → Live API Integration
 - [ ] **9.1** Replace `useEconomicDashboard` mock with `GET /fx/latest`, `/commodities/latest`, `/interest`, `/gdp`, `/esx/latest`

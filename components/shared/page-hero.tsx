@@ -1,3 +1,5 @@
+import { Container } from "@/components/shared/container";
+
 interface PageHeroProps {
   eyebrow?: string;
   title: string;
@@ -27,7 +29,7 @@ export function PageHero({
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/60 via-navy-950/70 to-navy-950/90" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[60vh]">
             {/* Content */}
             <div className="py-12 lg:py-20">
@@ -59,7 +61,7 @@ export function PageHero({
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gold-500/10 rounded-lg -z-10" />
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     );
   }
@@ -96,7 +98,7 @@ export function PageHero({
         />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <Container className="relative">
         <div className={condensed ? "max-w-2xl" : "max-w-3xl"}>
           {eyebrow && (
             <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -118,7 +120,7 @@ export function PageHero({
             </p>
           )}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
