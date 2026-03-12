@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
@@ -49,7 +50,7 @@ export function EconomicDashboard() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-10 bg-background border-b border-border">
+    <section ref={ref} className="py-10 bg-muted/20 border-b border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="flex items-center justify-between mb-6"
@@ -132,6 +133,64 @@ export function EconomicDashboard() {
               loading={loading}
             />
           </div>
+        </motion.div>
+
+        {/* Commodities */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-8"
+        >
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+            Commodities
+          </p>
+          {loading ? (
+            <div className="flex flex-col sm:flex-row gap-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-14 flex-1 rounded-lg" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-3">
+              {Object.values(data?.commodities ?? {}).map((c) => {
+                const TrendIcon =
+                  c.trend === "up"
+                    ? TrendingUp
+                    : c.trend === "down"
+                      ? TrendingDown
+                      : Minus;
+                const trendColor =
+                  c.trend === "up"
+                    ? "text-emerald-500"
+                    : c.trend === "down"
+                      ? "text-red-400"
+                      : "text-muted-foreground";
+                return (
+                  <div
+                    key={c.symbol}
+                    className="flex-1 flex items-center justify-between gap-3 bg-card border border-border rounded-lg px-4 py-3"
+                  >
+                    <div>
+                      <p className="text-xs text-muted-foreground font-mono mb-0.5">
+                        {c.symbol}
+                      </p>
+                      <p className="text-sm font-semibold text-foreground tabular-nums">
+                        ${c.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className={cn("flex items-center gap-1", trendColor)}>
+                      <TrendIcon className="h-4 w-4" />
+                      <span className="text-xs font-medium tabular-nums">
+                        {c.change > 0 ? "+" : ""}
+                        {c.change.toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

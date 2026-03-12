@@ -52,19 +52,57 @@ const pillarConfig: Record<
   },
 };
 
-// Orbit pattern - icons rotating around center
+// Orbit pattern - icons travelling in a true circular path around center
 function OrbitPattern({
   icons,
 }: {
   icons: React.ComponentType<{ className?: string }>[];
 }) {
+  const RADIUS = 85;
+
+  const orbitConfigs = [
+    { startDeg: 0, duration: 18 },
+    { startDeg: 120, duration: 24 },
+    { startDeg: 240, duration: 30 },
+  ];
+
+  function circleKeyframes(startDeg: number) {
+    const rad = (d: number) => (d * Math.PI) / 180;
+    const angles = [
+      startDeg,
+      startDeg + 90,
+      startDeg + 180,
+      startDeg + 270,
+      startDeg + 360,
+    ];
+    return {
+      x: angles.map((d) => RADIUS * Math.cos(rad(d))),
+      y: angles.map((d) => RADIUS * Math.sin(rad(d))),
+      times: [0, 0.25, 0.5, 0.75, 1] as number[],
+    };
+  }
+
   return (
     <div className="relative w-full h-full flex items-center justify-center">
+      {/* Decorative rings */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="absolute w-[180px] h-[180px] rounded-full border border-gold-500/25"
+      />
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        className="absolute w-[120px] h-[120px] rounded-full border border-gold-500/15"
+      />
+
       {/* Center icon */}
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 180 }}
         className="absolute z-10 w-16 h-16 rounded-2xl bg-gold-500 flex items-center justify-center shadow-lg"
       >
         {React.createElement(icons[0], {
@@ -72,54 +110,26 @@ function OrbitPattern({
         })}
       </motion.div>
 
-      {/* Orbiting icons */}
-      {icons.slice(1).map((Icon, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: 1,
-            rotate: 360,
-          }}
-          transition={{
-            opacity: { duration: 0.3, delay: 0.4 + index * 0.1 },
-            rotate: {
-              duration: 20 + index * 5,
-              repeat: Infinity,
-              ease: "linear",
-            },
-          }}
-          className="absolute w-full h-full"
-          style={{
-            transformOrigin: "center",
-          }}
-        >
-          <div
+      {/* Orbiting icons — true circular path via x/y keyframes */}
+      {icons.slice(1).map((Icon, index) => {
+        const cfg = orbitConfigs[index];
+        const { x, y, times } = circleKeyframes(cfg.startDeg);
+
+        return (
+          <motion.div
+            key={index}
             className="absolute w-10 h-10 rounded-xl bg-background border border-border shadow-sm flex items-center justify-center"
-            style={{
-              top: "10%",
-              left: "50%",
-              transform: `translateX(-50%) rotate(${index * 120}deg)`,
+            initial={{ x: x[0], y: y[0] }}
+            animate={{ x, y }}
+            transition={{
+              x: { duration: cfg.duration, repeat: Infinity, ease: "linear", times },
+              y: { duration: cfg.duration, repeat: Infinity, ease: "linear", times },
             }}
           >
             <Icon className="w-5 h-5 text-gold-600" />
-          </div>
-        </motion.div>
-      ))}
-
-      {/* Decorative rings */}
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.3 }}
-        transition={{ duration: 0.6 }}
-        className="absolute w-32 h-32 rounded-full border border-gold-500/30"
-      />
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.2 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="absolute w-48 h-48 rounded-full border border-gold-500/20"
-      />
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

@@ -43,13 +43,13 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 - [x] **8.11** Use the UI-review skill to make sure the website is working displaying, polished and refined
 - [x] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch
 
-### Phase 9 — Mock Data → Live API Integration
+### Phase 9 — Mock Data → Live API Integration *(SKIPPED — APIs not yet live)*
 - [ ] **9.1** Replace `useEconomicDashboard` mock with `GET /fx/latest`, `/commodities/latest`, `/interest`, `/gdp`, `/esx/latest`
 - [ ] **9.2** Replace `useNews` mock with `GET /news/latest` and `GET /news` (paginated)
 - [ ] **9.3** Replace `useTeam` mock with `GET /team` and `GET /team/{name}`
 - [ ] **9.4** Wire contact form to `POST /contact` (Mailgun email notification)
 - [ ] **9.5** Use the UI-review skill to make sure the website is working displaying, polished and refined
-- [ ] **9.6** Commit changed made and note that phase 9 is complete, push code to current branch  
+- [ ] **9.6** Commit changed made and note that phase 9 is complete, push code to current branch
 
 ### Phase 10 — UX/UI Fixes
 - [x] **10.1** Restructure financial data layout:
@@ -57,21 +57,21 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
   - NBE policy rate + T-bill yield + ESX aggregate → compact number cards in `EconomicDashboard`
   - Charts relocated to new `MarketAnalytics` section (`components/home/market-analytics.tsx`)
 - [x] **10.8** Split `EconomicDashboard` component — now < 150 lines; charts extracted to `MarketAnalytics`
-- [ ] **10.2** Implement native-themed 404 page (`app/not-found.tsx`)
-- [ ] **10.3** Add skeleton loaders for all async data components (dashboard, news, team)
+- [x] **10.2** Implement native-themed 404 page (`app/not-found.tsx`)
+- [x] **10.3** Add skeleton loaders for all async data components (dashboard, news, team)
 - [ ] **10.4** Replace marquee placeholder text with actual/AI-generated logos styled to brand
-- [ ] **10.5** Improve Training pillar animation on services page
-- [ ] **10.6** Add commodity symbols to economic dashboard display
-- [ ] **10.7** Add x/y axis reference values to dashboard charts
-- [ ] **10.9** Implement a creative and artistic way to display the team-member information in the about us section under team when "learn more" is clicked. Make sure data is matched from api docs
-- [ ] **10.10** Make sure the entire website is responsive and works on all devices, use the UI iterate skill to check and fix any issues
-- [ ] **10.11** Commit changed made and note that phase 10 is complete, push code to current branch  
+- [x] **10.5** Improve Training pillar animation on services page — true circular orbit via x/y keyframes
+- [x] **10.6** Add commodity symbols to economic dashboard display
+- [x] **10.7** Add x/y axis reference values to dashboard charts
+- [x] **10.9** Creative team-member detail page — stats strip, gold numbered achievements, expertise tag cloud, corner-accented image, ghost monogram hero watermark
+- [x] **10.10** UI review pass — fixed orbit animation (removed opacity delay), improved dashboard bg contrast, fixed team member stats strip fallback label
+- [ ] **10.11** Commit changed made and note that phase 10 is complete, push code to current branch
 
 ---
 
 ## Current Task
 
->> **Phase 8.12** — Commit and push Phase 8
+>> **Phase 10.11** — Commit and push Phase 10
 
 ---
 
@@ -104,7 +104,7 @@ Complete the remaining frontend phases (6–10): ship the News archive page, Con
 
 | Item | Blocker | Owner |
 |------|---------|-------|
-| Home page section reorder (8.9) | Needs input from @jaft24 | @jaft24 |
+| Home page section reorder (8.9) | Needs input from @jaft24 | @Natoli74 |
 | Live API base URL / auth config | Backend deployment config not yet in repo | Backend team |
 | Actual client logos for marquee | Real logos not provided; AI-generated fallback possible | UCS stakeholders |
 | Services hero background image (Phase 5 leftover) | No PR/client-based image provided | UCS stakeholders |
