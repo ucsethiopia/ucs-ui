@@ -14,9 +14,10 @@ interface ChartCardProps {
   chartData: { date: string; value: number }[];
   chartColor: string;
   loading: boolean;
+  yTickFormatter?: (v: number) => string;
 }
 
-function ChartCard({ label, value, badge, badgeUp, chartData, chartColor, loading }: ChartCardProps) {
+function ChartCard({ label, value, badge, badgeUp, chartData, chartColor, loading, yTickFormatter }: ChartCardProps) {
   if (loading) {
     return (
       <div className="bg-card border border-border rounded-lg p-5 min-w-[280px] flex-1">
@@ -40,7 +41,13 @@ function ChartCard({ label, value, badge, badgeUp, chartData, chartColor, loadin
           </span>
         )}
       </div>
-      <MiniLineChart data={chartData} height={140} color={chartColor} />
+      <MiniLineChart
+        data={chartData}
+        height={140}
+        color={chartColor}
+        showAxes
+        yTickFormatter={yTickFormatter}
+      />
     </div>
   );
 }
@@ -51,7 +58,7 @@ export function MarketAnalytics() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-12 bg-muted/30 border-b border-border">
+    <section ref={ref} className="py-12 bg-muted/40 border-b border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-8"
@@ -77,6 +84,7 @@ export function MarketAnalytics() {
             chartData={data?.interestRate.history ?? []}
             chartColor="var(--color-navy-600)"
             loading={loading}
+            yTickFormatter={(v) => `${v}%`}
           />
           <ChartCard
             label="Ethiopia GDP"
@@ -86,6 +94,7 @@ export function MarketAnalytics() {
             chartData={data?.gdp.history ?? []}
             chartColor="var(--color-gold-500)"
             loading={loading}
+            yTickFormatter={(v) => `$${v.toFixed(0)}B`}
           />
           <ChartCard
             label="ESX Aggregate"
@@ -99,6 +108,7 @@ export function MarketAnalytics() {
             chartData={data?.esx.history ?? []}
             chartColor="var(--color-navy-700)"
             loading={loading}
+            yTickFormatter={(v) => v.toFixed(0)}
           />
         </motion.div>
       </div>
