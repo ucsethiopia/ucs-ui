@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Youtube, Linkedin, Send, Facebook } from "lucide-react";
+import { Container } from "@/components/shared/container";
 
 const footerLinks = {
   company: [
@@ -27,7 +28,7 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="bg-navy-950 text-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <Container>
         {/* Main Footer */}
         <div className="grid grid-cols-1 gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
@@ -135,7 +136,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

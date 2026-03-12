@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
 import { PillarVisual } from "./pillar-visual";
 import {
   Accordion,
@@ -56,8 +57,8 @@ export function ServicePillars({ services }: ServicePillarsProps) {
     activeService.title === "Training" && activeService.trainingCategories;
 
   return (
-    <section className="py-12 md:py-20 px-4 sm:px-6 bg-background">
-      <div className="max-w-[1100px] mx-auto">
+    <section className="py-12 md:py-20 bg-background">
+      <Container>
         {/* Header Section */}
         <div className="text-center mb-8 md:mb-12">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -198,7 +199,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             )}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

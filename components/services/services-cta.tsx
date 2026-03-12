@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Container } from "@/components/shared/container";
 
 interface ServicesCTAProps {
   heading?: string;
@@ -17,7 +18,8 @@ export function ServicesCTA({
   buttonHref = "/contact",
 }: ServicesCTAProps) {
   return (
-    <section className="py-12 md:py-20 px-4 sm:px-6 bg-navy-950">
+    <section className="py-12 md:py-20 bg-navy-950">
+      <Container>
       <div className="max-w-[700px] mx-auto text-center">
         {/* Section Label */}
         <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -43,6 +45,7 @@ export function ServicesCTA({
           <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Link>
       </div>
+      </Container>
     </section>
   );
 }

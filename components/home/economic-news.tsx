@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMarketNews, type NewsItem } from "@/hooks/use-news";
+import { Container } from "@/components/shared/container";
 import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
 import { NewsModal } from "@/components/home/news-modal";
 import { MiniLineChart, Skeleton } from "@/components/ui/charts";
@@ -68,7 +69,8 @@ export const EconomicNews = () => {
           </div>
         }
       >
-        <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
+          <div ref={ref}>
           <div
             ref={containerRef}
             className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
@@ -151,7 +153,8 @@ export const EconomicNews = () => {
                   </motion.div>
                 ))}
           </div>
-        </div>
+          </div>
+        </Container>
       </NewsCarouselLayout>
 
       {/* Modal */}
