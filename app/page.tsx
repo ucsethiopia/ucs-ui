@@ -5,6 +5,7 @@ import { CoreValues } from "@/components/home/core-values";
 import { FirmNews } from "@/components/home/firm-news";
 import { ServicesOverview } from "@/components/home/services-overview";
 import { ClientMarquee } from "@/components/home/client-marquee";
+import { HomeStatsStrip } from "@/components/home/home-stats-strip";
 
 export default function HomePage() {
   return (
@@ -15,6 +16,7 @@ export default function HomePage() {
         <ClientMarquee />
         <EconomicDashboard />
         <ServicesOverview />
+        <HomeStatsStrip />
         <CoreValues />
         <FirmNews />
       </main>

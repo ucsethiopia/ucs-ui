@@ -20,7 +20,7 @@ Analyze the current page or section the user is working on in the `ucs-ui` proje
 
 ### STEP 2: Browse 21st.dev
 Use your `chrome-devtools` MCP server (or Playwright if unavailable) to navigate to `https://21st.dev`.
-Search or browse the site for components that could replace, modify, or be added to our current website section to improve UI/UX.
+Search or browse the site for components that could replace, modify, or be added to our current website section to improve UI/UX. We are not adding any information or compoenet unless it would be vital to the user experience and highly enhance the UI/UX.
 
 ### STEP 3: Present Shortlist
 Identify the top 5 components that align with our use case.

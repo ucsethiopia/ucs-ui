@@ -3,10 +3,12 @@
 import { clientLogos, strategicPartners } from "@/lib/mock-data";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 function ClientLogo({ name, logo }: { name: string; logo: string }) {
-  // Generate initials for fallback
+  const [imgError, setImgError] = useState(false);
+
   const initials = name
     .split(" ")
     .map((word) => word[0])
@@ -15,31 +17,37 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="flex h-20 w-44 flex-shrink-0 items-center justify-center rounded-lg bg-card border border-border px-6 transition-all hover:border-gold-500/50 hover:shadow-md group cursor-pointer">
-      <div className="relative w-full h-full flex items-center justify-center">
-        {/* Placeholder with initials - will be replaced with actual logos */}
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded bg-gold-500/10 text-gold-600 text-sm font-bold group-hover:bg-gold-500/20 transition-colors">
-            {initials}
+    <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
+      {/* Logo area */}
+      <div className="relative w-full h-14 brightness-95 group-hover:brightness-100 transition-[filter] duration-300">
+        {logo && !imgError ? (
+          <Image
+            src={logo}
+            alt={name}
+            fill
+            className="object-contain"
+            onError={() => setImgError(true)}
+            sizes="160px"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <span className="text-xs font-semibold text-muted-foreground tracking-wider">
+              {initials}
+            </span>
           </div>
-          <span className="text-xs font-medium text-foreground truncate max-w-24">
-            {name.split(" ").slice(0, 2).join(" ")}
-          </span>
-        </div>
+        )}
       </div>
+      {/* Company name — fades up on hover */}
+      <span className="mt-0.5 text-[10px] font-medium text-center text-foreground/60 leading-tight opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 line-clamp-1 w-full">
+        {name}
+      </span>
     </div>
   );
 }
 
-function PartnerCard({
-  name,
-  logo,
-  description,
-}: {
-  name: string;
-  logo: string;
-  description?: string;
-}) {
+function PartnerCard({ name, logo }: { name: string; logo: string }) {
+  const [imgError, setImgError] = useState(false);
+
   const initials = name
     .split(" ")
     .map((word) => word[0])
@@ -48,16 +56,26 @@ function PartnerCard({
     .toUpperCase();
 
   return (
-    <div className="group flex flex-col items-center text-center p-6 rounded-xl bg-card border border-border transition-all hover:border-gold-500/50 hover:shadow-lg hover:-translate-y-1">
-      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary text-lg font-bold mb-4 group-hover:bg-gold-500 group-hover:text-navy-950 transition-all">
-        {initials}
-      </div>
-      <h4 className="font-semibold text-sm text-foreground mb-1 group-hover:text-gold-600 transition-colors">
+    <div className="group flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all hover:border-border hover:shadow-sm hover:opacity-100 opacity-80">
+      {logo && !imgError ? (
+        <div className="relative h-14 w-full mb-3">
+          <Image
+            src={logo}
+            alt={name}
+            fill
+            className="object-contain"
+            onError={() => setImgError(true)}
+            sizes="180px"
+          />
+        </div>
+      ) : (
+        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold mb-3">
+          {initials}
+        </div>
+      )}
+      <h4 className="text-xs font-medium text-foreground leading-tight">
         {name}
       </h4>
-      {description && (
-        <p className="text-xs text-muted-foreground">{description}</p>
-      )}
     </div>
   );
 }
@@ -65,7 +83,6 @@ function PartnerCard({
 export function ClientMarquee() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Duplicate the logos for seamless loop (2 sets should be enough with this logic)
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   useEffect(() => {
@@ -79,7 +96,6 @@ export function ClientMarquee() {
     const scroll = () => {
       if (!isPaused && scrollContainer) {
         scrollPosition += 0.5;
-        // Reset when half of the content is scrolled (since we duplicated the content)
         if (scrollPosition >= scrollContainer.scrollWidth / 2) {
           scrollPosition = 0;
         }
@@ -109,44 +125,32 @@ export function ClientMarquee() {
   }, []);
 
   return (
-    <section className="py-10 sm:py-16 lg:py-20 bg-secondary/30 overflow-hidden border-y border-border/50">
+    <section className="py-10 sm:py-14 lg:py-16 bg-secondary/30 overflow-hidden border-y border-border/50">
       {/* Clients Section */}
-      <div className="mb-20">
-        <Container className="mb-10">
+      <div className="mb-8">
+        <Container className="mb-6">
           <ScrollReveal>
-            <div className="text-center">
-              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
-                Trusted By Leaders
-              </p>
-              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-                Our Valued Clients
-              </h2>
-              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-                Serving Ethiopia&apos;s leading banks, insurance companies,
-                government institutions, and private enterprises
-              </p>
-            </div>
+            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Trusted by Ethiopia&apos;s leading institutions
+            </p>
           </ScrollReveal>
         </Container>
 
         {/* Marquee Container */}
         <div className="relative">
           {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
 
-          {/* Scrolling Track - Clients */}
+          {/* Scrolling Track */}
           <div
             ref={scrollRef}
             className="flex overflow-x-hidden"
             aria-hidden="true"
-            style={{
-              scrollBehavior: "auto",
-              whiteSpace: "nowrap",
-            }}
+            style={{ scrollBehavior: "auto", whiteSpace: "nowrap" }}
           >
             {duplicatedClients.map((client, index) => (
-              <div key={`${client.id}-${index}`} className="inline-block px-4">
+              <div key={`${client.id}-${index}`} className="inline-block px-3">
                 <ClientLogo name={client.name} logo={client.logo} />
               </div>
             ))}
@@ -154,35 +158,29 @@ export function ClientMarquee() {
         </div>
       </div>
 
-      {/* Partners Section - Static Grid */}
-      <div>
-        <Container>
-          <div className="text-center mb-10">
-            <p className="text-gold-600 text-sm font-semibold uppercase tracking-widest mb-2">
-              Strategic Partnerships
+      {/* Partners Section */}
+      <Container>
+        <ScrollReveal>
+          <div className="text-center mb-8">
+            <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-1">
+              Strategic Partners
             </p>
-            <h3 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2">
-              Global Network
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              We partner with established consulting firms and multidisciplinary
-              experts from around the world to deliver exceptional results
+            <p className="text-xs text-muted-foreground">
+              Collaborating with established firms and experts worldwide
             </p>
           </div>
+        </ScrollReveal>
 
-          {/* Partners Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
-            {strategicPartners.map((partner) => (
-              <PartnerCard
-                key={partner.id}
-                name={partner.name}
-                logo={partner.logo}
-                description={partner.description}
-              />
-            ))}
-          </div>
-        </Container>
-      </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-w-4xl mx-auto">
+          {strategicPartners.map((partner) => (
+            <PartnerCard
+              key={partner.id}
+              name={partner.name}
+              logo={partner.logo}
+            />
+          ))}
+        </div>
+      </Container>
     </section>
   );
 }
