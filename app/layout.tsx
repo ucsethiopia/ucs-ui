@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next";
 import { Source_Sans_3, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 
 import "./globals.css";
 
@@ -78,7 +80,33 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          {children}
+          <div className="relative mx-auto max-w-[1440px]">
+            {/* Left edge — only visible when viewport > 1440px (gutters exist) */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 hidden min-[1441px]:block" aria-hidden="true">
+              {/* Full-height dashed line */}
+              <div className="absolute inset-y-0 left-0 border-l-2 border-dashed border-gray-300 dark:border-gray-600" />
+              {/* Top-left L-bracket */}
+              <div className="absolute left-0 top-0 h-10 border-l-2 border-dashed border-gray-500 dark:border-gray-400" />
+              <div className="absolute left-0 top-0 w-10 border-t-2 border-dashed border-gray-500 dark:border-gray-400" />
+              <div className="absolute -left-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 border-gray-400 dark:border-gray-500 bg-background" />
+              {/* Bottom-left — vertical only, no horizontal close */}
+              <div className="absolute bottom-0 left-0 h-10 border-l-2 border-dashed border-gray-300 dark:border-gray-600" />
+            </div>
+            {/* Right edge */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 hidden min-[1441px]:block" aria-hidden="true">
+              {/* Full-height dashed line */}
+              <div className="absolute inset-y-0 right-0 border-r-2 border-dashed border-gray-300 dark:border-gray-600" />
+              {/* Top-right L-bracket */}
+              <div className="absolute right-0 top-0 h-10 border-r-2 border-dashed border-gray-500 dark:border-gray-400" />
+              <div className="absolute right-0 top-0 w-10 border-t-2 border-dashed border-gray-500 dark:border-gray-400" />
+              <div className="absolute -right-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 border-gray-400 dark:border-gray-500 bg-background" />
+              {/* Bottom-right — vertical only, no horizontal close */}
+              <div className="absolute bottom-0 right-0 h-10 border-r-2 border-dashed border-gray-300 dark:border-gray-600" />
+            </div>
+            <Navbar />
+            {children}
+          </div>
+          <Footer />
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>

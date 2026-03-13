@@ -35,7 +35,7 @@ export function ServicesHero({
       </div>
 
       {/* Content positioned bottom-left */}
-      <div className="relative z-10 w-full max-w-[1100px] mx-auto px-4 sm:px-6 pb-10 md:pb-16">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-14 pb-10 md:pb-16">
         {eyebrow && (
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
             {eyebrow}

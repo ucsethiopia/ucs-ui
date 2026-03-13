@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
 import { Statistics } from "@/components/statistics";
@@ -32,7 +30,7 @@ function TeamMemberCard({
       <Link href={`/team/${memberSlug}`}>
         <div
           className={cn(
-            "group relative bg-card border border-border rounded-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gold-500/30 cursor-pointer",
+            "group relative bg-card border border-border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
           )}
           style={{
@@ -95,7 +93,7 @@ function TeamMemberCard({
     <Link href={`/team/${memberSlug}`}>
       <div
         className={cn(
-          "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30 cursor-pointer h-full",
+          "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer h-full",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
         )}
         style={{
@@ -133,8 +131,6 @@ function TeamMemberCard({
 export default function AboutPage() {
   const { team, isLoading } = useTeamApi();
 
-  const { ref: storyRef, isVisible: storyVisible } =
-    useScrollAnimation<HTMLDivElement>();
   const { ref: teamRef, isVisible: teamVisible } =
     useScrollAnimation<HTMLDivElement>({
       rootMargin: "0px 0px -50px 0px",
@@ -145,81 +141,130 @@ export default function AboutPage() {
 
   return (
     <>
-      <Navbar />
       <main id="main-content">
         {/* Hero Section - Condensed with Taller Height */}
         <PageHero
           eyebrow="About Us"
           title="Our Story"
-          description="For over 15 years, UCS Ethiopia has been a trusted partner for organizations seeking to transform and grow."
+          description="Established in 2012 G.C. with a mission to make a positive difference in organizations and individuals' life through the provision of value adding advisory and training services."
           backgroundImage="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop"
           condensed
         />
 
         {/* Our Story Section */}
-        <section className="py-12 sm:py-20 lg:py-28 bg-background">
+        <section className="py-10 md:py-16 bg-background">
           <Container>
-            <div
-              ref={storyRef}
-              className={cn(
-                "grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center transition-all duration-700",
-                storyVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8",
-              )}
-            >
-              {/* Image */}
-              <div className="relative aspect-4/3 rounded-lg overflow-hidden bg-muted">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop')`,
-                  }}
-                />
-                {/* Decorative Element */}
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gold-500/20 rounded-lg -z-10" />
-              </div>
-
-              {/* Content */}
-              <div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              {/* Left — editorial text */}
+              <ScrollReveal>
                 <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-                  Who We Are
+                  Our Story
                 </p>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-6 text-balance">
-                  Driving Excellence in Ethiopian Business
+                <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+                  Building Ethiopia&apos;s Consulting Profession
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    Founded in 2011, Ultimate Consultancy Service (UCS) Ethiopia
-                    has grown to become one of the country{"'"}s most trusted
-                    management consulting firms. Based in the heart of Bole,
-                    Addis Ababa, we serve a diverse portfolio of clients
-                    including major banks, leading corporations, and government
-                    institutions.
+                    As bigger wave of changes are looming on the horizon,
+                    organizations are likely to face multifaceted challenges
+                    that will continue impacting every facet of their
+                    activities. The implications of the current winds of change
+                    are far reaching unless organizations strategically get
+                    prepared both in the near and distant future. Among others,
+                    the unprecedented growth in competition and globalization,
+                    triggered by recent advances in technology, is demanding
+                    organizations to continually renew and modernize the way
+                    they do business to compete and thrive on a global scale.
                   </p>
                   <p>
-                    Our mission is to drive sustainable growth and
-                    transformation for Ethiopian enterprises by delivering
-                    world-class advisory, training, and research services. We
-                    combine deep local expertise with international best
-                    practices to help our clients achieve their strategic
-                    objectives.
+                    UCS, thus, primarily works to support organizations in
+                    order to effectively design and implement strategic
+                    organizational change and transformation initiatives in
+                    response to the profound changes that are taking place in
+                    many frontiers. UCS, through its structured and organized
+                    approach in its advisory and training services, has the
+                    mission to inspire organizations for change and
+                    transformation through the integration and application of
+                    the latest knowledge, skills, tools and techniques available
+                    in the relevant field.
                   </p>
                   <p>
-                    Over the years, we have partnered with more than 150
-                    organizations, trained thousands of professionals, and
-                    contributed to some of the most significant business
-                    transformations in the country. Our success is measured by
-                    the success of our clients.
+                    While providing its service, UCS brings in the professional
+                    expertise (the most up-to-date knowledge, skills, and
+                    experiences) needed by organizations in their endeavor to
+                    change and transform along the latest developments. UCS
+                    believes that its mission will come true as it continually
+                    and closely work with its esteemed customers in steering
+                    strategic mindset changes that keeps them moving with the
+                    changing world.
                   </p>
                 </div>
-              </div>
+              </ScrollReveal>
+
+              {/* Right — milestone timeline */}
+              <ScrollReveal delay={0.15}>
+                <div className="space-y-6">
+                  {[
+                    {
+                      year: "2012",
+                      title: "Founded",
+                      desc: "Established in Addis Ababa with a mission to make a positive difference through value adding advisory and training services.",
+                    },
+                    {
+                      year: "2014",
+                      title: "Training Division Launched",
+                      desc: "Expanded into professional development, delivering first cohort of executive leadership programs.",
+                    },
+                    {
+                      year: "2017",
+                      title: "Research & Publication",
+                      desc: "Established dedicated research practice producing landmark sector studies for Ethiopian industry.",
+                    },
+                    {
+                      year: "2020",
+                      title: "Regional Expansion",
+                      desc: "Extended operations to 5 East African countries through strategic partnerships.",
+                    },
+                    {
+                      year: "2026",
+                      title: "150+ Organizations Served",
+                      desc: "Milestone: over 150 organizations served across banking, insurance, manufacturing, and government.",
+                    },
+                  ].map((item, i) => (
+                    <div key={item.year} className="flex gap-5">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-primary/5 dark:bg-white/5 border border-primary/15 dark:border-white/10 flex-shrink-0">
+                          <span className="text-xs font-bold text-foreground dark:text-gold-500">
+                            {i + 1}
+                          </span>
+                        </div>
+                        {i < 4 && (
+                          <div className="w-px flex-1 bg-border mt-2" />
+                        )}
+                      </div>
+                      <div className="pb-6">
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-xs font-semibold text-gold-500 tracking-wide">
+                            {item.year}
+                          </span>
+                          <h3 className="font-serif text-base font-bold text-foreground">
+                            {item.title}
+                          </h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollReveal>
             </div>
           </Container>
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-12 sm:py-20 lg:py-28 bg-secondary/50">
+        <section className="py-10 md:py-16 bg-secondary/50">
           <Container>
             <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -244,16 +289,15 @@ export default function AboutPage() {
                   Our Mission
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To empower Ethiopian organizations with the knowledge, tools,
-                  and strategies they need to compete effectively in a rapidly
-                  evolving business landscape, while fostering a culture of
-                  excellence and continuous improvement.
+                  To conduct research, deliver trainings, advise and support
+                  organizations in the attainment of their corporate strategic
+                  goals and objectives both in the short and long term.
                 </p>
               </div>
 
               {/* Vision */}
               <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mb-6">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -278,10 +322,8 @@ export default function AboutPage() {
                   Our Vision
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To be the premier consultancy partner for organizations across
-                  Ethiopia and East Africa, recognized for our integrity,
-                  excellence, and the measurable impact we deliver for our
-                  clients and the communities they serve.
+                  To become a change and transformation catalyst within
+                  organizations in Ethiopia and beyond.
                 </p>
               </div>
             </div>
@@ -298,11 +340,12 @@ export default function AboutPage() {
         {/* Team Section */}
         <section
           id="team"
-          className="py-12 sm:py-20 lg:py-28 bg-background scroll-mt-20"
+          className="py-10 md:py-16 bg-background scroll-mt-20"
         >
           <Container>
             {/* Section Header */}
-            <div className="text-center max-w-3xl mx-auto mb-16">
+            <ScrollReveal>
+            <div className="text-center max-w-3xl mx-auto mb-10">
               <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
                 Leadership
               </p>
@@ -315,6 +358,7 @@ export default function AboutPage() {
                 our clients.
               </p>
             </div>
+            </ScrollReveal>
 
             {/* Team Grid */}
             <div ref={teamRef}>
@@ -335,16 +379,14 @@ export default function AboutPage() {
                 </div>
               ) : (
                 <div className="space-y-16">
-                  {/* Owner/CEO - Featured with extra bottom margin */}
+                  {/* Owner/CEO - Featured */}
                   {owner && (
-                    <div className="mb-8">
-                      <TeamMemberCard
-                        member={owner}
-                        index={0}
-                        isVisible={teamVisible}
-                        isOwner
-                      />
-                    </div>
+                    <TeamMemberCard
+                      member={owner}
+                      index={0}
+                      isVisible={teamVisible}
+                      isOwner
+                    />
                   )}
 
                   {/* Divider between CEO and Team */}
@@ -373,7 +415,6 @@ export default function AboutPage() {
           </Container>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -117,7 +117,7 @@ export const FirmNews = () => {
                     {/* Image */}
                     <div className="relative h-48 rounded-t-xl overflow-hidden flex-shrink-0">
                       <img
-                        src={news.image}
+                        src={news.images?.[0] ?? news.image}
                         alt={news.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
@@ -126,9 +126,9 @@ export const FirmNews = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 bg-card border border-t-0 rounded-b-xl group-hover:border-accent/50 transition-colors shadow-sm group-hover:shadow-xl flex-1 flex flex-col">
+                    <div className="p-6 bg-card border border-t-0 rounded-b-xl group-hover:border-gold-500/30 transition-colors duration-300 shadow-sm group-hover:shadow-xl flex-1 flex flex-col">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-medium rounded-full">
+                        <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full">
                           {news.category}
                         </span>
                         <span className="text-xs text-muted-foreground">
@@ -144,7 +144,7 @@ export const FirmNews = () => {
                         {news.excerpt}
                       </p>
 
-                      <span className="inline-flex items-center text-accent font-medium text-sm group-hover:gap-2 transition-all">
+                      <span className="inline-flex items-center text-gold-600 font-medium text-sm group-hover:gap-2 transition-all">
                         Read more
                         <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </span>

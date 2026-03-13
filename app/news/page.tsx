@@ -2,8 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { ArrowRight, Calendar, Loader2 } from "lucide-react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
@@ -33,7 +31,7 @@ function NewsCard({
   return (
     <article
       className={cn(
-        "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-gold-500/30 cursor-pointer",
+        "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
@@ -50,9 +48,9 @@ function NewsCard({
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
-        {item.image ? (
+        {(item.images?.[0] ?? item.image) ? (
           <img
-            src={item.image}
+            src={item.images?.[0] ?? item.image}
             alt={item.title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -120,7 +118,6 @@ export default function NewsPage() {
 
   return (
     <>
-      <Navbar />
       <main id="main-content">
         <PageHero
           eyebrow="Stay Informed"
@@ -225,7 +222,6 @@ export default function NewsPage() {
           </Container>
         </section>
       </main>
-      <Footer />
 
       {/* News Modal */}
       <NewsModal

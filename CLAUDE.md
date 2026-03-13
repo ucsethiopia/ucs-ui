@@ -16,18 +16,18 @@
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Framework | Next.js (App Router) | 16.x |
-| UI Library | React | 19.x |
-| Language | TypeScript (strict mode) | 5.x |
-| Styling | Tailwind CSS | 4.x |
+| Layer             | Technology                 | Version             |
+| ----------------- | -------------------------- | ------------------- |
+| Framework         | Next.js (App Router)       | 16.x                |
+| UI Library        | React                      | 19.x                |
+| Language          | TypeScript (strict mode)   | 5.x                 |
+| Styling           | Tailwind CSS               | 4.x                 |
 | Component Library | shadcn/ui (new-york style) | Radix UI primitives |
-| Animation | Framer Motion | 12.x |
-| Charts | Recharts | 2.x |
-| Forms | React Hook Form + Zod | latest |
-| Icons | Lucide React | latest |
-| Theme | next-themes | 0.4.x |
+| Animation         | Framer Motion              | 12.x                |
+| Charts            | Recharts                   | 2.x                 |
+| Forms             | React Hook Form + Zod      | latest              |
+| Icons             | Lucide React               | latest              |
+| Theme             | next-themes                | 0.4.x               |
 
 ### Key Dependencies
 
@@ -54,6 +54,9 @@
 - **Phase 8**: Polish — scroll animations, spacing audit, max-width constraint (Infisical-style), mobile UX pass
 - **Phase 9**: Replace mock data with live API calls (all endpoints in `api-docs/`)
 - **Phase 10**: UX fixes — market data display restructure, skeleton loaders, 404 page, navbar font scaling
+- **Sprint focus**: UI overhaul, data integration, component sourcing, security audit
+- Duplicate test project created for safe UI experimentation
+- All major changes should be screenshot-reviewed using `skills/ui-visual-review.md`
 
 ### Known Issues to Fix
 
@@ -84,18 +87,18 @@
 
 ### Brand Colors (oklch-based, defined in `app/globals.css`)
 
-| Token | Usage |
-|-------|-------|
+| Token                   | Usage                                    |
+| ----------------------- | ---------------------------------------- |
 | `navy-950` → `navy-600` | Primary scale — backgrounds, text, cards |
-| `gold-600` → `gold-400` | Accent only — highlights, rings, CTAs |
-| White/off-white base | Light mode backgrounds |
+| `gold-600` → `gold-400` | Accent only — highlights, rings, CTAs    |
+| White/off-white base    | Light mode backgrounds                   |
 
 ### Typography
 
-| Role | Font | Variable |
-|------|------|----------|
-| Headlines (serif) | Playfair Display | `--font-playfair` |
-| Body (sans-serif) | Source Sans 3 | `--font-source-sans` |
+| Role              | Font             | Variable             |
+| ----------------- | ---------------- | -------------------- |
+| Headlines (serif) | Playfair Display | `--font-playfair`    |
+| Body (sans-serif) | Source Sans 3    | `--font-source-sans` |
 
 ### Motion Rules
 
@@ -194,10 +197,13 @@ npm run build    # Production build (verify before commits)
 npm run lint     # ESLint check
 npm run start    # Start production server
 ```
+
 ---
 
 ## Context Recovery Protocol
+
 If you are starting a new session or context was cleared:
+
 1. Read PLAN.md for the current sprint plan
 2. Run `git log --oneline -10` to see recent commits
 3. Run `git status` to see any uncommitted changes
@@ -206,4 +212,5 @@ If you are starting a new session or context was cleared:
 ---
 
 ## Tip
+
 After each completed task in PLAN.md, mark that task done in PLAN.md and update the >> pointer to the next task.' This keeps the plan current at all times.

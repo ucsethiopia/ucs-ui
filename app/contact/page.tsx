@@ -3,8 +3,6 @@
 import React from "react";
 import { useTheme } from "next-themes";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
 import { ContactForm } from "@/components/contact/contact-form";
 import { cn } from "@/lib/utils";
@@ -40,7 +38,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Navbar />
       <main id="main-content">
         <PageHero
           eyebrow="Get in Touch"
@@ -136,7 +133,6 @@ export default function ContactPage() {
           </Container>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

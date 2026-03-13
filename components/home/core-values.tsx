@@ -23,10 +23,10 @@ export function CoreValues() {
   });
 
   return (
-    <section className="py-12 sm:py-20 lg:py-28 bg-background">
+    <section className="py-10 sm:py-12 lg:py-16 bg-background">
       <Container>
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
             Our Foundation
           </p>
@@ -50,7 +50,7 @@ export function CoreValues() {
               <div
                 key={value.id}
                 className={cn(
-                  "group relative p-6 bg-card border border-border rounded-lg transition-all duration-500 hover:border-gold-500/50 hover:shadow-lg",
+                  "group relative p-6 bg-card border border-border rounded-lg transition-all duration-300 hover:border-gold-500/30 hover:shadow-xl hover:-translate-y-1",
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-8",

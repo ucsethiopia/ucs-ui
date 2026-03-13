@@ -1,8 +1,6 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { useTeamMember } from "@/hooks/use-team";
 import { teamMembers } from "@/lib/mock-data";
 import Link from "next/link";
@@ -27,11 +25,10 @@ interface TeamMemberPageProps {
 function PageSkeleton() {
   return (
     <>
-      <Navbar />
       <main>
         {/* Hero skeleton */}
         <div className="relative bg-navy-950 pt-24 pb-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
             <div className="h-4 w-24 bg-white/10 rounded animate-pulse mb-4" />
             <div className="h-12 w-72 bg-white/10 rounded animate-pulse mb-3" />
             <div className="h-6 w-48 bg-white/10 rounded animate-pulse" />
@@ -39,7 +36,7 @@ function PageSkeleton() {
         </div>
         {/* Stats skeleton */}
         <div className="bg-navy-900 py-6">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-3 gap-4">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-16 bg-white/5 rounded animate-pulse" />
             ))}
@@ -61,7 +58,6 @@ function PageSkeleton() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 }
@@ -86,7 +82,6 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
 
   return (
     <>
-      <Navbar />
       <main>
         {/* ─── Hero ─── */}
         <section className="relative bg-navy-950 pt-28 pb-20 overflow-hidden">
@@ -110,7 +105,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
             {initials}
           </div>
 
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
             <Link
               href="/about#team"
               className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm mb-8"
@@ -125,7 +120,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
               transition={{ duration: 0.6 }}
               className="max-w-3xl"
             >
-              <p className="text-gold-500 text-xs font-semibold uppercase tracking-[0.2em] mb-4">
+              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
                 Our Team
               </p>
               {/* Gold rule */}
@@ -140,7 +135,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
 
         {/* ─── Stats Strip ─── */}
         <section className="bg-navy-900 border-b border-white/10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -372,9 +367,9 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
 
         {/* ─── Related Team Members ─── */}
         <section className="py-20 bg-secondary/50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
             <div className="text-center mb-12">
-              <p className="text-gold-500 text-xs font-semibold uppercase tracking-[0.2em] mb-4">
+              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
                 Our Leadership
               </p>
               <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
@@ -423,7 +418,6 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }
