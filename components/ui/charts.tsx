@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LineChart, Line, ResponsiveContainer, YAxis, XAxis } from "recharts";
+import { LineChart, Line, AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from "recharts";
 import { cn } from "@/lib/utils";
 
 // Skeleton Loader
@@ -81,6 +81,59 @@ export const MiniLineChart = ({
           animationDuration={800}
         />
       </LineChart>
+    </ResponsiveContainer>
+  );
+};
+
+// Sparkline Chart — compact interactive area chart for stat cards
+export const SparklineChart = ({
+  data,
+  color = "var(--color-gold-500)",
+  valueFormatter,
+}: {
+  data: { date: string; value: number }[];
+  color?: string;
+  valueFormatter?: (v: number) => string;
+}) => {
+  if (!data || data.length === 0) return null;
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart data={data} margin={{ left: 0, right: 0, top: 6, bottom: 0 }}>
+        <defs>
+          <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopOpacity={0.25} />
+            <stop offset="100%" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <YAxis domain={["dataMin", "dataMax"]} hide />
+        <Tooltip
+          content={({ active, payload }) => {
+            if (!active || !payload?.length) return null;
+            const raw = payload[0].payload as unknown as { date: string; value: number };
+            return (
+              <div className="rounded-md bg-navy-950 border border-white/10 px-2.5 py-1.5 text-[10px] shadow-xl">
+                <p className="text-white/50 mb-0.5">{raw.date}</p>
+                <p className="font-semibold text-white">
+                  {valueFormatter ? valueFormatter(raw.value) : raw.value}
+                </p>
+              </div>
+            );
+          }}
+          cursor={{ stroke: "rgba(148,163,184,0.15)", strokeWidth: 1 }}
+        />
+        <Area
+          type="monotone"
+          dataKey="value"
+          stroke={color}
+          strokeWidth={2}
+          fill={color}
+          fillOpacity={0.15}
+          dot={false}
+          activeDot={{ r: 3.5, fill: color, strokeWidth: 0 }}
+          animationDuration={800}
+        />
+      </AreaChart>
     </ResponsiveContainer>
   );
 };

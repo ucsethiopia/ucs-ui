@@ -9,7 +9,8 @@ export interface NewsItem {
   excerpt: string;
   category: string;
   date: string;
-  image?: string;
+  image?: string;    // single-image fallback
+  images?: string[]; // API returns array; modal shows carousel if length > 1
   trend?: number[]; // For Economic News
   impact?: "high" | "medium" | "low"; // For Economic News
   author?: string; // For Firm News
@@ -35,6 +36,11 @@ const allNewsData: NewsItem[] = [
     content: `UCS Ethiopia is proud to announce a strategic partnership with the Commercial Bank of Ethiopia (CBE) to lead their comprehensive digital transformation initiative. This multi-year engagement will focus on modernizing core banking operations, implementing advanced digital platforms, and enhancing the overall customer experience across CBE's extensive branch network.\n\nThe partnership encompasses several key areas including process optimization, technology integration, change management, and capacity building for over 2,000 employees. Our team of consultants will work closely with CBE's leadership to ensure a smooth transition while maintaining operational excellence throughout the transformation journey.\n\n"This partnership represents a significant milestone in Ethiopia's financial sector modernization," said the UCS CEO. "We are committed to helping CBE become a leader in digital banking across Africa."`,
     category: "Partnership",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=500&fit=crop",
+    ],
     date: "2026-01-15",
     author: "UCS Communications",
   },
@@ -45,6 +51,10 @@ const allNewsData: NewsItem[] = [
     content: `The fourth annual Executive Leadership Summit, hosted by UCS Ethiopia, brought together over 200 senior executives from Ethiopia's leading corporations to discuss emerging business trends and strategic leadership in an evolving economic landscape.\n\nThe two-day event featured keynote speeches from international thought leaders, panel discussions on topics ranging from sustainable growth to digital innovation, and interactive workshops designed to equip executives with practical tools for navigating change.\n\nKey themes included the growing importance of ESG considerations, the role of technology in driving efficiency, and strategies for talent development in a competitive market.`,
     category: "Events",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=500&fit=crop",
+    ],
     date: "2026-01-10",
     author: "UCS Communications",
   },
@@ -55,6 +65,11 @@ const allNewsData: NewsItem[] = [
     content: `UCS Ethiopia has successfully completed a comprehensive strategic planning engagement with Awash Bank, one of Ethiopia's premier private financial institutions. The project delivered a detailed five-year strategic roadmap designed to guide the bank's growth trajectory and market expansion efforts.\n\nThe engagement involved extensive stakeholder consultations, market analysis, competitive benchmarking, and scenario planning. The resulting strategy addresses key areas including retail banking expansion, corporate client acquisition, digital services development, and operational excellence initiatives.`,
     category: "Strategy",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=500&fit=crop",
+    ],
     date: "2025-12-28",
     author: "UCS Communications",
   },
@@ -259,6 +274,11 @@ export const useFirmNews = (limit = 9) => {
           "Ultimate Consultancy Service has been selected as the lead strategic advisor for the Ministry of Finance's comprehensive public sector reform initiative. This landmark engagement will focus on modernizing financial management systems, strengthening governance frameworks, and building institutional capacity across federal government agencies. The project, which spans 18 months, will leverage UCS's deep expertise in public sector transformation and our proven track record of delivering sustainable reform outcomes in complex institutional environments.",
         image:
           "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
+          "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=500&fit=crop",
+          "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=500&fit=crop",
+        ],
         date: "2024-01-15",
         category: "Advisory",
         author: "Communications Team",
@@ -272,6 +292,10 @@ export const useFirmNews = (limit = 9) => {
           "We are proud to announce the graduation of 45 senior executives from our flagship Executive Leadership Program. This intensive 12-month program combines rigorous academic content with practical leadership challenges, preparing Ethiopia's next generation of business leaders. Participants represented diverse sectors including banking, manufacturing, agriculture, and technology, fostering valuable cross-industry perspectives and networks that will drive Ethiopia's economic development for years to come.",
         image:
           "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=500&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=500&fit=crop",
+          "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=500&fit=crop",
+        ],
         date: "2024-01-12",
         category: "Training",
         author: "Training Division",
@@ -286,6 +310,11 @@ export const useFirmNews = (limit = 9) => {
           "UCS Research Division has released its annual Ethiopian Private Sector Development Outlook, providing comprehensive analysis of the business environment, sectoral trends, and strategic opportunities. This year's report highlights the significant potential in manufacturing, agro-processing, and digital services, while addressing key challenges including access to finance, infrastructure gaps, and regulatory complexity. The research draws on extensive stakeholder consultations and quantitative analysis to provide actionable insights for business leaders and policymakers.",
         image:
           "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=500&fit=crop",
+          "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&h=500&fit=crop",
+        ],
         date: "2024-01-10",
         category: "Research",
         author: "Research Division",

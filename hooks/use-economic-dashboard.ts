@@ -6,6 +6,7 @@ export interface FXRate {
   rate: number;
   change: number;
   trend: "up" | "down" | "unchanged";
+  history?: TimeSeriesData[];
 }
 
 export interface Commodity {
@@ -64,7 +65,19 @@ export const useEconomicDashboard = () => {
       try {
         setData({
           fxRates: {
-            usd: { rate: 56.78, change: 0.23, trend: "up" },
+            usd: {
+              rate: 56.78,
+              change: 0.23,
+              trend: "up",
+              history: [
+                { date: "Jan", value: 54.20 },
+                { date: "Feb", value: 54.85 },
+                { date: "Mar", value: 55.30 },
+                { date: "Apr", value: 55.92 },
+                { date: "May", value: 56.35 },
+                { date: "Jun", value: 56.78 },
+              ],
+            },
             eur: { rate: 61.45, change: -0.12, trend: "down" },
             gbp: { rate: 70.92, change: 0.08, trend: "up" },
             aud: { rate: 36.70, change: 0.00, trend: "unchanged" },

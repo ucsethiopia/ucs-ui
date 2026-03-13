@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
       <main className="relative min-h-[85vh] flex items-center justify-center bg-background overflow-hidden">
         {/* Decorative top accent */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
@@ -38,7 +35,7 @@ export default function NotFound() {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 text-center px-6 max-w-lg mx-auto"
         >
-          <p className="text-gold-500 text-xs font-semibold uppercase tracking-[0.2em] mb-5">
+          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-5">
             Error 404
           </p>
 
@@ -55,14 +52,13 @@ export default function NotFound() {
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-md bg-navy-900 text-white text-sm font-medium hover:bg-navy-800 dark:bg-navy-800 dark:hover:bg-navy-700 transition-colors"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-sm bg-gold-500 text-navy-950 text-sm font-semibold hover:bg-gold-400 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Return to Home
           </Link>
         </motion.div>
       </main>
-      <Footer />
     </>
   );
 }

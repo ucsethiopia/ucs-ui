@@ -53,12 +53,12 @@ export function Navbar() {
       )}
     >
       <Container as="nav">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <div
               className={cn(
-                "font-serif text-xl sm:text-2xl font-bold tracking-tight transition-colors",
+                "font-serif text-base sm:text-lg font-bold tracking-tight transition-colors",
                 textClass,
               )}
             >
@@ -85,7 +85,7 @@ export function Navbar() {
             <ThemeToggle inheritTextColor={true} className={cn(textClass)} />
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-sm bg-gold-500 px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+              className="inline-flex items-center justify-center rounded-sm bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"
             >
               Get in Touch
             </Link>

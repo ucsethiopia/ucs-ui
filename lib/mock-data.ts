@@ -258,33 +258,33 @@ export const economicIndicators: EconomicIndicator[] = [
 export const coreValues = [
   {
     id: "1",
-    title: "Integrity",
+    title: "Enthusiasm",
     description:
-      "We uphold the highest ethical standards in all our engagements, building trust through transparency and honesty.",
+      "We go above and beyond in every engagement, driven by a genuine commitment to exceeding our clients' expectations.",
   },
   {
     id: "2",
-    title: "Excellence",
+    title: "Quality Service",
     description:
-      "We are committed to delivering exceptional results that exceed expectations and drive measurable impact.",
+      "We are committed to delivering cost-effective, high-quality service that creates real and measurable value.",
   },
   {
     id: "3",
-    title: "Collaboration",
+    title: "Endurance",
     description:
-      "We work closely with our clients as partners, fostering relationships built on mutual respect and shared goals.",
+      "We see every engagement through to completion with steadfast dedication and commitment to end results.",
   },
   {
     id: "4",
-    title: "Innovation",
+    title: "Synergy",
     description:
-      "We embrace creative thinking and cutting-edge methodologies to solve complex business challenges.",
+      "We work in close partnership with our clients and collaborators, building relationships grounded in trust and shared purpose.",
   },
   {
     id: "5",
-    title: "Client Focus",
+    title: "Integrity",
     description:
-      "Our clients' success is our success. We tailor our approach to meet each client's unique needs.",
+      "We uphold the highest standards of integrity and respect for professionalism in every interaction and deliverable.",
   },
 ];
 
@@ -837,7 +837,7 @@ export const servicePillars: ServicePillar[] = [
     id: "1",
     title: "Training",
     description:
-      "Comprehensive learning programs designed to build capabilities at all organizational levels, from executive leadership to technical specialists.",
+      "UCS provides training services to help organizations develop the cutting-edge knowledge and skills needed to remain abreast of the latest learning curve.",
     offerings: [
       "Executive Development Programs",
       "Management Development Programs",
@@ -854,7 +854,7 @@ export const servicePillars: ServicePillar[] = [
     id: "2",
     title: "Advisory",
     description:
-      "Strategic consulting services that help organizations navigate complex challenges and achieve sustainable growth.",
+      "UCS offers consultancy and advisory services to help organizations effectively design and implement strategic change and transformation initiatives.",
     offerings: [
       "Strategic Planning",
       "Organizational Change Management",
@@ -870,7 +870,7 @@ export const servicePillars: ServicePillar[] = [
     id: "3",
     title: "Research & Publication",
     description:
-      "Rigorous research and analysis that provides the insights organizations need to make informed decisions.",
+      "UCS conducts studies to support organizations in opening up new field of possibilities and fostering sustainable growth both in the short and long term.",
     offerings: [
       "Organizational Studies",
       "Feasibility Studies",
@@ -886,7 +886,7 @@ export const servicePillars: ServicePillar[] = [
     id: "4",
     title: "Communication & Promotion",
     description:
-      "Creative services that help organizations communicate effectively with their stakeholders and build their brands.",
+      "UCS supports organizations in the documentation of best practices as well as in the preparation of communication and promotion resource materials.",
     offerings: [
       "Educational Materials Development",
       "Newsletter Design & Production",

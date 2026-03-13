@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -8,33 +9,40 @@ import { ArrowRight } from "lucide-react";
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Parallax background effect
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const companyName = "Ultimate Consultancy Service";
-  const motto = "Driving Growth For Ethiopian Enterprises";
+  const motto = "Think Agile, Get Inspired for Change!";
   const words = motto.split(" ");
 
   return (
     <section
       ref={containerRef}
-      className="relative h-screen min-h-[700px] flex items-center overflow-hidden"
+      className="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden"
     >
       {/* Background */}
-      <motion.div className="absolute inset-0 z-0" style={{ y }}>
-        <div
-          className="absolute inset-0 bg-cover bg-no-repeat"
-          style={{
-            backgroundImage: `url('/hero-background.jpg')`,
-            backgroundPosition: "center 30%",
-          }}
-        />
+      <motion.div
+        className="absolute inset-0 z-0"
+        style={{ y: bgY, scale: 1.12 }}
+      >
+        <div className="absolute inset-0">
+          <Image
+            src="/hero-background.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            style={{ objectPosition: "center 30%" }}
+          />
+        </div>
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-navy-950/80 via-navy-950/70 to-navy-950/90" />
         {/* Pattern Overlay - Should I comment this out?*/} 
@@ -48,14 +56,19 @@ export function Hero() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-32 text-center"
-        style={{ opacity }}
+        className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 py-32 text-center"
+        style={{ y: contentY, opacity }}
       >
         <div className="max-w-4xl mx-auto">
           {/* Eyebrow */}
-          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-6">
+          <motion.p
+            className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-6"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             {companyName}
-          </p>
+          </motion.p>
 
           {/* Main Heading with word-by-word animation */}
           <div className="overflow-hidden mb-8">
@@ -67,12 +80,12 @@ export function Hero() {
               {words.map((word, index) => (
                 <motion.span
                   key={index}
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  initial={{ opacity: 0, y: 28, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{
-                    duration: 0.8,
-                    delay: 0.3 + index * 0.15,
-                    ease: [0.25, 0.1, 0.25, 1],
+                    duration: 0.65,
+                    delay: 0.3 + index * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                 >
                   {word}
@@ -86,7 +99,7 @@ export function Hero() {
             className="overflow-hidden mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
+            transition={{ delay: 0.75, duration: 0.6 }}
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-16 h-0.5 bg-gold-500" />
@@ -99,20 +112,21 @@ export function Hero() {
           {/* Subheading */}
           <motion.p
             className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 1.4, duration: 0.8 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
           >
-            Strategic advisory, world-class training, and insightful research to
-            transform your organization and achieve sustainable success.
+            Making a positive difference in organizations and individuals&apos;
+            life through the provision of value adding advisory and training
+            services.
           </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 1.6, duration: 0.8 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.05 }}
           >
             <Link
               href="/services"
@@ -133,21 +147,17 @@ export function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2, duration: 0.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/30"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.8, duration: 0.6 }}
       >
+        <span className="text-xs uppercase tracking-widest">Scroll</span>
         <motion.div
-          className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center"
-          animate={{ y: [0, 5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <motion.div
-            className="w-1.5 h-3 bg-white/60 rounded-full mt-2"
-            animate={{ y: [0, 8, 0], opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
+          ↓
         </motion.div>
       </motion.div>
     </section>

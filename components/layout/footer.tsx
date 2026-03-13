@@ -27,14 +27,14 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-white">
+    <footer className="bg-navy-950 text-white border-t-2 border-white/10">
       <Container>
         {/* Main Footer */}
         <div className="grid grid-cols-1 gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
-              <div className="font-serif text-2xl font-bold tracking-tight">
+              <div className="font-serif text-xl font-bold tracking-tight">
                 UCS
                 <span className="text-gold-500"> Ethiopia</span>
               </div>

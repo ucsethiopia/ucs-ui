@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, User, TrendingUp } from "lucide-react";
+import { X, Calendar, User, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { NewsItem } from "@/hooks/use-news";
 import { MiniLineChart } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,12 @@ interface NewsModalProps {
 
 export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
   const titleId = useId();
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
 
+  // Keyboard close
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,7 +31,29 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
+  // Track active slide + prev/next availability
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      setSlideIndex(emblaApi.selectedScrollSnap());
+      setCanPrev(emblaApi.canScrollPrev());
+      setCanNext(emblaApi.canScrollNext());
+    };
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => { emblaApi.off("select", onSelect); emblaApi.off("reInit", onSelect); };
+  }, [emblaApi]);
+
+  // Reset carousel when article changes
+  useEffect(() => {
+    setSlideIndex(0);
+    emblaApi?.scrollTo(0, true);
+  }, [news?.id, emblaApi]);
+
   if (!news) return null;
+
+  const images = news.images?.length ? news.images : news.image ? [news.image] : [];
+  const isCarousel = images.length > 1;
 
   const formattedDate = new Date(news.date).toLocaleDateString("en-US", {
     month: "short",
@@ -70,15 +98,74 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
             {/* Scrollable Content */}
             <div className="overflow-y-auto">
-              {/* Image (Firm News) */}
-              {news.image && (
-                <div className="relative h-64 md:h-80 w-full overflow-hidden">
-                  <img
-                    src={news.image}
-                    alt={news.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              {/* Images */}
+              {images.length > 0 && (
+                <div className="relative h-64 md:h-80 w-full flex-shrink-0 overflow-hidden">
+                  {isCarousel ? (
+                    <>
+                      <div className="overflow-hidden h-full" ref={emblaRef}>
+                        <div className="flex h-full">
+                          {images.map((src, i) => (
+                            <div key={i} className="relative flex-[0_0_100%] h-full">
+                              <img
+                                src={src}
+                                alt={`${news.title} — ${i + 1} of ${images.length}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+                      {/* Prev / Next buttons */}
+                      <button
+                        onClick={() => emblaApi?.scrollPrev()}
+                        disabled={!canPrev}
+                        aria-label="Previous image"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-black/60 disabled:opacity-0 disabled:pointer-events-none"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => emblaApi?.scrollNext()}
+                        disabled={!canNext}
+                        aria-label="Next image"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-all hover:bg-black/60 disabled:opacity-0 disabled:pointer-events-none"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                      {/* Counter */}
+                      <div className="absolute top-3 left-4 bg-black/40 backdrop-blur-sm text-white text-[10px] font-medium px-2.5 py-1 rounded-full">
+                        {slideIndex + 1} / {images.length}
+                      </div>
+                      {/* Dot indicators */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+                        {images.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => emblaApi?.scrollTo(i)}
+                            aria-label={`Go to image ${i + 1}`}
+                            className={cn(
+                              "h-1.5 rounded-full transition-all duration-200",
+                              i === slideIndex
+                                ? "w-5 bg-white"
+                                : "w-1.5 bg-white/50 hover:bg-white/80",
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={images[0]}
+                        alt={news.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    </>
+                  )}
                 </div>
               )}
 
@@ -96,19 +183,16 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                   >
                     {news.category}
                   </span>
-
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{formattedDate}</span>
                   </div>
-
                   {news.author && (
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <User className="w-3.5 h-3.5" />
                       <span>{news.author}</span>
                     </div>
                   )}
-
                   {isEconomicNews && news.impact && (
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <TrendingUp className="w-3.5 h-3.5" />
@@ -130,25 +214,16 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                 {/* Economic News: Trend Chart */}
                 {isEconomicNews && news.trend && (
                   <div className="mb-6 p-4 bg-muted/30 rounded-lg border">
-                    <h3 className="text-sm font-semibold text-foreground mb-3">
-                      Market Trend
-                    </h3>
+                    <h3 className="text-sm font-semibold text-foreground mb-3">Market Trend</h3>
                     <MiniLineChart
-                      data={news.trend.map((value, index) => ({
-                        date: `D${index + 1}`,
-                        value,
-                      }))}
+                      data={news.trend.map((value, index) => ({ date: `D${index + 1}`, value }))}
                       height={100}
-                      color={
-                        news.impact === "high"
-                          ? "var(--color-gold-500)"
-                          : "var(--color-navy-600)"
-                      }
+                      color={news.impact === "high" ? "var(--color-gold-500)" : "var(--color-navy-600)"}
                     />
                   </div>
                 )}
 
-                {/* Full Content (Firm News) */}
+                {/* Full Content */}
                 {news.content && (
                   <div className="prose prose-sm max-w-none">
                     <p className="text-foreground leading-relaxed whitespace-pre-line">
@@ -157,7 +232,6 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                   </div>
                 )}
 
-                {/* Fallback for Economic News without full content */}
                 {isEconomicNews && !news.content && (
                   <div className="text-sm text-muted-foreground italic">
                     Full analysis available in our economic reports.

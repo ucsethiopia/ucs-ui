@@ -29,14 +29,14 @@ export function ServicesOverview() {
   });
 
   return (
-    <section className="py-12 sm:py-20 lg:py-28 bg-secondary/30 relative overflow-hidden">
+    <section className="py-10 sm:py-12 lg:py-16 bg-secondary/30 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
 
       <Container className="relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
             Our Expertise
           </p>
