@@ -1,7 +1,7 @@
 # PLAN.md — UCS Ethiopia Frontend Sprint
 
 > Active branch: `feat/ux-overhaul`
-> Last updated: 2026-03-13 (session 5)
+> Last updated: 2026-03-13 (session 6)
 
 ---
 
@@ -65,7 +65,8 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **10.8** Split `EconomicDashboard` component — now < 150 lines; charts extracted to `MarketAnalytics`
 - [x] **10.2** Implement native-themed 404 page (`app/not-found.tsx`)
 - [x] **10.3** Add skeleton loaders for all async data components (dashboard, news, team)
-- [ ] **10.4** Replace marquee placeholder text with actual/AI-generated logos styled to brand
+- [x] **10.4** Replace marquee placeholder text with actual/AI-generated logos styled to brand — rembg background removal pipeline for 4 JPEG/RGB sources; all 13 logos copied to `public/images/clients/` with kebab-case names; `mock-data.ts` paths updated (.jpg→.png); UI review pass: brightness-95 default / brightness-100 + scale-110 hover + company name fade-up; spacing tightened (mb-12→mb-8); Oromia Insurance & Oromia Bank re-processed; Hibret Insurance threshold-cleaned; screenshots pruned to 2 hero comparison shots
+- [ ] **10.4b** Source logos for 5 strategic partners (Glocal Management Partners, B and M Development Consultants, JEPICS, Halkago Connect, Zinger Solutions Limited) via web search; copy to `public/images/partners/`; update `mock-data.ts`
 - [x] **10.5** Improve Training pillar animation on services page — true circular orbit via x/y keyframes
 - [x] **10.6** Add commodity symbols to economic dashboard display
 - [x] **10.7** Add x/y axis reference values to dashboard charts
@@ -84,7 +85,7 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **11.8** Services page section polish — improve pillar card proportions, icon sizing, and hover animations *(added scroll-reveal to header, AnimatePresence tab content transition)*
 - [x] **11.9** About page visual flow — tighten CEO highlight, improve stats strip, refine team grid spacing *(fixed vision icon to gold, added ScrollReveal to team header, removed redundant CEO wrapper div, tightened py-28→py-24)*
 - [x] **11.10** UI review pass — use `/ui-review` skill, screenshot all pages, fix top 3 regressions *(fixed: "01/04" pillar indicator, statistics padding normalized, statistics py-28→py-24, left column header now animates on tab change)*
-- [x] **11.11** Fix Hero background image — replaced CSS `background-image` with Next.js `<Image fill priority sizes="100vw" />`, `object-cover`, `objectPosition: center 30%`; eliminates layout shift, proper responsive scaling on all breakpoints; UI review 10/10 ✅
+- [x] **11.11** Fix Hero background image — replaced CSS `background-image` with Next.js `<Image fill priority sizes="100vw" />`, `object-cover`, `objectPosition: center 30%`; eliminates layout shift, proper responsive scaling on all breakpoints; UI review 10/10
 - [x] **11.12** Hero height decision pending — applied `h-[85vh] min-h-[650px]` (Option A) for stakeholder review; compare against original `h-screen min-h-[700px]`; screenshots saved at `screenshots/hero-option-a-85vh.png` vs `screenshots/hero-desktop-top.png`; revert or keep based on feedback
 - [x] **11.13** Refactor Economic Dashboard + remove MarketAnalytics — eliminated duplicate commodity cards (already in TickerBar), deleted `MarketAnalytics` section entirely, merged sparkline charts inline into each stat card (right-aligned, interactive Recharts tooltip on hover); added `SparklineChart` component to `charts.tsx`; section footprint reduced by ~50%; 5 cards in 3-2 grid: Policy Rate, T-Bill Yield, ESX Aggregate, GDP, ESX Companies — applied `h-[85vh] min-h-[650px]` (Option A) for stakeholder review; compare against original `h-screen min-h-[700px]`; screenshots saved at `screenshots/hero-option-a-85vh.png` vs `screenshots/hero-desktop-top.png`; revert or keep based on feedback
 
@@ -92,13 +93,9 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **11.15** Hero entrance animation overhaul — applied prototype animation to existing hero: `bgY` parallax `0→25%` with `scale: 1.12` on background; content block gets independent `contentY` `0→15%` parallax; opacity fade extended to `[0, 0.6]`; eyebrow text gets fade-in entrance (`y: 16→0`, delay 0.1s); headline words use blur-in (`blur(4px)→0`) with faster ease `[0.22, 1, 0.36, 1]` and tighter stagger (×0.1 vs ×0.15); subheading delay 1.4s→0.9s; CTA delay 1.6s→1.05s; scroll indicator replaced with "Scroll" text + bouncing ↓ arrow
 
 ### Phase 12 — News + About Improvements
-- [ ] **12.1** Add keyword search input to news archive (client-side filter against loaded articles)
 - [ ] **12.2** Add date-range filter to news archive (month/year picker, filter against article `publishedAt`)
 - [ ] **12.3** Improve `NewsModal` — better article typography (drop cap, pull quote), keyboard trap, smooth open/close
 - [x] **12.4** About page — "Our Story" section rebuilt from prototype code: two-column grid (`items-center`), left has `ScrollReveal`-wrapped serif heading + 3-paragraph origin narrative, right has `ScrollReveal delay={0.15}` milestone timeline — each item uses a **circle badge** (w-10 h-10 rounded-full, border, numbered 1–5) with a **vertical connector line** (`w-px flex-1 bg-border`) between items (except last), gold year label + serif bold title inline, muted description below; implemented with `ScrollReveal` (replaced manual `storyRef`/`storyVisible`); also applied global vertical spacing audit reducing `py-28`/`py-24` → max `py-16` site-wide
-- [ ] **12.5** About page — enrich team member bios: add quote field, expand expertise tags, improve photo aspect-ratio handling
-- [ ] **12.6** About page — CEO highlight section redesign: larger portrait, pull-quote overlay, signature element
-- [ ] **12.7** UI review pass — screenshot news and about pages, fix top issues
 
 ### Phase 13 — Content Scraping + Real Copy
 - [x] **13.1** Research UCS Ethiopia existing web presence — scraped ucsethiopia.com (React SPA, client-side routing)
@@ -132,6 +129,18 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [ ] **16.4** Deploy to staging/preview — push branch, trigger Vercel preview deploy, share preview URL with stakeholders
 - [ ] **16.5** Prepare demo script — page-by-page walkthrough notes, key features to highlight, talking points for each section
 - [ ] **16.6** Final stakeholder review — collect sign-off on UI, content, and data; document any last-minute change requests
+
+---
+
+### Phase 16.0 — Visual Gap Analysis & Improvements *(completed session 6)*
+- [x] **G1** FirmNews editorial grid — replaced horizontal carousel with asymmetric 2-col grid (featured large card left + 3 small horizontal cards right); `firm-news.tsx`
+- [x] **G2** Home stats strip — new `HomeStatsStrip` component between ServicesOverview and CoreValues; animated counters (150+, 15+, 4, 5+); `home-stats-strip.tsx` + `app/page.tsx`
+- [x] **G3** Hero headline scale — increased to `text-5xl md:text-6xl lg:text-7xl xl:text-8xl`; `hero.tsx`
+- [x] **G4** Stats dark band — `bg-navy-950` forced dark section, white text; `statistics.tsx`
+- [x] **G5** Remove CoreValues from About — `CoreValues` import + usage removed; `about/page.tsx`
+- [x] **G6** Services program grid — replaced Training accordion with 2-col chip grid (icon + name + subtitle); `service-pillars.tsx`
+- [x] **G7** Contact map polish — gold-tinted border `border-gold-500/20`; `contact/page.tsx`
+- [x] **G8** Dashboard card contrast — `border-border/60 shadow-md` on stat cards; `economic-dashboard.tsx`
 
 ---
 

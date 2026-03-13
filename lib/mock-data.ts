@@ -758,42 +758,42 @@ export const trainingPrograms: TrainingProgram[] = [
 
 // Client logos mock data
 export const clientLogos: ClientLogo[] = [
-  { id: "1", name: "Awash Bank", logo: "/images/clients/awash-bank.svg" },
+  { id: "1", name: "Awash Bank", logo: "/images/clients/awash-bank.png" },
   {
     id: "2",
     name: "Awash Insurance",
-    logo: "/images/clients/awash-insurance.svg",
+    logo: "/images/clients/awash-insurance.png",
   },
-  { id: "3", name: "Oromia Bank", logo: "/images/clients/oromia-bank.svg" },
+  { id: "3", name: "Oromia Bank", logo: "/images/clients/oromia-bank.png" },
   {
     id: "4",
     name: "Oromia Insurance Company",
-    logo: "/images/clients/oromia-insurance.svg",
+    logo: "/images/clients/oromia-insurance.png",
   },
   {
     id: "5",
-    name: "Hibret Insurance (Unic Ethiopia)",
-    logo: "/images/clients/hibret-insurance.svg",
+    name: "Hibret Insurance",
+    logo: "/images/clients/hibret-insurance.png",
   },
   {
     id: "6",
     name: "Global Bank Ethiopia",
-    logo: "/images/clients/global-bank.svg",
+    logo: "/images/clients/global-bank.png",
   },
-  { id: "7", name: "Kenera", logo: "/images/clients/kenera.svg" },
-  { id: "8", name: "Gebecon PLC", logo: "/images/clients/gebecon.svg" },
-  { id: "9", name: "Ministry of Agriculture", logo: "/images/clients/moa.svg" },
-  { id: "10", name: "Minaye PLC", logo: "/images/clients/minaye.svg" },
-  { id: "11", name: "DH Geda", logo: "/images/clients/dh.svg" },
+  { id: "7", name: "Kenera", logo: "/images/clients/kenera.png" },
+  { id: "8", name: "Gebecon PLC", logo: "/images/clients/gebecon.png" },
+  { id: "9", name: "Ministry of Agriculture", logo: "/images/clients/moa.png" },
+  { id: "10", name: "Minaye PLC", logo: "/images/clients/minaye.png" },
+  { id: "11", name: "DH Geda", logo: "/images/clients/dh-geda.png" },
   {
     id: "12",
     name: "Ethiopian Water Technology Institute",
-    logo: "/images/clients/ewti.svg",
+    logo: "/images/clients/ewti.png",
   },
   {
     id: "13",
     name: "House of Peoples' Representatives",
-    logo: "/images/clients/hpr.svg",
+    logo: "/images/clients/hpr.png",
   },
 ];
 
@@ -802,31 +802,31 @@ export const strategicPartners: Partner[] = [
   {
     id: "1",
     name: "Glocal Management Partners",
-    logo: "/images/partners/glocal.svg",
+    logo: "",
     description: "International consulting firm",
   },
   {
     id: "2",
     name: "B and M Development Consultants",
-    logo: "/images/partners/bm-dev.svg",
+    logo: "",
     description: "Development consulting",
   },
   {
     id: "3",
     name: "JEPICS",
-    logo: "/images/partners/jepics.svg",
+    logo: "",
     description: "Japanese consulting partner",
   },
   {
     id: "4",
     name: "Halkago Connect",
-    logo: "/images/partners/halkago.svg",
+    logo: "",
     description: "Technology solutions",
   },
   {
     id: "5",
     name: "Zinger Solutions Limited",
-    logo: "/images/partners/zinger.svg",
+    logo: "",
     description: "Business solutions",
   },
 ];
