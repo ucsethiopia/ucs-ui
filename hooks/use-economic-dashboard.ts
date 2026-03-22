@@ -58,8 +58,18 @@ export interface EconomicDashboardData {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function directionToTrend(d: string): "up" | "down" | "unchanged" {
-  if (d === "increased") return "up";
-  if (d === "decreased") return "down";
+  if (d === "increased" || d === "up") return "up";
+  if (d === "decreased" || d === "down") return "down";
+  return "unchanged";
+}
+
+/** Derive trend from the last two points in a time series */
+function trendFromHistory(history: TimeSeriesData[]): "up" | "down" | "unchanged" {
+  if (history.length < 2) return "unchanged";
+  const prev = history[history.length - 2].value;
+  const curr = history[history.length - 1].value;
+  if (curr > prev) return "up";
+  if (curr < prev) return "down";
   return "unchanged";
 }
 
@@ -248,19 +258,20 @@ export const useEconomicDashboard = () => {
               symbol: "XAU/USD",
               name: "Gold",
               price: commodities["XAU/USD"]?.price ?? 0,
-              trend: directionToTrend(commodities["XAU/USD"]?.direction ?? "unchanged"),
+              // Derive trend from historical data — API direction field is unreliable for commodities
+              trend: trendFromHistory(goldHistory),
             },
             silver: {
               symbol: "XAG/USD",
               name: "Silver",
               price: commodities["XAG/USD"]?.price ?? 0,
-              trend: directionToTrend(commodities["XAG/USD"]?.direction ?? "unchanged"),
+              trend: trendFromHistory(silverHistory),
             },
             coffee: {
               symbol: "KC1",
               name: "Coffee",
               price: commodities["KC1"]?.price ?? 0,
-              trend: directionToTrend(commodities["KC1"]?.direction ?? "unchanged"),
+              trend: trendFromHistory(coffeeHistory),
             },
           },
           commodityHistory: {
