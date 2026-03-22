@@ -120,9 +120,11 @@ function downsampleCommodityMonthly(
   return Object.entries(byMonth)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([month, value]) => ({
+      // timeZone: UTC prevents date rollback in UTC+ timezones (ISO date strings parse as UTC midnight)
       date: new Date(month + "-01").toLocaleString("default", {
         month: "short",
-        year: "2-digit",
+        year: "numeric",
+        timeZone: "UTC",
       }),
       value,
     }));
