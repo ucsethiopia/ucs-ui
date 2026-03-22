@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from "react";
 
+const BASE_URL = process.env.NEXT_PUBLIC_MARKET_DATA_API_URL ?? "";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export interface FXRate {
   rate: number;
-  change: number;
   trend: "up" | "down" | "unchanged";
   history?: TimeSeriesData[];
 }
@@ -13,7 +16,6 @@ export interface Commodity {
   symbol: string;
   name: string;
   price: number;
-  change: number;
   trend: "up" | "down" | "unchanged";
 }
 
@@ -29,31 +31,112 @@ export interface EconomicDashboardData {
     gbp: FXRate;
     aud: FXRate;
     jpy: FXRate;
+    cny: FXRate;
   };
   commodities: {
     gold: Commodity;
     silver: Commodity;
     coffee: Commodity;
   };
+  commodityHistory: {
+    gold: TimeSeriesData[];
+    silver: TimeSeriesData[];
+    coffee: TimeSeriesData[];
+  };
   interestRate: {
     policyRate: number;
     tbillYield: number;
-    history: TimeSeriesData[];
   };
   gdp: {
     value: number;
     year: string;
     growth: number;
-    history: TimeSeriesData[];
-  };
-  esx: {
-    aggregate: number;
-    change: number;
-    changePercent: number;
-    history: TimeSeriesData[];
   };
   lastUpdated: string;
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function directionToTrend(d: string): "up" | "down" | "unchanged" {
+  if (d === "increased") return "up";
+  if (d === "decreased") return "down";
+  return "unchanged";
+}
+
+/** Returns YYYY-MM-DD strings for [today - months, today] */
+function buildDateRange(months: number): { from: string; to: string } {
+  const to = new Date();
+  const from = new Date();
+  from.setMonth(from.getMonth() - months);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  return { from: fmt(from), to: fmt(to) };
+}
+
+/**
+ * Downsample a daily historical FX array to one point per month
+ * (last entry for each YYYY-MM group).
+ */
+function downsampleMonthly(
+  raw: { date: string; rates: Record<string, number> }[],
+  currency: string
+): TimeSeriesData[] {
+  const byMonth: Record<string, number> = {};
+  for (const entry of raw) {
+    const month = entry.date.slice(0, 7); // YYYY-MM
+    if (entry.rates[currency] != null) {
+      byMonth[month] = entry.rates[currency];
+    }
+  }
+  return Object.entries(byMonth)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, value]) => ({
+      date: new Date(month + "-01").toLocaleString("default", { month: "short" }),
+      value,
+    }));
+}
+
+/**
+ * Downsample a daily commodity array to one point per month
+ * (last entry for each YYYY-MM group).
+ */
+function downsampleCommodityMonthly(
+  raw: { date: string; close: number }[]
+): TimeSeriesData[] {
+  const byMonth: Record<string, number> = {};
+  for (const entry of raw) {
+    const month = entry.date.slice(0, 7);
+    byMonth[month] = entry.close; // last entry per month wins
+  }
+  return Object.entries(byMonth)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, value]) => ({
+      date: new Date(month + "-01").toLocaleString("default", {
+        month: "short",
+        year: "2-digit",
+      }),
+      value,
+    }));
+}
+
+/** Static GDP annual history — World Bank data, update manually each year */
+const GDP_HISTORY_VALUES: { value: number; year: string }[] = [
+  { year: "2019", value: 96.1 },
+  { year: "2020", value: 107.6 },
+  { year: "2021", value: 111.3 },
+  { year: "2022", value: 120.4 },
+  { year: "2023", value: 137.8 },
+  { year: "2024", value: 149.74 },
+];
+
+function computeGdpGrowth(): number {
+  const len = GDP_HISTORY_VALUES.length;
+  if (len < 2) return 0;
+  const prev = GDP_HISTORY_VALUES[len - 2].value;
+  const curr = GDP_HISTORY_VALUES[len - 1].value;
+  return parseFloat((((curr - prev) / prev) * 100).toFixed(1));
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export const useEconomicDashboard = () => {
   const [data, setData] = useState<EconomicDashboardData | null>(null);
@@ -61,99 +144,155 @@ export const useEconomicDashboard = () => {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    let cancelled = false;
+
+    async function fetchAll() {
+      setLoading(true);
+      setError(null);
+
       try {
+        const { from, to } = buildDateRange(12);
+        const commodFrom = "2015-01-01";
+
+        const [
+          fxRes,
+          commodRes,
+          interestRes,
+          gdpRes,
+          fxHistUsdRes,
+          fxHistEurRes,
+          fxHistCnyRes,
+          commodHistGoldRes,
+          commodHistSilverRes,
+          commodHistCoffeeRes,
+        ] = await Promise.all([
+          fetch(`${BASE_URL}/fx/latest`),
+          fetch(`${BASE_URL}/commodities/latest`),
+          fetch(`${BASE_URL}/interest`),
+          fetch(`${BASE_URL}/gdp`),
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=USD`),
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=EUR`),
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=CNY`),
+          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`),
+          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`),
+          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`),
+        ]);
+
+        // Throw on critical HTTP errors
+        for (const res of [fxRes, commodRes, interestRes, gdpRes]) {
+          if (!res.ok) throw new Error(`API error: ${res.status} ${res.url}`);
+        }
+
+        const [fx, commod, interest, gdp, fxHistUsd, fxHistEur, fxHistCny, commodGold, commodSilver, commodCoffee] =
+          await Promise.all([
+            fxRes.json(),
+            commodRes.json(),
+            interestRes.json(),
+            gdpRes.json(),
+            fxHistUsdRes.ok ? fxHistUsdRes.json() : { data: [] },
+            fxHistEurRes.ok ? fxHistEurRes.json() : { data: [] },
+            fxHistCnyRes.ok ? fxHistCnyRes.json() : { data: [] },
+            commodHistGoldRes.ok ? commodHistGoldRes.json() : { data: [] },
+            commodHistSilverRes.ok ? commodHistSilverRes.json() : { data: [] },
+            commodHistCoffeeRes.ok ? commodHistCoffeeRes.json() : { data: [] },
+          ]);
+
+        if (cancelled) return;
+
+        const rates = fx.rates ?? {};
+        const commodities = commod.commodities ?? {};
+
+        const usdHistory = downsampleMonthly(fxHistUsd.data ?? [], "USD");
+        const eurHistory = downsampleMonthly(fxHistEur.data ?? [], "EUR");
+        const cnyHistory = downsampleMonthly(fxHistCny.data ?? [], "CNY");
+
+        const goldHistory = downsampleCommodityMonthly(commodGold.data ?? []);
+        const silverHistory = downsampleCommodityMonthly(commodSilver.data ?? []);
+        const coffeeHistory = downsampleCommodityMonthly(commodCoffee.data ?? []);
+
+        const gdpGrowth = computeGdpGrowth();
+        const lastGdp = GDP_HISTORY_VALUES[GDP_HISTORY_VALUES.length - 1];
+
         setData({
           fxRates: {
             usd: {
-              rate: 56.78,
-              change: 0.23,
-              trend: "up",
-              history: [
-                { date: "Jan", value: 54.20 },
-                { date: "Feb", value: 54.85 },
-                { date: "Mar", value: 55.30 },
-                { date: "Apr", value: 55.92 },
-                { date: "May", value: 56.35 },
-                { date: "Jun", value: 56.78 },
-              ],
+              rate: rates.USD?.rate ?? 0,
+              trend: directionToTrend(rates.USD?.direction ?? "unchanged"),
+              history: usdHistory,
             },
-            eur: { rate: 61.45, change: -0.12, trend: "down" },
-            gbp: { rate: 70.92, change: 0.08, trend: "up" },
-            aud: { rate: 36.70, change: 0.00, trend: "unchanged" },
-            jpy: { rate: 0.38, change: 0.01, trend: "up" },
+            eur: {
+              rate: rates.EUR?.rate ?? 0,
+              trend: directionToTrend(rates.EUR?.direction ?? "unchanged"),
+              history: eurHistory,
+            },
+            gbp: {
+              rate: rates.GBP?.rate ?? 0,
+              trend: directionToTrend(rates.GBP?.direction ?? "unchanged"),
+            },
+            aud: {
+              rate: rates.AUD?.rate ?? 0,
+              trend: directionToTrend(rates.AUD?.direction ?? "unchanged"),
+            },
+            jpy: {
+              rate: rates.JPY?.rate ?? 0,
+              trend: directionToTrend(rates.JPY?.direction ?? "unchanged"),
+            },
+            cny: {
+              rate: rates.CNY?.rate ?? 0,
+              trend: directionToTrend(rates.CNY?.direction ?? "unchanged"),
+              history: cnyHistory,
+            },
           },
           commodities: {
             gold: {
               symbol: "XAU/USD",
               name: "Gold",
-              price: 2650.0,
-              change: 0.4,
-              trend: "up",
+              price: commodities["XAU/USD"]?.price ?? 0,
+              trend: directionToTrend(commodities["XAU/USD"]?.direction ?? "unchanged"),
             },
             silver: {
               symbol: "XAG/USD",
               name: "Silver",
-              price: 31.25,
-              change: -0.5,
-              trend: "down",
+              price: commodities["XAG/USD"]?.price ?? 0,
+              trend: directionToTrend(commodities["XAG/USD"]?.direction ?? "unchanged"),
             },
             coffee: {
-              symbol: "Coffee/USD",
+              symbol: "KC1",
               name: "Coffee",
-              price: 2.18,
-              change: 0.0,
-              trend: "unchanged",
+              price: commodities["KC1"]?.price ?? 0,
+              trend: directionToTrend(commodities["KC1"]?.direction ?? "unchanged"),
             },
           },
+          commodityHistory: {
+            gold: goldHistory,
+            silver: silverHistory,
+            coffee: coffeeHistory,
+          },
           interestRate: {
-            policyRate: 15.0,
-            tbillYield: 14.628,
-            history: [
-              { date: "2023-Q1", value: 7.0 },
-              { date: "2023-Q2", value: 7.0 },
-              { date: "2023-Q3", value: 15.0 },
-              { date: "2023-Q4", value: 15.0 },
-              { date: "2024-Q1", value: 15.0 },
-              { date: "2024-Q2", value: 15.0 },
-            ],
+            policyRate: interest.policy_rate ?? 0,
+            tbillYield: interest.tbill_yield ?? 0,
           },
           gdp: {
-            value: 160.5,
-            year: "2024",
-            growth: 6.1,
-            history: [
-              { date: "2019", value: 96.1 },
-              { date: "2020", value: 107.6 },
-              { date: "2021", value: 111.3 },
-              { date: "2022", value: 120.4 },
-              { date: "2023", value: 137.8 },
-              { date: "2024", value: 160.5 },
-            ],
-          },
-          esx: {
-            aggregate: 125.5,
-            change: 1.75,
-            changePercent: 1.41,
-            history: [
-              { date: "Jan", value: 110.2 },
-              { date: "Feb", value: 108.5 },
-              { date: "Mar", value: 112.3 },
-              { date: "Apr", value: 118.0 },
-              { date: "May", value: 122.1 },
-              { date: "Jun", value: 125.5 },
-            ],
+            value: gdp.value ?? lastGdp.value,
+            year: String(gdp.year ?? lastGdp.year),
+            growth: gdpGrowth,
           },
           lastUpdated: new Date().toISOString(),
         });
-        setLoading(false);
       } catch (err) {
-        setError(err as Error);
-        setLoading(false);
+        if (!cancelled) {
+          console.error("[useEconomicDashboard]", err);
+          setError(err as Error);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    }, 1200);
+    }
 
-    return () => clearTimeout(timer);
+    fetchAll();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { data, loading, error };
