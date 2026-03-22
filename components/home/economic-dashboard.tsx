@@ -162,9 +162,12 @@ export function EconomicDashboard() {
                 : `Updated: ${new Date(data?.lastUpdated || "").toLocaleTimeString()}`}
             </p>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-muted-foreground font-medium text-[10px] hidden sm:inline">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            <span className="text-emerald-400 font-semibold text-xs tracking-widest hidden sm:inline">
               LIVE
             </span>
           </div>
@@ -234,6 +237,7 @@ export function EconomicDashboard() {
             valueFormatter={(v) => `$${v.toFixed(2)}`}
             loading={loading}
           />
+          {/* FX sparkline row — commented out pending layout decision; uncomment to restore
           <StatCard
             label="USD / ETB"
             value={loading ? "—" : (data?.fxRates.usd.rate.toFixed(2) ?? "—")}
@@ -264,6 +268,7 @@ export function EconomicDashboard() {
             valueFormatter={(v) => v.toFixed(2)}
             loading={loading}
           />
+          */}
         </motion.div>
       </div>
     </section>
