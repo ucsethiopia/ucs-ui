@@ -6,6 +6,16 @@ import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
 import { SparklineChart, Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
+// Chart colors — chosen for visibility on dark navy cards
+const COLORS = {
+  gold:   "var(--color-gold-500)",   // oklch(0.75 0.14 85)  — warm yellow-gold
+  silver: "oklch(0.78 0.09 210)",    // bright steel-blue — visible on dark bg
+  coffee: "oklch(0.68 0.12 50)",     // warm amber-brown — coffee-toned
+  usd:    "oklch(0.65 0.10 225)",    // medium bright blue
+  eur:    "var(--color-gold-400)",   // oklch(0.82 0.12 85)   — light gold
+  cny:    "var(--color-gold-600)",   // oklch(0.65 0.15 85)   — deep amber
+} as const;
+
 // ─── TextStatCard ─────────────────────────────────────────────────────────────
 
 interface TextStatCardProps {
@@ -18,18 +28,24 @@ interface TextStatCardProps {
 function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-5 py-3">
-        <Skeleton className="h-3 w-24 mb-2" />
-        <Skeleton className="h-7 w-28 mb-2" />
-        <Skeleton className="h-3 w-20" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex items-center gap-3">
+        <Skeleton className="h-3 w-20 flex-shrink-0" />
+        <div className="w-px h-4 bg-border flex-shrink-0" />
+        <Skeleton className="h-5 w-16 flex-shrink-0" />
+        <Skeleton className="h-3 w-28" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-5 py-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-2xl font-bold text-foreground tabular-nums">{value}</p>
-      <p className="text-xs text-muted-foreground mt-1">{subLabel}</p>
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex items-center gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-[10px] text-muted-foreground uppercase tracking-widest whitespace-nowrap flex-shrink-0">
+        {label}
+      </span>
+      <div className="w-px h-4 bg-border flex-shrink-0" />
+      <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+        {value}
+      </span>
+      <span className="text-xs text-muted-foreground truncate">{subLabel}</span>
     </div>
   );
 }
@@ -53,31 +69,34 @@ function StatCard({
   badge,
   badgeVariant = "neutral",
   chartData,
-  chartColor = "var(--color-gold-500)",
+  chartColor = COLORS.gold,
   valueFormatter,
   loading,
 }: StatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg p-5 flex items-center gap-4">
-        <div className="flex-1">
-          <Skeleton className="h-3 w-24 mb-3" />
-          <Skeleton className="h-8 w-28 mb-3" />
-          <Skeleton className="h-5 w-16 rounded-full" />
+      <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-3">
+        <div className="flex-shrink-0 w-28">
+          <Skeleton className="h-3 w-20 mb-2" />
+          <Skeleton className="h-7 w-24 mb-2" />
+          <Skeleton className="h-4 w-14 rounded-full" />
         </div>
-        <Skeleton className="w-36 h-20 flex-shrink-0 rounded" />
+        <Skeleton className="flex-1 h-24 rounded" />
       </div>
     );
   }
 
   return (
-    <div className="bg-card border border-border rounded-lg p-5 flex items-center gap-4 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <div className="flex-1 min-w-0">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
-        <p className="text-2xl font-bold text-foreground tabular-nums mt-1">{value}</p>
+    <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      {/* Narrow text column — shrinks to content width */}
+      <div className="flex-shrink-0 min-w-0">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5 whitespace-nowrap">
+          {label}
+        </p>
+        <p className="text-xl font-bold text-foreground tabular-nums">{value}</p>
         <span
           className={cn(
-            "inline-block mt-2 px-2 py-0.5 text-xs font-medium rounded-full",
+            "inline-block mt-1.5 px-2 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap",
             badgeVariant === "neutral" &&
               "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
             badgeVariant === "up" &&
@@ -89,8 +108,9 @@ function StatCard({
           {badge}
         </span>
       </div>
+      {/* Chart — fills remaining space */}
       {chartData && chartData.length > 0 && (
-        <div className="w-36 h-20 flex-shrink-0">
+        <div className="flex-1 min-w-0 h-24">
           <SparklineChart
             data={chartData}
             color={chartColor}
@@ -124,10 +144,10 @@ export function EconomicDashboard() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-10 bg-muted/20 border-b border-border">
+    <section ref={ref} className="py-8 bg-muted/20 border-b border-border">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
         <motion.div
-          className="flex items-center justify-between mb-6"
+          className="flex items-center justify-between mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -150,9 +170,9 @@ export function EconomicDashboard() {
           </div>
         </motion.div>
 
-        {/* Text stat row — GDP + interest rates */}
+        {/* Compact inline stat row — GDP + interest rates */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3"
           initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.05 }}
@@ -166,32 +186,31 @@ export function EconomicDashboard() {
           <TextStatCard
             label="T-Bill Yield"
             value={loading ? "—" : `${data?.interestRate.tbillYield.toFixed(2)}%`}
-            subLabel="91-day T-Bill Yield"
+            subLabel="91-day NBE T-Bill"
             loading={loading}
           />
           <TextStatCard
-            label="NBE Policy Rate"
+            label="Policy Rate"
             value={loading ? "—" : `${data?.interestRate.policyRate.toFixed(2)}%`}
             subLabel="National Bank of Ethiopia"
             loading={loading}
           />
         </motion.div>
 
-        {/* Sparkline graph grid — commodities (row 1) + FX (row 2) */}
+        {/* Sparkline grid — commodities (row 1) + FX (row 2) */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
           initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          {/* Row 1 — Commodities */}
           <StatCard
             label="Gold (XAU/USD)"
             value={loading ? "—" : `$${data?.commodities.gold.price.toLocaleString()}`}
             badge={loading ? "—" : trendBadge(data?.commodities.gold.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.commodities.gold.trend ?? "unchanged")}
             chartData={data?.commodityHistory.gold}
-            chartColor="var(--color-gold-500)"
+            chartColor={COLORS.gold}
             valueFormatter={(v) => `$${v.toLocaleString()}`}
             loading={loading}
           />
@@ -201,7 +220,7 @@ export function EconomicDashboard() {
             badge={loading ? "—" : trendBadge(data?.commodities.silver.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.commodities.silver.trend ?? "unchanged")}
             chartData={data?.commodityHistory.silver}
-            chartColor="var(--color-navy-400)"
+            chartColor={COLORS.silver}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
             loading={loading}
           />
@@ -211,39 +230,37 @@ export function EconomicDashboard() {
             badge={loading ? "—" : trendBadge(data?.commodities.coffee.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.commodities.coffee.trend ?? "unchanged")}
             chartData={data?.commodityHistory.coffee}
-            chartColor="var(--color-navy-700)"
+            chartColor={COLORS.coffee}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
             loading={loading}
           />
-
-          {/* Row 2 — FX Rates */}
           <StatCard
-            label="USD / ETB Rate"
+            label="USD / ETB"
             value={loading ? "—" : (data?.fxRates.usd.rate.toFixed(2) ?? "—")}
             badge={loading ? "—" : trendBadge(data?.fxRates.usd.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.fxRates.usd.trend ?? "unchanged")}
             chartData={data?.fxRates.usd.history}
-            chartColor="var(--color-navy-600)"
+            chartColor={COLORS.usd}
             valueFormatter={(v) => v.toFixed(2)}
             loading={loading}
           />
           <StatCard
-            label="EUR / ETB Rate"
+            label="EUR / ETB"
             value={loading ? "—" : (data?.fxRates.eur.rate.toFixed(2) ?? "—")}
             badge={loading ? "—" : trendBadge(data?.fxRates.eur.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.fxRates.eur.trend ?? "unchanged")}
             chartData={data?.fxRates.eur.history}
-            chartColor="var(--color-gold-500)"
+            chartColor={COLORS.eur}
             valueFormatter={(v) => v.toFixed(2)}
             loading={loading}
           />
           <StatCard
-            label="CNY / ETB Rate"
+            label="CNY / ETB"
             value={loading ? "—" : (data?.fxRates.cny.rate.toFixed(2) ?? "—")}
             badge={loading ? "—" : trendBadge(data?.fxRates.cny.trend ?? "unchanged")}
             badgeVariant={trendVariant(data?.fxRates.cny.trend ?? "unchanged")}
             chartData={data?.fxRates.cny.history}
-            chartColor="var(--color-navy-500)"
+            chartColor={COLORS.cny}
             valueFormatter={(v) => v.toFixed(2)}
             loading={loading}
           />
