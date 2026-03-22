@@ -70,7 +70,8 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="blue-black"
+          themes={["blue-black", "inverted"]}
           enableSystem={false}
           disableTransitionOnChange={false}
         >
@@ -80,7 +81,7 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <div className="relative mx-auto max-w-[1440px]">
+          <div className="relative mx-auto max-w-[1440px] xl:border-x xl:border-border/20">
             {/* Left edge — only visible when viewport > 1440px (gutters exist) */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-20 hidden min-[1441px]:block" aria-hidden="true">
               {/* Full-height dashed line */}

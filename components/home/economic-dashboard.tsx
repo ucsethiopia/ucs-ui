@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 // Chart colors — chosen for visibility on dark navy cards
 const COLORS = {
-  gold:   "var(--color-gold-500)",   // oklch(0.75 0.14 85)  — warm yellow-gold
+  gold:   "oklch(0.72 0.17 142)",    // green — XAU/USD chart
   silver: "oklch(0.78 0.09 210)",    // bright steel-blue — visible on dark bg
   coffee: "oklch(0.68 0.12 50)",     // warm amber-brown — coffee-toned
   usd:    "oklch(0.65 0.10 225)",    // medium bright blue
@@ -154,7 +154,7 @@ export function EconomicDashboard() {
         >
           <div>
             <h2 className="text-base lg:text-lg font-serif font-semibold text-foreground">
-              Economic Dashboard
+              Ethiopian Economic Dashboard
             </h2>
             <p className="text-[10px] text-muted-foreground mt-0.5">
               {loading

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.blue-black *));
 
 :root {
   /* UCS Ethiopia Brand Colors - Navy & Gold */
@@ -49,7 +49,7 @@
   --sidebar-ring: var(--gold-500);
 }
 
-.dark {
+.blue-black {
   --background: var(--navy-950);
   --foreground: oklch(0.98 0.005 90);
   --card: var(--navy-900);
@@ -82,6 +82,15 @@
   --sidebar-accent-foreground: oklch(0.98 0.005 90);
   --sidebar-border: var(--navy-700);
   --sidebar-ring: var(--gold-500);
+}
+
+.inverted {
+  filter: invert(1) hue-rotate(180deg);
+}
+.inverted img,
+.inverted video,
+.inverted [data-no-invert] {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 @theme inline {
