@@ -1,7 +1,7 @@
 # PLAN.md — UCS Ethiopia Frontend Sprint
 
 > Active branch: `feat/ux-overhaul`
-> Last updated: 2026-03-15 (session 7)
+> Last updated: 2026-03-22 (session 8)
 
 ---
 
@@ -44,6 +44,15 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **8.12** Commit changed made and note that phase 8 is complete, push code to current branch
 
 ### Phase 9 — Mock Data → Live API Integration *(Market Data API live as of session 7)*
+- [x] **9.1b** Economic Dashboard restructure (session 3):
+  - ESX removed entirely (unreliable `/esx/latest`, no historical API)
+  - AUD sparkline card removed from dashboard (AUD still visible in TickerBar)
+  - Compact `TextStatCard` row added above graph grid: Ethiopian GDP · T-Bill Yield · NBE Policy Rate (no charts, fast read)
+  - Commodity sparkline cards added: Gold (XAU/USD) · Silver (XAG/USD) · Coffee (KC1) — 10-year monthly history via `/commodities/historical`
+  - EUR/ETB and CNY/ETB sparkline cards replace AUD/ESX slots — 12-month monthly history via `/fx/historical`
+  - Graph grid is now 2×3: Gold | Silver | Coffee / USD | EUR | CNY
+  - Removed static `ESX_HISTORY` and `INTEREST_HISTORY` arrays; `GDP_HISTORY` refactored to `GDP_HISTORY_VALUES`
+  - Hook fires 10 parallel fetches (added fxHistEurRes, fxHistCnyRes, 3 commodity historical fetches)
 - [x] **9.1** Replace `useEconomicDashboard` mock with live endpoints:
   - Parallel fetch: `GET /fx/latest`, `/commodities/latest`, `/interest`, `/gdp`, `/esx/latest`
   - **USD & AUD sparklines**: `GET /fx/historical` (12-month, downsampled monthly) — `buildDateRange()` + `downsampleMonthly()` helpers implemented
