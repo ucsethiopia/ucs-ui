@@ -1,20 +1,17 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { useTeamMember } from "@/hooks/use-team";
-import { teamMembers } from "@/lib/mock-data";
+import { useTeamMember, useTeamApi } from "@/hooks/use-team";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Linkedin,
   Mail,
-  Award,
+  Phone,
   Briefcase,
-  Star,
 } from "lucide-react";
 import { use } from "react";
-import { cn } from "@/lib/utils";
 
 interface TeamMemberPageProps {
   params: Promise<{
@@ -64,21 +61,29 @@ function PageSkeleton() {
 
 export default function TeamMemberPage({ params }: TeamMemberPageProps) {
   const resolvedParams = use(params);
-  const { member, isLoading, error } = useTeamMember(
+  const { member, isLoading, notFound: memberNotFound, error } = useTeamMember(
     resolvedParams.member_name,
   );
+  const { team } = useTeamApi();
 
   if (isLoading) return <PageSkeleton />;
-  if (error || !member) notFound();
+  if (memberNotFound || error || !member) notFound();
 
   const initials = member.name
     .split(" ")
+    .filter((n) => /^[A-Za-z]/.test(n))
     .map((n) => n[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
-  const bioParagraphs = member.bio.split("\n\n").filter(Boolean);
+  const displayTitle = member.titles?.[0] ?? member.role;
+  const summaryParagraphs = member.summary.split("\n\n").filter(Boolean);
+
+  // Related team members (exclude current)
+  const related = team
+    .filter((m) => m.name !== member.name)
+    .slice(0, 3);
 
   return (
     <>
@@ -123,12 +128,11 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
               <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
                 Our Team
               </p>
-              {/* Gold rule */}
               <div className="w-10 h-px bg-gold-500/60 mb-6" />
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 text-balance">
                 {member.name}
               </h1>
-              <p className="text-lg text-gold-400 font-medium">{member.title}</p>
+              <p className="text-lg text-gold-400 font-medium">{member.role}</p>
             </motion.div>
           </div>
         </section>
@@ -145,31 +149,24 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
               {[
                 {
                   label: "Years Experience",
-                  value: member.yearsOfExperience
-                    ? `${member.yearsOfExperience}+`
+                  value: member.years_of_experience
+                    ? `${member.years_of_experience}+`
                     : "—",
                 },
                 {
-                  label: "Expertise Areas",
-                  value: member.expertise?.length ?? "—",
+                  label: "Qualifications",
+                  value: member.titles?.length ?? "—",
                 },
                 {
-                  label: "Key Achievements",
-                  value: member.achievements?.length ?? "—",
+                  label: "Achievements",
+                  value: member.grants_awards?.length
+                    ? `${member.grants_awards.length}`
+                    : "—",
                 },
-                ...(member.certifications && member.certifications.length > 0
-                  ? [
-                      {
-                        label: "Certifications",
-                        value: member.certifications.length,
-                      },
-                    ]
-                  : [
-                      {
-                        label: "Industry",
-                        value: "Advisory",
-                      },
-                    ]),
+                {
+                  label: "Industry",
+                  value: "Advisory",
+                },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -191,7 +188,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
         <section className="py-20 lg:py-28 bg-background">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-              {/* Left: Image, contact, certifications */}
+              {/* Left: Image and contact */}
               <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
                 {/* Profile image with gold accent frame */}
                 <motion.div
@@ -201,12 +198,19 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   className="relative"
                 >
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-muted shadow-xl">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
-                      }}
-                    />
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-navy-900 flex items-center justify-center">
+                        <span className="font-serif text-6xl font-bold text-white/20">
+                          {initials}
+                        </span>
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/50 to-transparent" />
                   </div>
                   {/* Gold corner accents */}
@@ -216,9 +220,9 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
 
                 {/* Contact links */}
                 <div className="space-y-2.5">
-                  {member.linkedinUrl && (
+                  {member.contact?.linkedin && (
                     <a
-                      href={member.linkedinUrl}
+                      href={member.contact.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
@@ -229,21 +233,32 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       </span>
                     </a>
                   )}
-                  {member.email && (
+                  {member.contact?.email && (
                     <a
-                      href={`mailto:${member.email}`}
+                      href={`mailto:${member.contact.email}`}
                       className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
                     >
                       <Mail className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground truncate group-hover:text-gold-600 transition-colors">
-                        {member.email}
+                        {member.contact.email}
+                      </span>
+                    </a>
+                  )}
+                  {member.contact?.phone && (
+                    <a
+                      href={`tel:${member.contact.phone}`}
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
+                    >
+                      <Phone className="h-4 w-4 text-gold-500" />
+                      <span className="text-sm font-medium text-foreground group-hover:text-gold-600 transition-colors">
+                        {member.contact.phone}
                       </span>
                     </a>
                   )}
                 </div>
 
                 {/* Experience badge */}
-                {member.yearsOfExperience && (
+                {member.years_of_experience > 0 && (
                   <div className="flex items-center gap-3 px-4 py-3 bg-gold-500/5 border border-gold-500/20 rounded-lg">
                     <Briefcase className="h-5 w-5 text-gold-500 flex-shrink-0" />
                     <div>
@@ -251,29 +266,22 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                         Years of Experience
                       </p>
                       <p className="font-serif text-xl font-bold text-foreground">
-                        {member.yearsOfExperience}+
+                        {member.years_of_experience}+
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* Certifications */}
-                {member.certifications && member.certifications.length > 0 && (
+                {/* Academic titles */}
+                {member.titles && member.titles.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Award className="h-4 w-4 text-gold-500" />
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Certifications
-                      </p>
-                    </div>
-                    <ul className="space-y-2">
-                      {member.certifications.map((cert, idx) => (
-                        <li
-                          key={idx}
-                          className="flex items-start gap-2.5 text-sm text-muted-foreground"
-                        >
-                          <Star className="h-3 w-3 text-gold-500 flex-shrink-0 mt-1" />
-                          <span>{cert}</span>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Qualifications
+                    </p>
+                    <ul className="space-y-1">
+                      {member.titles.map((t, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground">
+                          {t}
                         </li>
                       ))}
                     </ul>
@@ -281,14 +289,14 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 )}
               </div>
 
-              {/* Right: Bio, expertise, achievements */}
+              {/* Right: Summary, skills, grants */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.25 }}
                 className="lg:col-span-2 space-y-16"
               >
-                {/* Biography */}
+                {/* Summary / biography */}
                 <div>
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-1 h-6 bg-gold-500 rounded-full" />
@@ -297,13 +305,14 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                     </h2>
                   </div>
                   <div className="space-y-5">
-                    {bioParagraphs.map((paragraph, idx) => (
+                    {summaryParagraphs.map((paragraph, idx) => (
                       <p
                         key={idx}
-                        className={cn(
-                          "text-muted-foreground leading-[1.8]",
-                          idx === 0 ? "text-[17px]" : "text-base",
-                        )}
+                        className={
+                          idx === 0
+                            ? "text-muted-foreground leading-[1.8] text-[17px]"
+                            : "text-muted-foreground leading-[1.8] text-base"
+                        }
                       >
                         {paragraph}
                       </p>
@@ -311,8 +320,8 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   </div>
                 </div>
 
-                {/* Expertise tag grid */}
-                {member.expertise && member.expertise.length > 0 && (
+                {/* Technical skills */}
+                {member.technical_skills && member.technical_skills.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-1 h-6 bg-gold-500 rounded-full" />
@@ -321,7 +330,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       </h3>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
-                      {member.expertise.map((skill, idx) => (
+                      {member.technical_skills.flatMap((cat) => cat.skills).map((skill, idx) => (
                         <span
                           key={idx}
                           className="inline-flex items-center gap-1.5 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:border-gold-500/50 hover:text-gold-600 transition-colors cursor-default"
@@ -334,17 +343,17 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   </div>
                 )}
 
-                {/* Achievements — numbered with large gold serifs */}
-                {member.achievements && member.achievements.length > 0 && (
+                {/* Grants & awards */}
+                {member.grants_awards && member.grants_awards.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-1 h-6 bg-gold-500 rounded-full" />
                       <h3 className="font-serif text-2xl font-bold text-foreground">
-                        Key Achievements
+                        Grants &amp; Awards
                       </h3>
                     </div>
                     <div className="space-y-6">
-                      {member.achievements.map((achievement, idx) => (
+                      {member.grants_awards.map((award, idx) => (
                         <div key={idx} className="flex gap-5 items-start">
                           <span
                             className="font-serif font-bold text-gold-500/30 leading-none flex-shrink-0 select-none"
@@ -353,11 +362,34 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                             {String(idx + 1).padStart(2, "0")}
                           </span>
                           <p className="text-muted-foreground leading-relaxed pt-2 text-[15px]">
-                            {achievement}
+                            {award.description}
+                            {award.year ? ` (${award.year})` : ""}
                           </p>
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Leadership programs */}
+                {member.leadership_programs && member.leadership_programs.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-1 h-6 bg-gold-500 rounded-full" />
+                      <h3 className="font-serif text-2xl font-bold text-foreground">
+                        Leadership Programs
+                      </h3>
+                    </div>
+                    <ul className="space-y-3">
+                      {member.leadership_programs.map((prog, idx) => (
+                        <li key={idx}>
+                          <p className="font-semibold text-foreground">{prog.title}</p>
+                          {prog.description && (
+                            <p className="text-sm text-muted-foreground mt-0.5">{prog.description}</p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </motion.div>
@@ -366,24 +398,22 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
         </section>
 
         {/* ─── Related Team Members ─── */}
-        <section className="py-20 bg-secondary/50">
-          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
-            <div className="text-center mb-12">
-              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-                Our Leadership
-              </p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
-                Meet Other Team Members
-              </h2>
-            </div>
+        {related.length > 0 && (
+          <section className="py-20 bg-secondary/50">
+            <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
+              <div className="text-center mb-12">
+                <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
+                  Our Leadership
+                </p>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+                  Meet Other Team Members
+                </h2>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {teamMembers
-                .filter((m) => m.id !== member.id)
-                .slice(0, 3)
-                .map((teamMember, idx) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {related.map((teamMember, idx) => (
                   <motion.div
-                    key={teamMember.id}
+                    key={teamMember.name}
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: idx * 0.08 }}
@@ -394,12 +424,15 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                     >
                       <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">
-                          <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                            style={{
-                              backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop')`,
-                            }}
-                          />
+                          {teamMember.image ? (
+                            <img
+                              src={teamMember.image}
+                              alt={teamMember.name}
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-navy-900" />
+                          )}
                           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
                         </div>
                         <div className="p-6">
@@ -407,16 +440,17 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                             {teamMember.name}
                           </h3>
                           <p className="text-gold-600 font-medium text-sm">
-                            {teamMember.title}
+                            {teamMember.role}
                           </p>
                         </div>
                       </div>
                     </Link>
                   </motion.div>
                 ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
     </>
   );

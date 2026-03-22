@@ -48,9 +48,9 @@ function NewsCard({
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.images?.[0] ?? item.image) ? (
+        {(item.images?.[0] ?? item.main_image) ? (
           <img
-            src={item.images?.[0] ?? item.image}
+            src={item.images?.[0] ?? item.main_image ?? ""}
             alt={item.title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -62,7 +62,7 @@ function NewsCard({
 
         {/* Category Tag */}
         <span className="absolute top-4 left-4 px-3 py-1 bg-gold-500 text-navy-950 text-xs font-semibold rounded-sm uppercase tracking-wide">
-          {item.category}
+          {item.tags?.[0] ?? "News"}
         </span>
       </div>
 
@@ -81,7 +81,7 @@ function NewsCard({
 
         {/* Excerpt */}
         <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 flex-1">
-          {item.excerpt}
+          {item.subtitle}
         </p>
 
         {/* Read More */}
@@ -108,7 +108,7 @@ export default function NewsPage() {
 
   const filteredNews = useMemo(() => {
     if (selectedCategory === "All") return data;
-    return data.filter((item) => item.category === selectedCategory);
+    return data.filter((item) => item.tags?.includes(selectedCategory));
   }, [data, selectedCategory]);
 
   const handleReadMore = (item: NewsItem) => {
