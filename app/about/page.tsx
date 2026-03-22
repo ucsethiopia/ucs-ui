@@ -5,8 +5,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
 import { Statistics } from "@/components/statistics";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { useTeamApi } from "@/hooks/use-team";
-import { type TeamMember } from "@/lib/mock-data";
+import { useTeamApi, type TeamMember } from "@/hooks/use-team";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
@@ -43,7 +42,9 @@ function TeamMemberCard({
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop')`,
+                  backgroundImage: member.image
+                    ? `url('${member.image}')`
+                    : `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop')`,
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
@@ -60,22 +61,22 @@ function TeamMemberCard({
                 {member.name}
               </h3>
               <p className="text-gold-600 font-medium text-base mb-6">
-                {member.title}
+                {member.role}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-4 lg:line-clamp-none lg:max-h-none">
-                {member.bio.split("\n\n")[0]}
+                {member.summary.split("\n\n")[0]}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-6 hidden lg:block line-clamp-2">
-                {member.bio.split("\n\n")[1]}
+                {member.summary.split("\n\n")[1]}
               </p>
               <div className="flex items-center gap-6">
                 <span className="inline-flex items-center text-sm font-semibold text-foreground transition-colors group-hover:text-gold-600">
                   View Full Profile →
                 </span>
-                {member.yearsOfExperience && (
+                {member.years_of_experience > 0 && (
                   <span className="text-sm text-muted-foreground">
                     <span className="font-semibold text-gold-600">
-                      {member.yearsOfExperience}+
+                      {member.years_of_experience}+
                     </span>{" "}
                     years experience
                   </span>
@@ -105,7 +106,9 @@ function TeamMemberCard({
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
+              backgroundImage: member.image
+                ? `url('${member.image}')`
+                : `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
@@ -117,7 +120,7 @@ function TeamMemberCard({
             {member.name}
           </h3>
           <p className="text-gold-600 font-medium text-sm mb-4">
-            {member.title}
+            {member.role}
           </p>
           <span className="inline-flex items-center text-sm font-semibold text-foreground transition-colors group-hover:text-gold-600">
             View Profile →
@@ -136,8 +139,9 @@ export default function AboutPage() {
       rootMargin: "0px 0px -50px 0px",
     });
 
-  const owner = team.find((m) => m.isOwner);
-  const otherMembers = team.filter((m) => !m.isOwner);
+  // First team member is shown as the featured "owner/CEO" card
+  const owner = team[0] ?? null;
+  const otherMembers = team.slice(1);
 
   return (
     <>
@@ -402,7 +406,7 @@ export default function AboutPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                     {otherMembers.map((member, index) => (
                       <TeamMemberCard
-                        key={member.id}
+                        key={member.name}
                         member={member}
                         index={index + 1}
                         isVisible={teamVisible}

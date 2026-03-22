@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Send, Loader2, Check } from "lucide-react";
-import { servicePillars, simulateApiDelay } from "@/lib/mock-data";
+import { servicePillars } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 const contactSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  fullname: z.string().min(1, "Name is required"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
   phone: z
     .string()
@@ -57,12 +57,27 @@ export function ContactForm() {
     }
   }, [isSubmitSuccessful]);
 
+  const BASE_URL = process.env.NEXT_PUBLIC_UCS_SERVICE_API_URL ?? "";
+
   const onSubmit = async (data: ContactFormData) => {
     try {
-      await simulateApiDelay(data, 1500);
-      toast.success("Message sent!", {
-        description: "We'll get back to you within 24 hours.",
+      const res = await fetch(`${BASE_URL}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
+      if (res.status === 503) {
+        // Saved but email notification failed — still treat as success
+        toast.success("Message received!", {
+          description: "We'll get back to you shortly.",
+        });
+      } else if (!res.ok) {
+        throw new Error(`API error ${res.status}`);
+      } else {
+        toast.success("Message sent!", {
+          description: "We'll get back to you within 24 hours.",
+        });
+      }
     } catch {
       toast.error("Something went wrong", {
         description: "Please try again or email us directly.",
@@ -103,18 +118,18 @@ export function ContactForm() {
       {/* Name & Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+          <label htmlFor="fullname" className="block text-sm font-medium text-foreground mb-2">
             Full Name <span className="text-destructive">*</span>
           </label>
           <input
-            {...register("name")}
-            id="name"
+            {...register("fullname")}
+            id="fullname"
             type="text"
             placeholder="John Doe"
-            aria-describedby={errors.name ? "name-error" : undefined}
-            className={cn(inputClass, errors.name && "border-destructive")}
+            aria-describedby={errors.fullname ? "fullname-error" : undefined}
+            className={cn(inputClass, errors.fullname && "border-destructive")}
           />
-          <FieldError id="name-error" message={errors.name?.message} />
+          <FieldError id="fullname-error" message={errors.fullname?.message} />
         </div>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">

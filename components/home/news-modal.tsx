@@ -2,10 +2,9 @@
 
 import { useEffect, useId, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, User, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { NewsItem } from "@/hooks/use-news";
-import { MiniLineChart } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
 interface NewsModalProps {
@@ -52,7 +51,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
   if (!news) return null;
 
-  const images = news.images?.length ? news.images : news.image ? [news.image] : [];
+  const images = news.images?.length ? news.images : news.main_image ? [news.main_image] : [];
   const isCarousel = images.length > 1;
 
   const formattedDate = new Date(news.date).toLocaleDateString("en-US", {
@@ -61,7 +60,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
     year: "numeric",
   });
 
-  const isEconomicNews = !!news.trend;
+  const primaryTag = news.tags?.[0] ?? null;
 
   return (
     <AnimatePresence>
@@ -173,30 +172,19 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
               <div className="p-6 md:p-8">
                 {/* Category & Meta */}
                 <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span
-                    className={cn(
-                      "px-3 py-1 text-xs font-medium rounded-full",
-                      isEconomicNews && news.impact === "high"
-                        ? "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-                        : "bg-accent/10 text-accent",
-                    )}
-                  >
-                    {news.category}
-                  </span>
+                  {primaryTag && (
+                    <span className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
+                      {primaryTag}
+                    </span>
+                  )}
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{formattedDate}</span>
                   </div>
-                  {news.author && (
+                  {news.team && (
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <User className="w-3.5 h-3.5" />
-                      <span>{news.author}</span>
-                    </div>
-                  )}
-                  {isEconomicNews && news.impact && (
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      <span className="capitalize">{news.impact} Impact</span>
+                      <span>{news.team}</span>
                     </div>
                   )}
                 </div>
@@ -206,35 +194,19 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                   {news.title}
                 </h2>
 
-                {/* Excerpt */}
-                <p className="text-base text-muted-foreground mb-6 leading-relaxed">
-                  {news.excerpt}
-                </p>
-
-                {/* Economic News: Trend Chart */}
-                {isEconomicNews && news.trend && (
-                  <div className="mb-6 p-4 bg-muted/30 rounded-lg border">
-                    <h3 className="text-sm font-semibold text-foreground mb-3">Market Trend</h3>
-                    <MiniLineChart
-                      data={news.trend.map((value, index) => ({ date: `D${index + 1}`, value }))}
-                      height={100}
-                      color={news.impact === "high" ? "var(--color-gold-500)" : "var(--color-navy-600)"}
-                    />
-                  </div>
+                {/* Subtitle / excerpt */}
+                {news.subtitle && (
+                  <p className="text-base text-muted-foreground mb-6 leading-relaxed">
+                    {news.subtitle}
+                  </p>
                 )}
 
-                {/* Full Content */}
-                {news.content && (
+                {/* Full body text */}
+                {news.news && (
                   <div className="prose prose-sm max-w-none">
                     <p className="text-foreground leading-relaxed whitespace-pre-line">
-                      {news.content}
+                      {news.news}
                     </p>
-                  </div>
-                )}
-
-                {isEconomicNews && !news.content && (
-                  <div className="text-sm text-muted-foreground italic">
-                    Full analysis available in our economic reports.
                   </div>
                 )}
               </div>
