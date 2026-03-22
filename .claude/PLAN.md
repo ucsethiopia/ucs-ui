@@ -190,6 +190,7 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
   - Commodity trend badges fixed: derive from `trendFromHistory()` on historical data, not unreliable API `direction` field
   - FX sparkline row (USD/EUR/CNY) commented out pending layout decision — uncomment in `economic-dashboard.tsx` to restore
   - LIVE badge upgraded: animate-ping radiating dot + emerald pill with border/bg + larger tracking text
+  - Commodity tooltip date format fixed: `year: "2-digit"` → `year: "numeric"` + `timeZone: "UTC"` — tooltips now show "Jan 2015" instead of ambiguous "Jan 15"
 
 ---
 
