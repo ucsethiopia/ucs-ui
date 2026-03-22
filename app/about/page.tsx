@@ -158,7 +158,7 @@ export default function AboutPage() {
         {/* Our Story Section */}
         <section className="py-10 md:py-16 bg-background">
           <Container>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
               {/* Left — editorial text */}
               <ScrollReveal>
                 <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -168,7 +168,7 @@ export default function AboutPage() {
                   Building Ethiopia&apos;s Consulting Profession
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
+                  <p className="text-justify">
                     As bigger wave of changes are looming on the horizon,
                     organizations are likely to face multifaceted challenges
                     that will continue impacting every facet of their
@@ -180,7 +180,7 @@ export default function AboutPage() {
                     organizations to continually renew and modernize the way
                     they do business to compete and thrive on a global scale.
                   </p>
-                  <p>
+                  <p className="text-justify">
                     UCS, thus, primarily works to support organizations in
                     order to effectively design and implement strategic
                     organizational change and transformation initiatives in
@@ -192,7 +192,7 @@ export default function AboutPage() {
                     the latest knowledge, skills, tools and techniques available
                     in the relevant field.
                   </p>
-                  <p>
+                  <p className="text-justify">
                     While providing its service, UCS brings in the professional
                     expertise (the most up-to-date knowledge, skills, and
                     experiences) needed by organizations in their endeavor to
@@ -207,7 +207,7 @@ export default function AboutPage() {
 
               {/* Right — milestone timeline */}
               <ScrollReveal delay={0.15}>
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {[
                     {
                       year: "2012",
@@ -255,7 +255,7 @@ export default function AboutPage() {
                             {item.title}
                           </h3>
                         </div>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-sm text-muted-foreground leading-relaxed text-justify">
                           {item.desc}
                         </p>
                       </div>
@@ -292,7 +292,7 @@ export default function AboutPage() {
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
                   Our Mission
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed text-justify">
                   To conduct research, deliver trainings, advise and support
                   organizations in the attainment of their corporate strategic
                   goals and objectives both in the short and long term.
@@ -325,7 +325,7 @@ export default function AboutPage() {
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
                   Our Vision
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed text-justify">
                   To become a change and transformation catalyst within
                   organizations in Ethiopia and beyond.
                 </p>

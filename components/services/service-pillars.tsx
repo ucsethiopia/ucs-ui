@@ -153,7 +153,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             transition={{ duration: 0.28, ease: "easeInOut" }}
           >
             {/* Description paragraph */}
-            <p className="text-muted-foreground leading-[1.75] mb-6">
+            <p className="text-muted-foreground leading-[1.75] mb-6 text-justify">
               {activeService.description}
             </p>
 

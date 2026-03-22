@@ -2,18 +2,18 @@
 
 import React from "react";
 
-import { Shield, Star, Users, Lightbulb, Target } from "lucide-react";
+import { Users2, BadgeCheck, Zap, Target, Scale } from "lucide-react";
 import { coreValues } from "@/lib/mock-data";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Integrity: Shield,
-  Excellence: Star,
-  Collaboration: Users,
-  Innovation: Lightbulb,
-  "Client Focus": Target,
+  Synergy:    Users2,
+  Provision:  BadgeCheck,
+  Enthusiasm: Zap,
+  Endurance:  Target,
+  Dedication: Scale,
 };
 
 export function CoreValues() {
@@ -45,7 +45,7 @@ export function CoreValues() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
         >
           {coreValues.map((value, index) => {
-            const Icon = iconMap[value.title] || Shield;
+            const Icon = iconMap[value.title] || Users2;
             return (
               <div
                 key={value.id}
@@ -60,8 +60,8 @@ export function CoreValues() {
                 }}
               >
                 {/* Icon */}
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-gold-500/10 group-hover:text-gold-600">
-                  <Icon className="h-6 w-6" />
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-500/10 text-gold-500 ring-1 ring-gold-500/20 transition-colors group-hover:bg-gold-500/20">
+                  <Icon className="h-8 w-8" />
                 </div>
 
                 {/* Title */}

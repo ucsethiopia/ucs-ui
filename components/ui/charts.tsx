@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { LineChart, Line, AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from "recharts";
 import { cn } from "@/lib/utils";
@@ -95,15 +96,17 @@ export const SparklineChart = ({
   color?: string;
   valueFormatter?: (v: number) => string;
 }) => {
+  const gradientId = React.useId().replace(/:/g, "");
+
   if (!data || data.length === 0) return null;
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart data={data} margin={{ left: 0, right: 0, top: 6, bottom: 0 }}>
         <defs>
-          <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopOpacity={0.25} />
-            <stop offset="100%" stopOpacity={0} />
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
         <YAxis domain={["dataMin", "dataMax"]} hide />
@@ -127,8 +130,7 @@ export const SparklineChart = ({
           dataKey="value"
           stroke={color}
           strokeWidth={2}
-          fill={color}
-          fillOpacity={0.15}
+          fill={`url(#${gradientId})`}
           dot={false}
           activeDot={{ r: 3.5, fill: color, strokeWidth: 0 }}
           animationDuration={800}

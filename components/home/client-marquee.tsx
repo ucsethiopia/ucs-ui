@@ -128,16 +128,25 @@ export function ClientMarquee() {
     <section className="py-10 sm:py-14 lg:py-16 bg-secondary/30 overflow-hidden border-y border-border/50">
       {/* Clients Section */}
       <div className="mb-8">
-        <Container className="mb-6">
+        <Container className="mb-8">
           <ScrollReveal>
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Trusted by Ethiopia&apos;s leading institutions
-            </p>
+            <div className="text-center">
+              <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-3">
+                Trusted by Leaders
+              </p>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
+                Our Valued Clients
+              </h2>
+              <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+                Serving Ethiopia&apos;s leading banks, insurance companies,
+                government institutions, and private enterprises
+              </p>
+            </div>
           </ScrollReveal>
         </Container>
 
         {/* Marquee Container */}
-        <div className="relative">
+        <div className="relative overflow-x-hidden">
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
@@ -145,7 +154,7 @@ export function ClientMarquee() {
           {/* Scrolling Track */}
           <div
             ref={scrollRef}
-            className="flex overflow-x-hidden"
+            className="flex"
             aria-hidden="true"
             style={{ scrollBehavior: "auto", whiteSpace: "nowrap" }}
           >
@@ -162,11 +171,15 @@ export function ClientMarquee() {
       <Container>
         <ScrollReveal>
           <div className="text-center mb-8">
-            <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-1">
-              Strategic Partners
+            <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-3">
+              Strategic Partnerships
             </p>
-            <p className="text-xs text-muted-foreground">
-              Collaborating with established firms and experts worldwide
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
+              Global Network
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              We partner with established consulting firms and multidisciplinary
+              experts from around the world to deliver exceptional results
             </p>
           </div>
         </ScrollReveal>
