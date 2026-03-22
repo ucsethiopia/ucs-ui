@@ -58,6 +58,12 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **9.4** Wire contact form to `POST /contact` (Mailgun email notification) — *already integrated in Phase 7*
 - [ ] **9.5** Use the UI-review skill to make sure the website is working displaying, polished and refined
 - [ ] **9.6** Commit changed made and note that phase 9 is complete, push code to current branch
+- [ ] **9.7** Fix and update Backblaze B2 image URL fetching:
+  - The UCS Service API returns Backblaze B2 URLs for `image` (team), `main_image` and `images[]` (news)
+  - Add `*.backblazeb2.com` (and Backblaze CDN domain if configured) to `next.config` `images.remotePatterns` so `next/image` can serve them
+  - Add `NEXT_PUBLIC_B2_CDN_URL` env var (if a friendly CDN/custom domain is configured in front of B2) and write a `getImageUrl(raw: string | null): string` helper in `lib/utils.ts` that rewrites raw B2 URLs to the CDN domain
+  - Update all `<img>` tags in team and news components to use `next/image` (or the URL helper) so images load correctly in prod
+  - Verify both team member photos and news `main_image`/`images[]` render in the browser with no broken-image states
 
 ### Phase 10 — UX/UI Fixes
 - [x] **10.1** Restructure financial data layout:
@@ -163,7 +169,7 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 
 ## Current Task
 
->> **9.5** — UI review pass: verify home FirmNews, news archive, about team grid, team detail page load correctly with live API
+>> **9.7** — Fix Backblaze B2 image URL fetching (remotePatterns, CDN helper, next/image migration for team + news)
 
 ---
 
