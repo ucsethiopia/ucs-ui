@@ -1,7 +1,7 @@
 # PLAN.md — UCS Ethiopia Frontend Sprint
 
 > Active branch: `feat/ux-overhaul`
-> Last updated: 2026-03-22 (session 8)
+> Last updated: 2026-03-22 (session 9)
 
 ---
 
@@ -67,6 +67,16 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **9.4** Wire contact form to `POST /contact` (Mailgun email notification) — *already integrated in Phase 7*
 - [ ] **9.5** Use the UI-review skill to make sure the website is working displaying, polished and refined
 - [ ] **9.6** Commit changed made and note that phase 9 is complete, push code to current branch
+- [ ] **9.8** Fit all images with appropriate constraints (size, aspect ratio, object-fit):
+  - Audit every `<img>` and `<Image>` tag site-wide for missing `width`/`height`, unset `object-fit`, or images that distort/overflow their containers
+  - Client logos: enforce uniform height (e.g. `h-12`) + `object-contain` so varied logo shapes don't break the marquee row
+  - Partner logos: same treatment as client logos
+  - Team member photos: enforce `aspect-square` + `object-cover object-top` so portrait crops are consistent across grid
+  - News card images (`main_image`): enforce `aspect-video` + `object-cover` on card thumbnails; carousel images in modal should be `object-contain` with max-height cap
+  - Hero background: verify `object-cover object-center` is set and `fill` layout is correct (no layout shift)
+  - About page team/CEO photo: verify aspect ratio + crop position
+  - Migrate any remaining bare `<img>` tags to `next/image` with explicit `width`/`height` or `fill` + `sizes`
+  - Run Lighthouse image audit to confirm no oversized or layout-shift images remain
 - [ ] **9.7** Fix and update Backblaze B2 image URL fetching:
   - The UCS Service API returns Backblaze B2 URLs for `image` (team), `main_image` and `images[]` (news)
   - Add `*.backblazeb2.com` (and Backblaze CDN domain if configured) to `next.config` `images.remotePatterns` so `next/image` can serve them
@@ -173,6 +183,13 @@ Complete the remaining frontend phases (6–16): ship the News archive page, Con
 - [x] **G6** Services program grid — replaced Training accordion with 2-col chip grid (icon + name + subtitle); `service-pillars.tsx`
 - [x] **G7** Contact map polish — gold-tinted border `border-gold-500/20`; `contact/page.tsx`
 - [x] **G8** Dashboard card contrast — `border-border/60 shadow-md` on stat cards; `economic-dashboard.tsx`
+- [x] **G9** Economic Dashboard visual polish (session 8–9):
+  - Sparkline color fixes: Silver `oklch(0.78 0.09 210)`, Coffee `oklch(0.68 0.12 50)`, CNY `var(--color-gold-600)` — all were rendering black due to undefined CSS tokens
+  - TextStatCard redesigned as compact single-line flex row (label | divider | value · subLabel) — reduced height ~50%
+  - StatCard layout flipped: text=flex-shrink-0, chart=flex-1 — charts now ~2× wider
+  - Commodity trend badges fixed: derive from `trendFromHistory()` on historical data, not unreliable API `direction` field
+  - FX sparkline row (USD/EUR/CNY) commented out pending layout decision — uncomment in `economic-dashboard.tsx` to restore
+  - LIVE badge upgraded: animate-ping radiating dot + emerald pill with border/bg + larger tracking text
 
 ---
 
