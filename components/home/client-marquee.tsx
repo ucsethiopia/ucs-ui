@@ -146,7 +146,7 @@ export function ClientMarquee() {
         </Container>
 
         {/* Marquee Container */}
-        <div className="relative overflow-x-hidden">
+        <div className="relative">
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
@@ -154,7 +154,7 @@ export function ClientMarquee() {
           {/* Scrolling Track */}
           <div
             ref={scrollRef}
-            className="flex"
+            className="flex overflow-x-hidden py-3"
             aria-hidden="true"
             style={{ scrollBehavior: "auto", whiteSpace: "nowrap" }}
           >
