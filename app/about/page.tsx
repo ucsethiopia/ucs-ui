@@ -158,15 +158,19 @@ export default function AboutPage() {
         {/* Our Story Section */}
         <section className="py-10 md:py-16 bg-background">
           <Container>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-              {/* Left — editorial text */}
-              <ScrollReveal>
-                <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-                  Our Story
-                </p>
-                <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
-                  Building Ethiopia&apos;s Consulting Profession
-                </h2>
+            {/* Heading — spans full width above both columns */}
+            <ScrollReveal>
+              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
+                Our Story
+              </p>
+              <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-tight mb-8">
+                Building Ethiopia&apos;s Consulting Profession
+              </h2>
+            </ScrollReveal>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-stretch">
+              {/* Left — prose paragraphs */}
+              <ScrollReveal className="h-full">
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p className="text-justify">
                     As bigger wave of changes are looming on the horizon,
@@ -205,9 +209,9 @@ export default function AboutPage() {
                 </div>
               </ScrollReveal>
 
-              {/* Right — milestone timeline */}
-              <ScrollReveal delay={0.15}>
-                <div className="space-y-8">
+              {/* Right — milestone timeline, stretches to match left column height */}
+              <ScrollReveal delay={0.15} className="h-full">
+                <div className="h-full flex flex-col">
                   {[
                     {
                       year: "2012",
@@ -235,7 +239,7 @@ export default function AboutPage() {
                       desc: "Milestone: over 150 organizations served across banking, insurance, manufacturing, and government.",
                     },
                   ].map((item, i) => (
-                    <div key={item.year} className="flex gap-5">
+                    <div key={item.year} className="flex gap-5 flex-1">
                       <div className="flex flex-col items-center">
                         <div className="w-10 h-10 flex items-center justify-center rounded-full bg-primary/5 dark:bg-white/5 border border-primary/15 dark:border-white/10 flex-shrink-0">
                           <span className="text-xs font-bold text-foreground dark:text-gold-500">
@@ -246,7 +250,7 @@ export default function AboutPage() {
                           <div className="w-px flex-1 bg-border mt-2" />
                         )}
                       </div>
-                      <div className="pb-6">
+                      <div className="pb-2">
                         <div className="flex items-center gap-3 mb-1">
                           <span className="text-xs font-semibold text-gold-500 tracking-wide">
                             {item.year}

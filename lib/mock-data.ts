@@ -53,6 +53,7 @@ export interface ClientLogo {
   id: string;
   name: string;
   logo: string;
+  logoMissing?: boolean;
 }
 
 export interface Partner {
@@ -60,6 +61,16 @@ export interface Partner {
   name: string;
   logo: string;
   description?: string;
+  country?: string;
+  partnerType?: "local" | "overseas";
+  logoMissing?: boolean;
+}
+
+export interface CoreValue {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
 }
 
 export interface TrainingCategory {
@@ -77,6 +88,33 @@ export interface ServicePillar {
   trainingCategories?: TrainingCategory[];
   image: string;
 }
+
+// Company identity
+export const vision =
+  "To be the leading catalyst for organizational transformation and professional growth, enabling clients to excel in an evolving business landscape.";
+
+export const mission =
+  "To inspire and benefit organizations by applying the latest knowledge, skills, and tools, supporting sustainable development and driving positive change for individuals and institutions.";
+
+// Company stats
+export const companyStats = [
+  { label: "Years of Excellence", value: "15+", suffix: "" },
+  { label: "Professionals Trained", value: "5,000+", suffix: "" },
+  { label: "Service Pillars", value: "4", suffix: "" },
+  { label: "Strategic Partners", value: "10+", suffix: "" },
+];
+
+// Contact information
+export const contactInfo = {
+  address:
+    "Gurd Shola, around Century Mall, Abenezer Building, 3rd floor, Addis Ababa, Ethiopia",
+  emails: ["info@ucsethiopia.com", "ftesgerajetu@yahoo.com"],
+  phones: ["+251911256485", "+251911445721"],
+  poBox: "12682",
+  linkedin:
+    "https://www.linkedin.com/company/ultimate-consultancy-services/",
+  telegram: "@UcsEthiopia",
+};
 
 // Training categories with detailed courses
 export const trainingCategories: TrainingCategory[] = [
@@ -254,37 +292,42 @@ export const economicIndicators: EconomicIndicator[] = [
   },
 ];
 
-// Core values
-export const coreValues = [
+// Core values — SPEED acronym
+export const coreValues: CoreValue[] = [
   {
     id: "1",
-    title: "Enthusiasm",
-    description:
-      "We go above and beyond in every engagement, driven by a genuine commitment to exceeding our clients' expectations.",
-  },
-  {
-    id: "2",
-    title: "Quality Service",
-    description:
-      "We are committed to delivering cost-effective, high-quality service that creates real and measurable value.",
-  },
-  {
-    id: "3",
-    title: "Endurance",
-    description:
-      "We see every engagement through to completion with steadfast dedication and commitment to end results.",
-  },
-  {
-    id: "4",
     title: "Synergy",
     description:
       "We work in close partnership with our clients and collaborators, building relationships grounded in trust and shared purpose.",
+    icon: "Users",
+  },
+  {
+    id: "2",
+    title: "Provision",
+    description:
+      "We are committed to delivering cost-effective, high-quality service that creates real and measurable value for every client.",
+    icon: "BadgeCheck",
+  },
+  {
+    id: "3",
+    title: "Enthusiasm",
+    description:
+      "We go above and beyond in every engagement, driven by a genuine commitment to exceeding our clients' expectations.",
+    icon: "Zap",
+  },
+  {
+    id: "4",
+    title: "Endurance",
+    description:
+      "We see every engagement through to completion with steadfast commitment and resilience to achieve lasting results.",
+    icon: "Shield",
   },
   {
     id: "5",
-    title: "Integrity",
+    title: "Dedication",
     description:
       "We uphold the highest standards of integrity and respect for professionalism in every interaction and deliverable.",
+    icon: "Award",
   },
 ];
 
@@ -757,34 +800,42 @@ export const trainingPrograms: TrainingProgram[] = [
 ];
 
 // Client logos mock data
+// logoMissing: true means no logo file exists yet in public/images/clients/
 export const clientLogos: ClientLogo[] = [
+  // Financial — existing logos
   { id: "1", name: "Awash Bank", logo: "/images/clients/awash-bank.png" },
-  {
-    id: "2",
-    name: "Awash Insurance",
-    logo: "/images/clients/awash-insurance.png",
-  },
+  { id: "2", name: "Awash Insurance", logo: "/images/clients/awash-insurance.png" },
   { id: "3", name: "Oromia Bank", logo: "/images/clients/oromia-bank.png" },
+  { id: "4", name: "Oromia Insurance", logo: "/images/clients/oromia-insurance.png" },
+  { id: "5", name: "Hibret Insurance", logo: "/images/clients/hibret-insurance.png" },
+  { id: "6", name: "Global Bank Ethiopia", logo: "/images/clients/global-bank.png" },
+  // Financial — missing logos
   {
-    id: "4",
-    name: "Oromia Insurance Company",
-    logo: "/images/clients/oromia-insurance.png",
+    id: "14",
+    name: "Siinqee Bank",
+    logo: "/images/clients/siinqee-bank.png",
+    logoMissing: true,
   },
   {
-    id: "5",
-    name: "Hibret Insurance",
-    logo: "/images/clients/hibret-insurance.png",
+    id: "15",
+    name: "Commercial Bank of Ethiopia",
+    logo: "/images/clients/commercial-bank-of-ethiopia.png",
+    logoMissing: true,
   },
   {
-    id: "6",
-    name: "Global Bank Ethiopia",
-    logo: "/images/clients/global-bank.png",
+    id: "16",
+    name: "VisionFund Microfinance",
+    logo: "/images/clients/visionfund-microfinance.png",
+    logoMissing: true,
   },
-  { id: "7", name: "Kenera", logo: "/images/clients/kenera.png" },
-  { id: "8", name: "Gebecon PLC", logo: "/images/clients/gebecon.png" },
+  {
+    id: "17",
+    name: "United Insurance",
+    logo: "/images/clients/united-insurance.png",
+    logoMissing: true,
+  },
+  // Government — existing logos
   { id: "9", name: "Ministry of Agriculture", logo: "/images/clients/moa.png" },
-  { id: "10", name: "Minaye PLC", logo: "/images/clients/minaye.png" },
-  { id: "11", name: "DH Geda", logo: "/images/clients/dh-geda.png" },
   {
     id: "12",
     name: "Ethiopian Water Technology Institute",
@@ -795,39 +846,127 @@ export const clientLogos: ClientLogo[] = [
     name: "House of Peoples' Representatives",
     logo: "/images/clients/hpr.png",
   },
+  // Government — missing logos
+  {
+    id: "18",
+    name: "IRC",
+    logo: "/images/clients/irc.png",
+    logoMissing: true,
+  },
+  // Private — existing logos
+  { id: "7", name: "Kenera", logo: "/images/clients/kenera.png" },
+  { id: "8", name: "GEBECON PLC", logo: "/images/clients/gebecon.png" },
+  { id: "10", name: "Minaye Business Group", logo: "/images/clients/minaye.png" },
+  { id: "11", name: "DH GEDA Trade & Industry PLC", logo: "/images/clients/dh-geda.png" },
+  // Private — missing logos
+  {
+    id: "19",
+    name: "National Alcohol and Liquor Factory",
+    logo: "/images/clients/national-alcohol-and-liquor-factory.png",
+    logoMissing: true,
+  },
 ];
 
 // Strategic partners mock data
+// Logo paths follow kebab-case convention under /images/partners/.
+// logoMissing: true means no logo file has been sourced yet.
+// NOTE: 3 logo files exist in assets/logos/ (gmp_logo.jpeg, halkago_connect.png,
+// zinger_solutions_limited.png) and need to be moved to public/images/partners/.
 export const strategicPartners: Partner[] = [
+  // Local partners
   {
     id: "1",
     name: "Glocal Management Partners",
-    logo: "",
-    description: "International consulting firm",
+    logo: "/images/partners/glocal-management-partners.jpeg",
+    description: "Strategic management consulting",
+    country: "Ethiopia",
+    partnerType: "local",
+    // Source file: assets/logos/gmp_logo.jpeg — move to public/images/partners/
+    logoMissing: true,
   },
   {
     id: "2",
     name: "B and M Development Consultants",
-    logo: "",
+    logo: "/images/partners/b-and-m-development-consultants.png",
     description: "Development consulting",
+    country: "Ethiopia",
+    partnerType: "local",
+    logoMissing: true,
   },
   {
     id: "3",
-    name: "JEPICS",
-    logo: "",
-    description: "Japanese consulting partner",
+    name: "Path Consulting PLC",
+    logo: "/images/partners/path-consulting-plc.png",
+    description: "Management and strategy consulting",
+    country: "Ethiopia",
+    partnerType: "local",
+    logoMissing: true,
   },
   {
     id: "4",
-    name: "Halkago Connect",
-    logo: "",
-    description: "Technology solutions",
+    name: "Askiibez Consulting PLC",
+    logo: "/images/partners/askiibez-consulting-plc.png",
+    description: "Business consulting",
+    country: "Ethiopia",
+    partnerType: "local",
+    logoMissing: true,
   },
+  // Overseas partners
   {
     id: "5",
-    name: "Zinger Solutions Limited",
-    logo: "",
+    name: "Trempplin Academy Private Ltd.",
+    logo: "/images/partners/trempplin-academy.png",
+    description: "Training and development",
+    country: "India",
+    partnerType: "overseas",
+    logoMissing: true,
+  },
+  {
+    id: "6",
+    name: "Zinger Solutions Ltd.",
+    logo: "/images/partners/zinger-solutions-ltd.png",
     description: "Business solutions",
+    country: "Kenya",
+    partnerType: "overseas",
+    // Source file: assets/logos/zinger_solutions_limited.png — move to public/images/partners/
+    logoMissing: true,
+  },
+  {
+    id: "7",
+    name: "Halkago Connect Ltd.",
+    logo: "/images/partners/halkago-connect-ltd.png",
+    description: "Technology and connectivity solutions",
+    country: "Kenya",
+    partnerType: "overseas",
+    // Source file: assets/logos/halkago_connect.png — move to public/images/partners/
+    logoMissing: true,
+  },
+  {
+    id: "8",
+    name: "AaRohan Service Management Solutions",
+    logo: "/images/partners/aarohan-service-management.png",
+    description: "Service management consulting",
+    country: "India",
+    partnerType: "overseas",
+    logoMissing: true,
+  },
+  {
+    id: "9",
+    name: "Precise Corporate Services Private Limited",
+    logo: "/images/partners/precise-corporate-services.png",
+    description: "Corporate services",
+    country: "India",
+    partnerType: "overseas",
+    logoMissing: true,
+  },
+  {
+    id: "10",
+    name: "Purchasing and Procurement Center LLC",
+    logo: "/images/partners/purchasing-procurement-center.png",
+    description: "Procurement and supply chain consulting",
+    country: "USA",
+    partnerType: "overseas",
+    logoMissing: true,
   },
 ];
 
@@ -906,6 +1045,48 @@ export function simulateApiDelay<T>(data: T, delay = 800): Promise<T> {
     setTimeout(() => resolve(data), delay);
   });
 }
+
+// International training countries
+export interface TrainingCountry {
+  country: string;
+  city: string | null;
+  flag: string;
+}
+
+export const internationalTrainingCountries: TrainingCountry[] = [
+  { country: "Kenya", city: null, flag: "🇰🇪" },
+  { country: "Thailand", city: "Bangkok", flag: "🇹🇭" },
+  { country: "Turkey", city: null, flag: "🇹🇷" },
+  { country: "Ethiopia", city: "Addis Ababa", flag: "🇪🇹" },
+];
+
+// Publications
+export interface Publication {
+  title: string;
+  client: string;
+  year: number | null;
+  type: string;
+  description: string;
+}
+
+export const publications: Publication[] = [
+  {
+    title: "Awash Bank and Awash Insurance 25th Anniversary Book",
+    client: "Awash Bank S.C. / Awash Insurance S.C.",
+    year: 2019,
+    type: "Anniversary Publication",
+    description:
+      "A commemorative publication celebrating 25 years of Awash Bank and Awash Insurance, produced by UCS.",
+  },
+  {
+    title: "Oda Animal Feed Processing Factory Company Profile",
+    client: "Oda Animal Feed Processing Factory",
+    year: null,
+    type: "Company Profile",
+    description:
+      "A comprehensive company profile publication developed by UCS for Oda Animal Feed Processing Factory.",
+  },
+];
 
 // News categories
 export const newsCategories = [

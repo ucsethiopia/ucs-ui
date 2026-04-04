@@ -10,6 +10,7 @@ const FLAGS: Record<string, string> = {
   gbp: "🇬🇧",
   aud: "🇦🇺",
   jpy: "🇯🇵",
+  cny: "🇨🇳",
 };
 
 const FX_LABELS: Record<string, string> = {
@@ -18,17 +19,17 @@ const FX_LABELS: Record<string, string> = {
   gbp: "GBP/ETB",
   aud: "AUD/ETB",
   jpy: "JPY/ETB",
+  cny: "CNY/ETB",
 };
 
 interface TickerItemProps {
   icon?: string;
   label: string;
   value: string;
-  change: number;
   trend: "up" | "down" | "unchanged";
 }
 
-function TickerItem({ icon, label, value, change, trend }: TickerItemProps) {
+function TickerItem({ icon, label, value, trend }: TickerItemProps) {
   return (
     <div className="flex items-center gap-2 px-4 border-r border-white/15 whitespace-nowrap">
       {icon && <span className="text-base">{icon}</span>}
@@ -40,14 +41,13 @@ function TickerItem({ icon, label, value, change, trend }: TickerItemProps) {
       </span>
       <span
         className={cn(
-          "text-xs font-medium tabular-nums",
+          "text-xs font-medium",
           trend === "up" && "text-emerald-400",
           trend === "down" && "text-red-400",
           trend === "unchanged" && "text-white/50",
         )}
       >
-        {change > 0 ? "+" : ""}
-        {change === 0 ? "0.00%" : `${change.toFixed(2)}%`}
+        {trend === "up" ? "▲" : trend === "down" ? "▼" : "—"}
       </span>
     </div>
   );
@@ -75,7 +75,6 @@ export function TickerBar() {
                 icon={FLAGS[code]}
                 label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                 value={fx.rate.toFixed(2)}
-                change={fx.change}
                 trend={fx.trend}
               />
             ))}
@@ -88,7 +87,6 @@ export function TickerBar() {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-                change={commodity.change}
                 trend={commodity.trend}
               />
             ))}
@@ -99,7 +97,6 @@ export function TickerBar() {
                 icon={FLAGS[code]}
                 label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                 value={fx.rate.toFixed(2)}
-                change={fx.change}
                 trend={fx.trend}
               />
             ))}
@@ -112,7 +109,6 @@ export function TickerBar() {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-                change={commodity.change}
                 trend={commodity.trend}
               />
             ))}
