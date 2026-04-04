@@ -45,7 +45,15 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
   );
 }
 
-function PartnerCard({ name, logo }: { name: string; logo: string }) {
+function PartnerCard({
+  name,
+  logo,
+  country,
+}: {
+  name: string;
+  logo: string;
+  country?: string;
+}) {
   const [imgError, setImgError] = useState(false);
 
   const initials = name
@@ -76,6 +84,11 @@ function PartnerCard({ name, logo }: { name: string; logo: string }) {
       <h4 className="text-xs font-medium text-foreground leading-tight">
         {name}
       </h4>
+      {country ? (
+        <p className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground/80 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          {country}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -190,6 +203,7 @@ export function ClientMarquee() {
               key={partner.id}
               name={partner.name}
               logo={partner.logo}
+              country={partner.country}
             />
           ))}
         </div>

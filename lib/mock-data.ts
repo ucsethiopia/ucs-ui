@@ -111,8 +111,7 @@ export const contactInfo = {
   emails: ["info@ucsethiopia.com", "ftesgerajetu@yahoo.com"],
   phones: ["+251911256485", "+251911445721"],
   poBox: "12682",
-  linkedin:
-    "https://www.linkedin.com/company/ultimate-consultancy-services/",
+  linkedin: "https://www.linkedin.com/company/ultimate-consultancy-services/",
   telegram: "@UcsEthiopia",
 };
 
@@ -800,173 +799,168 @@ export const trainingPrograms: TrainingProgram[] = [
 ];
 
 // Client logos mock data
-// logoMissing: true means no logo file exists yet in public/images/clients/
+// Logo paths resolve under public/images/logos/clients/
 export const clientLogos: ClientLogo[] = [
-  // Financial — existing logos
-  { id: "1", name: "Awash Bank", logo: "/images/clients/awash-bank.png" },
-  { id: "2", name: "Awash Insurance", logo: "/images/clients/awash-insurance.png" },
-  { id: "3", name: "Oromia Bank", logo: "/images/clients/oromia-bank.png" },
-  { id: "4", name: "Oromia Insurance", logo: "/images/clients/oromia-insurance.png" },
-  { id: "5", name: "Hibret Insurance", logo: "/images/clients/hibret-insurance.png" },
-  { id: "6", name: "Global Bank Ethiopia", logo: "/images/clients/global-bank.png" },
-  // Financial — missing logos
+  // Financial institutions
+  { id: "1", name: "Awash Bank", logo: "/images/logos/clients/awash-bank.png" },
+  { id: "2", name: "Siinqee Bank", logo: "/images/logos/clients/siinqee.png" },
   {
-    id: "14",
-    name: "Siinqee Bank",
-    logo: "/images/clients/siinqee-bank.png",
-    logoMissing: true,
-  },
-  {
-    id: "15",
+    id: "3",
     name: "Commercial Bank of Ethiopia",
-    logo: "/images/clients/commercial-bank-of-ethiopia.png",
-    logoMissing: true,
+    logo: "/images/logos/clients/commercial-bank-of-ethiopia.png",
   },
   {
-    id: "16",
+    id: "4",
+    name: "Oromia Bank",
+    logo: "/images/logos/clients/oromia-bank.png",
+  },
+  {
+    id: "5",
+    name: "Global Bank Ethiopia",
+    logo: "/images/logos/clients/global-bank.png",
+  },
+  {
+    id: "6",
     name: "VisionFund Microfinance",
-    logo: "/images/clients/visionfund-microfinance.png",
-    logoMissing: true,
+    logo: "/images/logos/clients/visionfund-microfinance.png",
   },
   {
-    id: "17",
-    name: "United Insurance",
-    logo: "/images/clients/united-insurance.png",
-    logoMissing: true,
+    id: "7",
+    name: "Awash Insurance",
+    logo: "/images/logos/clients/awash-insurance.png",
   },
-  // Government — existing logos
-  { id: "9", name: "Ministry of Agriculture", logo: "/images/clients/moa.png" },
+  {
+    id: "8",
+    name: "United Insurance",
+    logo: "/images/logos/clients/united-insurance.png",
+  },
+
+  // Government and development agencies
+  {
+    id: "9",
+    name: "Ministry of Agriculture",
+    logo: "/images/logos/clients/ministry-of-agriculture.png",
+  },
+  {
+    id: "10",
+    name: "Ethiopian Water Technology Institute",
+    logo: "/images/logos/clients/ethiopian-water-technology-institute.png",
+  },
+  {
+    id: "11",
+    name: "International Reference Center",
+    logo: "/images/logos/clients/international-reference-center.svg",
+  },
+
+  // Private sector and industry
   {
     id: "12",
-    name: "Ethiopian Water Technology Institute",
-    logo: "/images/clients/ewti.png",
+    name: "National Alcohol and Liquor Factory",
+    logo: "/images/logos/clients/national-alcohol-and-liquor-factory-nobg.png",
   },
   {
     id: "13",
-    name: "House of Peoples' Representatives",
-    logo: "/images/clients/hpr.png",
+    name: "Minaye Business Group",
+    logo: "/images/logos/clients/minaye.png",
   },
-  // Government — missing logos
   {
-    id: "18",
-    name: "IRC",
-    logo: "/images/clients/irc.png",
-    logoMissing: true,
+    id: "14",
+    name: "DH GEDA Trade and Industry",
+    logo: "/images/logos/clients/dh-geda.png",
   },
-  // Private — existing logos
-  { id: "7", name: "Kenera", logo: "/images/clients/kenera.png" },
-  { id: "8", name: "GEBECON PLC", logo: "/images/clients/gebecon.png" },
-  { id: "10", name: "Minaye Business Group", logo: "/images/clients/minaye.png" },
-  { id: "11", name: "DH GEDA Trade & Industry PLC", logo: "/images/clients/dh-geda.png" },
-  // Private — missing logos
   {
-    id: "19",
-    name: "National Alcohol and Liquor Factory",
-    logo: "/images/clients/national-alcohol-and-liquor-factory.png",
-    logoMissing: true,
+    id: "15",
+    name: "Gemshu Beyene Construction",
+    logo: "/images/logos/clients/gebecon.png",
   },
 ];
 
 // Strategic partners mock data
-// Logo paths follow kebab-case convention under /images/partners/.
-// logoMissing: true means no logo file has been sourced yet.
-// NOTE: 3 logo files exist in assets/logos/ (gmp_logo.jpeg, halkago_connect.png,
-// zinger_solutions_limited.png) and need to be moved to public/images/partners/.
+// Logo paths resolve under public/images/logos/partners/.
 export const strategicPartners: Partner[] = [
   // Local partners
   {
     id: "1",
     name: "Glocal Management Partners",
-    logo: "/images/partners/glocal-management-partners.jpeg",
+    logo: "/images/logos/partners/glocal-management-partners.png",
     description: "Strategic management consulting",
     country: "Ethiopia",
     partnerType: "local",
-    // Source file: assets/logos/gmp_logo.jpeg — move to public/images/partners/
-    logoMissing: true,
   },
+  // {
+  //   id: "2",
+  //   name: "B and M Development Consultants",
+  //   logo: "/images/logos/partners/b-and-m-development-consultants.png",
+  //   description: "Development consulting",
+  //   country: "Ethiopia",
+  //   partnerType: "local",
+  //   logoMissing: true,
+  // },
   {
     id: "2",
-    name: "B and M Development Consultants",
-    logo: "/images/partners/b-and-m-development-consultants.png",
-    description: "Development consulting",
-    country: "Ethiopia",
-    partnerType: "local",
-    logoMissing: true,
-  },
-  {
-    id: "3",
-    name: "Path Consulting PLC",
-    logo: "/images/partners/path-consulting-plc.png",
+    name: "Path Consulting",
+    logo: "/images/logos/partners/path-consulting.png",
     description: "Management and strategy consulting",
     country: "Ethiopia",
     partnerType: "local",
-    logoMissing: true,
   },
   {
-    id: "4",
-    name: "Askiibez Consulting PLC",
-    logo: "/images/partners/askiibez-consulting-plc.png",
+    id: "3",
+    name: "Askiibez Consulting",
+    logo: "/images/logos/partners/askiibez-consulting.png",
     description: "Business consulting",
     country: "Ethiopia",
     partnerType: "local",
-    logoMissing: true,
   },
   // Overseas partners
   {
-    id: "5",
-    name: "Trempplin Academy Private Ltd.",
-    logo: "/images/partners/trempplin-academy.png",
+    id: "4",
+    name: "Trempplin",
+    logo: "/images/logos/partners/trempplin.png",
     description: "Training and development",
     country: "India",
     partnerType: "overseas",
-    logoMissing: true,
   },
   {
-    id: "6",
-    name: "Zinger Solutions Ltd.",
-    logo: "/images/partners/zinger-solutions-ltd.png",
+    id: "5",
+    name: "Zinger Solutions",
+    logo: "/images/logos/partners/zinger-solutions.png",
     description: "Business solutions",
     country: "Kenya",
     partnerType: "overseas",
-    // Source file: assets/logos/zinger_solutions_limited.png — move to public/images/partners/
-    logoMissing: true,
   },
   {
-    id: "7",
-    name: "Halkago Connect Ltd.",
-    logo: "/images/partners/halkago-connect-ltd.png",
+    id: "6",
+    name: "Halkago Connect",
+    logo: "/images/logos/partners/halkago-connect.png",
     description: "Technology and connectivity solutions",
     country: "Kenya",
     partnerType: "overseas",
-    // Source file: assets/logos/halkago_connect.png — move to public/images/partners/
-    logoMissing: true,
   },
   {
-    id: "8",
+    id: "7",
     name: "AaRohan Service Management Solutions",
-    logo: "/images/partners/aarohan-service-management.png",
+    logo: "/images/logos/partners/aarohan-service-management-solutions.png",
     description: "Service management consulting",
     country: "India",
     partnerType: "overseas",
-    logoMissing: true,
   },
+  // {
+  //   id: "8",
+  //   name: "Precise Corporate Services",
+  //   logo: "/images/logos/partners/precise-corporate-services.png",
+  //   description: "Corporate services",
+  //   country: "India",
+  //   partnerType: "overseas",
+  //   logoMissing: true,
+  // },
   {
-    id: "9",
-    name: "Precise Corporate Services Private Limited",
-    logo: "/images/partners/precise-corporate-services.png",
-    description: "Corporate services",
-    country: "India",
-    partnerType: "overseas",
-    logoMissing: true,
-  },
-  {
-    id: "10",
-    name: "Purchasing and Procurement Center LLC",
-    logo: "/images/partners/purchasing-procurement-center.png",
+    id: "8",
+    name: "Purchasing and Procurement Center",
+    logo: "/images/logos/partners/purchasing-and-procurement-center.png",
     description: "Procurement and supply chain consulting",
     country: "USA",
     partnerType: "overseas",
-    logoMissing: true,
   },
 ];
 

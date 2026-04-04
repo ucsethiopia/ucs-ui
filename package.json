@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "check:logos": "node scripts/check-logo-assets.mjs",
     "dev": "next dev",
     "lint": "eslint .",
+    "setup:githooks": "git config core.hooksPath .githooks",
     "start": "next start"
   },
   "dependencies": {
