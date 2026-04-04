@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 const contactSchema = z.object({
   fullname: z.string().min(1, "Name is required"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
+  subject: z.string().optional(),
   phone: z
     .string()
     .optional()
@@ -64,7 +65,10 @@ export function ContactForm() {
       const res = await fetch(`${BASE_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          subject: data.subject?.trim() || `Inquiry from ${data.fullname} via UCS Ethiopia`,
+        }),
       });
       if (res.status === 503) {
         // Saved but email notification failed — still treat as success
@@ -145,6 +149,20 @@ export function ContactForm() {
           />
           <FieldError id="email-error" message={errors.email?.message} />
         </div>
+      </div>
+
+      {/* Subject */}
+      <div>
+        <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
+          Subject
+        </label>
+        <input
+          {...register("subject")}
+          id="subject"
+          type="text"
+          placeholder="How can we help? (optional)"
+          className={inputClass}
+        />
       </div>
 
       {/* Phone & Company */}

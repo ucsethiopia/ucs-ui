@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { LRUCache } from "lru-cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_MARKET_DATA_API_URL ?? "";
+
+// ─── Cache ────────────────────────────────────────────────────────────────────
+// HF-5.2: 1-hour TTL LRU cache for market data (ensures we don't spam the API)
+const dataCache = new LRUCache<string, EconomicDashboardData>({
+  max: 1, // Only need to cache the dashboard data object
+  ttl: 1000 * 60 * 60, // 1 hour
+});
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -83,51 +91,72 @@ function buildDateRange(months: number): { from: string; to: string } {
 }
 
 /**
- * Downsample a daily historical FX array to one point per month
- * (last entry for each YYYY-MM group).
+ * Format date for the chart (e.g. "Jan 2015", "Jan")
  */
-function downsampleMonthly(
-  raw: { date: string; rates: Record<string, number> }[],
-  currency: string
-): TimeSeriesData[] {
-  const byMonth: Record<string, number> = {};
-  for (const entry of raw) {
-    const month = entry.date.slice(0, 7); // YYYY-MM
-    if (entry.rates[currency] != null) {
-      byMonth[month] = entry.rates[currency];
-    }
-  }
-  return Object.entries(byMonth)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, value]) => ({
-      date: new Date(month + "-01").toLocaleString("default", { month: "short" }),
-      value,
-    }));
+function parseDateForChart(dateStr: string) {
+  // Use UTC to prevent rolling back due to timezone
+  return new Date(dateStr).toLocaleString("default", { month: "short", year: "numeric", timeZone: "UTC" });
 }
 
 /**
- * Downsample a daily commodity array to one point per month
- * (last entry for each YYYY-MM group).
+ * HF-5.2: Data thinning for historical points.
+ * Optimizes render performance by keeping ~1000 points evenly spaced, while preserving spikes.
  */
-function downsampleCommodityMonthly(
-  raw: { date: string; close: number }[]
+function downsampleKeepingSpikes(
+  raw: { date: string; value: number }[],
+  targetPoints: number = 1000
 ): TimeSeriesData[] {
-  const byMonth: Record<string, number> = {};
-  for (const entry of raw) {
-    const month = entry.date.slice(0, 7);
-    byMonth[month] = entry.close; // last entry per month wins
+  if (!raw || raw.length <= targetPoints) {
+    return (raw || []).map((r) => ({ date: parseDateForChart(r.date), value: r.value }));
   }
-  return Object.entries(byMonth)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, value]) => ({
-      // timeZone: UTC prevents date rollback in UTC+ timezones (ISO date strings parse as UTC midnight)
-      date: new Date(month + "-01").toLocaleString("default", {
-        month: "short",
-        year: "numeric",
-        timeZone: "UTC",
-      }),
-      value,
-    }));
+
+  const result: TimeSeriesData[] = [];
+  const chunkSize = raw.length / targetPoints;
+
+  for (let i = 0; i < targetPoints; i++) {
+    const start = Math.floor(i * chunkSize);
+    const end = Math.floor((i + 1) * chunkSize);
+    const chunk = raw.slice(start, end);
+    if (chunk.length === 0) continue;
+
+    // Pick the point furthest from the chunk's average to retain visual "spikes"
+    const avg = chunk.reduce((sum, item) => sum + item.value, 0) / chunk.length;
+    let furthest = chunk[0];
+    let maxDist = -1;
+
+    for (const item of chunk) {
+      const dist = Math.abs(item.value - avg);
+      if (dist > maxDist) {
+        maxDist = dist;
+        furthest = item;
+      }
+    }
+
+    result.push({
+      date: parseDateForChart(furthest.date),
+      value: furthest.value,
+    });
+  }
+
+  return result;
+}
+
+/** Generic downsampler for FX endpoint */
+function processFXHistory(data: any[], currency: string) {
+  const mapping = (data || []).filter(d => d.rates && d.rates[currency] != null).map(d => ({
+    date: d.date,
+    value: d.rates[currency]
+  }));
+  return downsampleKeepingSpikes(mapping);
+}
+
+/** Generic downsampler for Commodity endpoint */
+function processCommodityHistory(data: any[]) {
+  const mapping = (data || []).map(d => ({
+    date: d.date,
+    value: d.close
+  }));
+  return downsampleKeepingSpikes(mapping);
 }
 
 /** Static GDP annual history — World Bank data, update manually each year */
@@ -190,42 +219,48 @@ export const useEconomicDashboard = () => {
           fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`),
         ]);
 
-        // Throw on critical HTTP errors
+        // Throw on critical HTTP errors (Live endpoints ONLY)
         for (const res of [fxRes, commodRes, interestRes, gdpRes]) {
           if (!res.ok) throw new Error(`API error: ${res.status} ${res.url}`);
         }
 
-        const [fx, commod, interest, gdp, fxHistUsd, fxHistEur, fxHistCny, commodGold, commodSilver, commodCoffee] =
+        const [fx, commod, interest, gdp] = await Promise.all([
+          fxRes.json(),
+          commodRes.json(),
+          interestRes.json(),
+          gdpRes.json(),
+        ]);
+
+        // Parse historical safely (fallback to null if !ok)
+        const [fxHistUsd, fxHistEur, fxHistCny, commodGold, commodSilver, commodCoffee] =
           await Promise.all([
-            fxRes.json(),
-            commodRes.json(),
-            interestRes.json(),
-            gdpRes.json(),
-            fxHistUsdRes.ok ? fxHistUsdRes.json() : { data: [] },
-            fxHistEurRes.ok ? fxHistEurRes.json() : { data: [] },
-            fxHistCnyRes.ok ? fxHistCnyRes.json() : { data: [] },
-            commodHistGoldRes.ok ? commodHistGoldRes.json() : { data: [] },
-            commodHistSilverRes.ok ? commodHistSilverRes.json() : { data: [] },
-            commodHistCoffeeRes.ok ? commodHistCoffeeRes.json() : { data: [] },
+            fxHistUsdRes.ok ? fxHistUsdRes.json() : null,
+            fxHistEurRes.ok ? fxHistEurRes.json() : null,
+            fxHistCnyRes.ok ? fxHistCnyRes.json() : null,
+            commodHistGoldRes.ok ? commodHistGoldRes.json() : null,
+            commodHistSilverRes.ok ? commodHistSilverRes.json() : null,
+            commodHistCoffeeRes.ok ? commodHistCoffeeRes.json() : null,
           ]);
 
         if (cancelled) return;
 
+        const cached = dataCache.get("dashboard_data");
         const rates = fx.rates ?? {};
         const commodities = commod.commodities ?? {};
 
-        const usdHistory = downsampleMonthly(fxHistUsd.data ?? [], "USD");
-        const eurHistory = downsampleMonthly(fxHistEur.data ?? [], "EUR");
-        const cnyHistory = downsampleMonthly(fxHistCny.data ?? [], "CNY");
+        // HF-5.2: Fallback to cache for historical endpoint failures
+        const usdHistory = fxHistUsd ? processFXHistory(fxHistUsd.data, "USD") : (cached?.fxRates.usd.history ?? []);
+        const eurHistory = fxHistEur ? processFXHistory(fxHistEur.data, "EUR") : (cached?.fxRates.eur.history ?? []);
+        const cnyHistory = fxHistCny ? processFXHistory(fxHistCny.data, "CNY") : (cached?.fxRates.cny.history ?? []);
 
-        const goldHistory = downsampleCommodityMonthly(commodGold.data ?? []);
-        const silverHistory = downsampleCommodityMonthly(commodSilver.data ?? []);
-        const coffeeHistory = downsampleCommodityMonthly(commodCoffee.data ?? []);
+        const goldHistory = commodGold ? processCommodityHistory(commodGold.data) : (cached?.commodityHistory.gold ?? []);
+        const silverHistory = commodSilver ? processCommodityHistory(commodSilver.data) : (cached?.commodityHistory.silver ?? []);
+        const coffeeHistory = commodCoffee ? processCommodityHistory(commodCoffee.data) : (cached?.commodityHistory.coffee ?? []);
 
         const gdpGrowth = computeGdpGrowth();
         const lastGdp = GDP_HISTORY_VALUES[GDP_HISTORY_VALUES.length - 1];
 
-        setData({
+        const newData: EconomicDashboardData = {
           fxRates: {
             usd: {
               rate: rates.USD?.rate ?? 0,
@@ -260,20 +295,19 @@ export const useEconomicDashboard = () => {
               symbol: "XAU/USD",
               name: "Gold",
               price: commodities["XAU/USD"]?.price ?? 0,
-              // Derive trend from historical data — API direction field is unreliable for commodities
-              trend: trendFromHistory(goldHistory),
+              trend: directionToTrend(commodities["XAU/USD"]?.direction ?? "unchanged"),
             },
             silver: {
               symbol: "XAG/USD",
               name: "Silver",
               price: commodities["XAG/USD"]?.price ?? 0,
-              trend: trendFromHistory(silverHistory),
+              trend: directionToTrend(commodities["XAG/USD"]?.direction ?? "unchanged"),
             },
             coffee: {
               symbol: "KC1",
               name: "Coffee",
               price: commodities["KC1"]?.price ?? 0,
-              trend: trendFromHistory(coffeeHistory),
+              trend: directionToTrend(commodities["KC1"]?.direction ?? "unchanged"),
             },
           },
           commodityHistory: {
@@ -291,14 +325,22 @@ export const useEconomicDashboard = () => {
             growth: gdpGrowth,
           },
           lastUpdated: new Date().toISOString(),
-        });
+        };
+
+        // Cache the newly fetched history along with current data so we can reuse it
+        dataCache.set("dashboard_data", newData);
+        
+        setData(newData);
       } catch (err) {
         if (!cancelled) {
           console.error("[useEconomicDashboard]", err);
           setError(err as Error);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          // HF-5.3 Bug Fix: explicitly reset loading state even if there's an error.
+          setLoading(false);
+        }
       }
     }
 

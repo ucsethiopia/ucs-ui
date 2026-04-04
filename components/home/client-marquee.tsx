@@ -19,7 +19,7 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
   return (
     <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
-      <div className="relative w-full h-14 brightness-95 group-hover:brightness-100 transition-[filter] duration-300">
+      <div className="relative w-full h-14 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
         {logo && !imgError ? (
           <Image
             src={logo}
@@ -56,9 +56,9 @@ function PartnerCard({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="group flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all hover:border-border hover:shadow-sm hover:opacity-100 opacity-80">
-      {logo && !imgError ? (
-        <div className="relative h-14 w-full mb-3">
+    <div className="group relative flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-110 cursor-pointer">
+      <div className="relative w-full h-14 mb-3 brightness-95 group-hover:brightness-125 transition-[filter] flex items-center justify-center duration-300">
+        {logo && !imgError ? (
           <Image
             src={logo}
             alt={name}
@@ -67,12 +67,12 @@ function PartnerCard({ name, logo }: { name: string; logo: string }) {
             onError={() => setImgError(true)}
             sizes="180px"
           />
-        </div>
-      ) : (
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold mb-3">
-          {initials}
-        </div>
-      )}
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
+            {initials}
+          </div>
+        )}
+      </div>
       <h4 className="text-xs font-medium text-foreground leading-tight">
         {name}
       </h4>
