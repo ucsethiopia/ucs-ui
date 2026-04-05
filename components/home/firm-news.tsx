@@ -3,13 +3,17 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useFirmNews, type NewsItem } from "@/hooks/use-news";
+import { Container } from "@/components/shared/container";
 import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
 import { NewsModal } from "@/components/home/news-modal";
 import { Skeleton } from "@/components/ui/charts";
 
 export const FirmNews = () => {
+  const router = useRouter();
   const { data, loading, hasMore } = useFirmNews(9);
   const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef(null);
@@ -31,7 +35,6 @@ export const FirmNews = () => {
     if (containerRef.current) {
       const scrollAmount = direction === "left" ? -400 : 400;
       containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      setTimeout(checkScrollBoundaries, 300);
     }
   };
 
@@ -42,7 +45,7 @@ export const FirmNews = () => {
 
   const handleLoadMore = () => {
     // Navigate to full news page
-    window.location.href = "/news";
+    router.push("/news");
   };
 
   return (
@@ -56,7 +59,7 @@ export const FirmNews = () => {
               <button
                 onClick={() => scrollNews("left")}
                 disabled={!canScrollLeft}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 aria-label="Previous news"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -64,7 +67,7 @@ export const FirmNews = () => {
               <button
                 onClick={() => scrollNews("right")}
                 disabled={!canScrollRight}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 aria-label="Next news"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -80,10 +83,11 @@ export const FirmNews = () => {
           </div>
         }
       >
-        <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
+          <div ref={ref}>
           <div
             ref={containerRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+            className="relative flex gap-6 overflow-x-auto scrollbar-hide pb-4"
             style={{ scrollSnapType: "x mandatory" }}
             onScroll={checkScrollBoundaries}
           >
@@ -91,10 +95,10 @@ export const FirmNews = () => {
               ? [...Array(4)].map((_, i) => (
                   <div
                     key={i}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] rounded-xl overflow-hidden"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] rounded-xl overflow-hidden h-[500px] flex flex-col"
                   >
-                    <Skeleton className="h-48 w-full" />
-                    <div className="p-6 bg-card border border-t-0 rounded-b-xl">
+                    <Skeleton className="aspect-[3/2] w-full flex-shrink-0" />
+                    <div className="p-6 bg-card border border-t-0 flex-1">
                       <Skeleton className="h-4 w-20 mb-3" />
                       <Skeleton className="h-6 w-full mb-2" />
                       <Skeleton className="h-4 w-3/4" />
@@ -102,35 +106,58 @@ export const FirmNews = () => {
                   </div>
                 ))
               : data.map((news, index) => (
-                  <motion.div
+                  <motion.article
                     key={news.id}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[420px]"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 hover:shadow-xl"
                     style={{ scrollSnapAlign: "start" }}
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: index * 0.05 }}
                     whileHover={{ y: -5 }}
                     onClick={() => handleNewsClick(news)}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleNewsClick(news);
+                      }
+                    }}
                   >
                     {/* Image */}
-                    <div className="relative h-48 rounded-t-xl overflow-hidden flex-shrink-0">
-                      <img
-                        src={news.image}
-                        alt={news.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
+                    <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
+                      {(news.images?.[0] ?? news.main_image) ? (
+                        <SafeImage
+                          src={news.images?.[0] ?? news.main_image ?? ""}
+                          alt={news.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          priority={index === 0}
+                          className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                          fallbackClassName="absolute inset-0"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-navy-900" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 bg-card border border-t-0 rounded-b-xl group-hover:border-accent/50 transition-colors shadow-sm group-hover:shadow-xl flex-1 flex flex-col">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-medium rounded-full">
-                          {news.category}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {news.date}
+                    <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {(news.tags ?? ["News"]).slice(0, 2).map((tag) => (
+                            <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                              {tag}
+                            </span>
+                          ))}
+                          {(news.tags?.length ?? 0) > 2 && (
+                            <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
+                              +{(news.tags?.length ?? 0) - 2}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground shrink-0">
+                          {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                         </span>
                       </div>
 
@@ -139,18 +166,19 @@ export const FirmNews = () => {
                       </h3>
 
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {news.excerpt}
+                        {news.subtitle}
                       </p>
 
-                      <span className="inline-flex items-center text-accent font-medium text-sm group-hover:gap-2 transition-all">
+                      <span className="inline-flex items-center text-gold-600 font-medium text-sm group-hover:gap-2 transition-all">
                         Read more
                         <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </span>
                     </div>
-                  </motion.div>
+                  </motion.article>
                 ))}
           </div>
-        </div>
+          </div>
+        </Container>
       </NewsCarouselLayout>
 
       {/* Modal */}

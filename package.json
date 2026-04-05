@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "check:logos": "node scripts/check-logo-assets.mjs",
     "dev": "next dev",
     "lint": "eslint .",
+    "setup:githooks": "git config core.hooksPath .githooks",
     "start": "next start"
   },
   "dependencies": {
@@ -43,8 +45,10 @@
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
+    "eslint": "^10.2.0",
     "framer-motion": "^12.30.0",
     "input-otp": "1.4.1",
+    "lru-cache": "^11.2.7",
     "lucide-react": "^0.454.0",
     "next": "^16.1.6",
     "next-themes": "^0.4.6",
@@ -61,6 +65,8 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.2",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",

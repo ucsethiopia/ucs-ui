@@ -11,9 +11,9 @@ interface StatItem {
 }
 
 const stats: StatItem[] = [
-  { value: 15, label: "Years of Experience", suffix: "+" },
+  { value: 14, label: "Years of Experience", suffix: "+" },
   { value: 150, label: "Projects Completed", suffix: "+" },
-  { value: 500, label: "Clients Served", suffix: "+" },
+  { value: 150, label: "Clients Served", suffix: "+" },
   { value: 5, label: "Countries Reached", suffix: "" },
 ];
 
@@ -66,10 +66,10 @@ export function Statistics() {
   });
 
   return (
-    <section className="py-24 lg:py-32 bg-secondary/50">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-10 md:py-16 bg-secondary/50">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
             Our Impact
           </p>

@@ -1,5 +1,7 @@
 "use client";
 
+import { Container } from "@/components/shared/container";
+
 interface ServicesHeroProps {
   eyebrow?: string;
   title: string;
@@ -12,20 +14,22 @@ export function ServicesHero({
   description,
 }: ServicesHeroProps) {
   return (
-    <section className="relative h-[280px] md:h-[340px] flex items-end bg-navy-950">
+    <section
+      className="relative bg-navy-950 pt-32 pb-20"
+    >
       {/* Background with overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-top"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop')`,
+            backgroundImage: `url('/images/hero/services-hero-background.png')`,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-950/60 via-navy-950/70 to-navy-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-950/48 via-navy-950/58 to-navy-950/75" />
       </div>
 
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-[0.08]">
         <div
           className="absolute inset-0"
           style={{
@@ -34,22 +38,23 @@ export function ServicesHero({
         />
       </div>
 
-      {/* Content positioned bottom-left */}
-      <div className="relative z-10 w-full max-w-[1100px] mx-auto px-4 sm:px-6 pb-10 md:pb-16">
-        {eyebrow && (
-          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-            {eyebrow}
-          </p>
-        )}
-        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 text-balance">
-          {title}
-        </h1>
-        {description && (
-          <p className="text-lg text-white/70 leading-relaxed max-w-xl">
-            {description}
-          </p>
-        )}
-      </div>
+      <Container className="relative z-10">
+        <div className="max-w-2xl">
+          {eyebrow && (
+            <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
+              {eyebrow}
+            </p>
+          )}
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 text-balance">
+            {title}
+          </h1>
+          {description && (
+            <p className="text-lg text-white/70 leading-relaxed max-w-xl">
+              {description}
+            </p>
+          )}
+        </div>
+      </Container>
     </section>
   );
 }

@@ -41,3 +41,15 @@ integration-reference.md
 *.njsproj
 *.sln
 *.sw?
+
+
+# Other
+
+screenshots
+assets/inspo
+assets/logos
+.1notes.md
+.claude/
+.agents
+skills-lock.json
+docs

@@ -11,7 +11,6 @@
 | GET | `/commodities/historical?from_date=&to_date=&symbol=` | Historical commodities |
 | GET | `/interest` | NBE policy rate, T-Bill yield |
 | GET | `/gdp` | Latest GDP value, year |
-| GET | `/esx/latest` | ESX aggregate + companies |
 
 ## Query Parameters
 
@@ -218,35 +217,4 @@ Omit `symbol` to get all commodities. Valid symbols: `XAU/USD`, `XAG/USD`, `KC1`
 
 `value` is in billions (e.g., 160.5 = 160.5 billion USD).
 
----
 
-### GET /esx/latest
-
-**Success**
-```json
-{
-  "aggregate": 125.5,
-  "companies": {
-    "A": {
-      "symbol": "A",
-      "price": 45.2,
-      "updated_at": "2025-01-31T06:00:00.000000"
-    },
-    "B": {
-      "symbol": "B",
-      "price": 32.1,
-      "updated_at": "2025-01-31T06:00:00.000000"
-    }
-  },
-  "updated_at": "2025-01-31T06:00:00.000000"
-}
-```
-
-**Empty**
-```json
-{
-  "message": "No data yet",
-  "aggregate": 0,
-  "companies": {}
-}
-```

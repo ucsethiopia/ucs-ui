@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { Youtube, Linkedin, Send, Facebook } from "lucide-react";
+import Image from "next/image";
+import { Linkedin, Send } from "lucide-react";
+import { Container } from "@/components/shared/container";
+import { contactInfo } from "@/lib/mock-data";
 
 const footerLinks = {
   company: [
@@ -18,28 +21,36 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { href: "https://youtube.com", icon: Youtube, label: "YouTube" },
-  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
-  { href: "https://t.me", icon: Send, label: "Telegram" },
-  { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
+  { href: contactInfo.linkedin, icon: Linkedin, label: "LinkedIn" },
+  { href: `https://t.me/${contactInfo.telegram.replace("@", "")}`, icon: Send, label: "Telegram" },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <footer className="bg-navy-950 text-white border-t-2 border-white/10">
+      <Container>
         {/* Main Footer */}
         <div className="grid grid-cols-1 gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
-              <div className="font-serif text-2xl font-bold tracking-tight">
-                UCS
-                <span className="text-gold-500"> Ethiopia</span>
-              </div>
+              <Image
+                src="/images/logos/ucs/logo-white.png"
+                alt="Ultimate Consultancy Services"
+                width={154}
+                height={72}
+                className="h-16 sm:h-20 md:h-24 w-auto block [.inverted_&]:hidden"
+              />
+              <Image
+                src="/images/logos/ucs/logo-base.png"
+                alt="Ultimate Consultancy Services"
+                width={154}
+                height={72}
+                className="h-16 sm:h-20 md:h-24 w-auto hidden [.inverted_&]:block"
+              />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/70">
-              Driving growth and transformation for Ethiopian enterprises since 2011. 
+              Driving growth and transformation for Ethiopian enterprises since 2012.
               Your trusted partner for advisory, training, and research services.
             </p>
             {/* Social Links */}
@@ -60,7 +71,7 @@ export function Footer() {
           </div>
 
           {/* Company Links */}
-          <div>
+          <nav aria-label="Company">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
               Company
             </h3>
@@ -76,10 +87,10 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Services Links */}
-          <div>
+          <nav aria-label="Services">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
               Services
             </h3>
@@ -95,7 +106,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Contact Info */}
           <div>
@@ -103,16 +114,18 @@ export function Footer() {
               Contact
             </h3>
             <address className="mt-4 space-y-3 text-sm not-italic text-white/70">
-              <p>Bole Sub City, Woreda 03</p>
+              <p>Gurd Shola, near Century Mall</p>
+              <p>Abenezer Building, 3rd Floor</p>
               <p>Addis Ababa, Ethiopia</p>
+              <p>P.O. Box {contactInfo.poBox}</p>
               <p className="pt-2">
-                <a href="tel:+251911234567" className="hover:text-gold-500 transition-colors">
-                  +251 911 234 567
+                <a href={`tel:${contactInfo.phones[0]}`} className="hover:text-gold-500 transition-colors">
+                  {contactInfo.phones[0]}
                 </a>
               </p>
               <p>
-                <a href="mailto:info@ucsethiopia.com" className="hover:text-gold-500 transition-colors">
-                  info@ucsethiopia.com
+                <a href={`mailto:${contactInfo.emails[0]}`} className="hover:text-gold-500 transition-colors">
+                  {contactInfo.emails[0]}
                 </a>
               </p>
             </address>
@@ -135,7 +148,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

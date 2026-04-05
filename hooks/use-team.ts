@@ -1,9 +1,14 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import {
-  teamMembers,
-  simulateApiDelay,
-  type TeamMember,
-} from "@/lib/mock-data";
+import type { TeamMember, TeamMemberDetail } from "@/lib/types";
+
+export type { TeamMember, TeamMemberDetail };
+
+const BASE_URL = process.env.NEXT_PUBLIC_UCS_SERVICE_API_URL ?? "";
+
+// ─── useTeamApi ───────────────────────────────────────────────────────────────
+// Fetches the full team list from GET /team.
 
 export function useTeamApi() {
   const [team, setTeam] = useState<TeamMember[]>([]);
@@ -11,68 +16,71 @@ export function useTeamApi() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTeam() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        // Simulate API call with 800ms delay
-        const data = await simulateApiDelay(teamMembers, 800);
-        setTeam(data);
-      } catch (err) {
-        setError("Failed to load team members");
-        console.error("Error fetching team:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchTeam();
+    let cancelled = false;
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`${BASE_URL}/team`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`API error ${res.status}`);
+        return res.json() as Promise<TeamMember[]>;
+      })
+      .then((data) => {
+        if (!cancelled) setTeam(data);
+      })
+      .catch((err) => {
+        console.error("[useTeamApi]", err);
+        if (!cancelled) setError("Failed to load team members");
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, []);
 
   return { team, isLoading, error };
 }
 
+// ─── useTeamMember ────────────────────────────────────────────────────────────
+// Fetches a single team member detail from GET /team/{name}.
+// Returns { member, isLoading, notFound, error }.
+
 export function useTeamMember(memberSlug: string) {
-  const [member, setMember] = useState<TeamMember | null>(null);
+  const [member, setMember] = useState<TeamMemberDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchMember() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        // Decode the URL slug and find the member
-        const decodedSlug = decodeURIComponent(memberSlug)
-          .toLowerCase()
-          .replace(/-/g, " ");
-        const data = await simulateApiDelay(teamMembers, 600);
+    if (!memberSlug) return;
+    let cancelled = false;
+    setIsLoading(true);
+    setNotFound(false);
+    setError(null);
 
-        // Try to find member by matching slug pattern
-        const foundMember = data.find((m) => {
-          const memberNameSlug = m.name.toLowerCase().replace(/\s+/g, " ");
-          // Match exact name or name without title prefixes (Dr., Mr., Mrs., etc.)
-          return (
-            memberNameSlug === decodedSlug ||
-            memberNameSlug.replace(/^(dr\.|mr\.|mrs\.|ms\.)\s*/i, "") ===
-              decodedSlug ||
-            m.name.toLowerCase().replace(/\s+/g, "-") === memberSlug
-          );
-        });
-
-        if (!foundMember) {
-          setError("Team member not found");
-        } else {
-          setMember(foundMember);
+    fetch(`${BASE_URL}/team/${encodeURIComponent(memberSlug)}`)
+      .then((res) => {
+        if (res.status === 404) {
+          if (!cancelled) setNotFound(true);
+          return null;
         }
-      } catch (err) {
-        setError("Failed to load team member");
-        console.error("Error fetching team member:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchMember();
+        if (!res.ok) throw new Error(`API error ${res.status}`);
+        return res.json() as Promise<TeamMemberDetail>;
+      })
+      .then((data) => {
+        if (!cancelled && data) setMember(data);
+      })
+      .catch((err) => {
+        console.error("[useTeamMember]", err);
+        if (!cancelled) setError("Failed to load team member");
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [memberSlug]);
 
-  return { member, isLoading, error };
+  return { member, isLoading, notFound, error };
 }
