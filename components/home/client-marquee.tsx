@@ -19,7 +19,7 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
   return (
     <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
-      <div className="relative w-full h-14 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
+      <div className="relative w-full h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
         {logo && !imgError ? (
           <Image
             src={logo}

@@ -75,7 +75,7 @@ export function TickerBar() {
 
   return (
     <div
-      className="fixed top-16 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
+      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
       aria-label="Live financial data ticker"
       aria-live="polite"
       onMouseEnter={() => setPaused(true)}

@@ -57,7 +57,7 @@ export function Navbar() {
       )}
     >
       <Container as="nav">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-19 items-center justify-between">
           {/* Logo — swap based on theme class on <html> */}
           <Link href="/" onClick={handleNavClick} className="flex items-center">
             <Image
@@ -65,7 +65,7 @@ export function Navbar() {
               alt="Ultimate Consultancy Services"
               width={154}
               height={72}
-              className="h-15 sm:h-16 w-auto block [.inverted_&]:hidden"
+              className="h-16 sm:h-17 w-auto block [.inverted_&]:hidden"
               priority
             />
             <Image
@@ -73,7 +73,7 @@ export function Navbar() {
               alt="Ultimate Consultancy Services"
               width={154}
               height={72}
-              className="h-15 sm:h-16 w-auto hidden [.inverted_&]:block"
+              className="h-16 sm:h-17 w-auto hidden [.inverted_&]:block"
               priority
             />
           </Link>
