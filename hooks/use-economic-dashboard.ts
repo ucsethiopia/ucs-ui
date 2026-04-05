@@ -176,7 +176,7 @@ function downsampleKeepingSpikes(
 }
 
 /** Generic downsampler for FX endpoint */
-function processFXHistory(data: any[], currency: string) {
+function processFXHistory(data: { date: string; rates: Record<string, number> }[], currency: string) {
   const mapping = (data || []).filter(d => d.rates && d.rates[currency] != null).map(d => ({
     date: d.date,
     value: d.rates[currency]
@@ -185,7 +185,7 @@ function processFXHistory(data: any[], currency: string) {
 }
 
 /** Generic downsampler for Commodity endpoint */
-function processCommodityHistory(data: any[]) {
+function processCommodityHistory(data: { date: string; close: number }[]) {
   const mapping = (data || []).map(d => ({
     date: d.date,
     value: d.close

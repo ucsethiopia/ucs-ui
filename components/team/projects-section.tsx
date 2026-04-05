@@ -99,7 +99,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-500 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-500 transition-colors rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
                             {link.title}

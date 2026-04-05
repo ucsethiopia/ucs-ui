@@ -83,7 +83,11 @@ export function ServicePillars({ services }: ServicePillarsProps) {
         </motion.div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 justify-center flex-wrap mb-8 md:mb-10">
+        <div
+          role="tablist"
+          aria-label="Service pillars"
+          className="flex gap-2 justify-center flex-wrap mb-8 md:mb-10"
+        >
           {services.map((service, index) => {
             const Icon = iconMap[service.title] || GraduationCap;
             const isActive = index === activeIndex;
@@ -91,9 +95,12 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             return (
               <button
                 key={service.id}
+                role="tab"
+                aria-selected={isActive}
+                aria-label={service.title}
                 onClick={() => setActiveIndex(index)}
                 className={cn(
-                  "px-3 sm:px-5 py-2 sm:py-2.5 rounded-md border-[1.5px] flex items-center gap-1.5 transition-all duration-200 cursor-pointer text-xs sm:text-sm font-medium",
+                  "px-3 sm:px-5 py-2 sm:py-2.5 rounded-md border-[1.5px] flex items-center gap-1.5 transition-all duration-200 cursor-pointer text-xs sm:text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isActive
                     ? "bg-gold-500 border-gold-500 text-navy-950"
                     : "bg-transparent border-border text-muted-foreground hover:border-gold-500/50 hover:text-foreground",
@@ -119,7 +126,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: "easeInOut" }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
             >
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gold-500 flex items-center justify-center text-navy-950">
                 <ActiveIcon size={28} />
@@ -150,10 +157,10 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.28, ease: "easeInOut" }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             {/* Description paragraph */}
-            <p className="text-muted-foreground leading-[1.75] mb-6 text-justify">
+            <p className="text-muted-foreground leading-[1.75] mb-6">
               {activeService.description}
             </p>
 
@@ -189,8 +196,8 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                               key={idx}
                               className="flex items-start gap-2.5 py-1.5 text-muted-foreground"
                             >
-                              <div className="flex-shrink-0 mt-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500/10">
-                                <Check className="h-2.5 w-2.5 text-gold-600" />
+                              <div className="flex-shrink-0 mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
+                                <Check className="h-3 w-3 text-gold-600" />
                               </div>
                               <span className="text-xs sm:text-sm leading-tight">
                                 {course}

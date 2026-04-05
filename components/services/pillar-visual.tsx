@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import {
   GraduationCap,
   Compass,
@@ -36,17 +37,17 @@ const pillarConfig: Record<
     pattern: "orbit",
   },
   Advisory: {
-    gradient: "from-navy-500/20 via-navy-500/5 to-transparent",
+    gradient: "from-navy-700/20 via-navy-700/5 to-transparent",
     icons: [Compass, TrendingUp, Target, Briefcase],
     pattern: "grid",
   },
   "Research & Publication": {
-    gradient: "from-emerald-500/20 via-emerald-500/5 to-transparent",
+    gradient: "from-gold-600/20 via-gold-600/5 to-transparent",
     icons: [BookOpen, BarChart3, FileText, Lightbulb],
     pattern: "flow",
   },
   "Communication & Promotion": {
-    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
+    gradient: "from-navy-600/20 via-navy-600/5 to-transparent",
     icons: [Megaphone, Zap, Users, Target],
     pattern: "scatter",
   },
@@ -155,20 +156,19 @@ function GridPattern({
               stiffness: 200,
             }}
             whileHover={{ scale: 1.05, y: -2 }}
-            className={`
-              aspect-square rounded-xl flex items-center justify-center shadow-sm
-              ${index === 0 ? "bg-gold-500 text-navy-950" : "bg-background border border-border text-foreground"}
-            `}
+            className={cn(
+              "aspect-square rounded-xl flex items-center justify-center shadow-sm",
+              index === 0 ? "bg-gold-500 text-navy-950" : "bg-background border border-border text-foreground",
+            )}
           >
-            <Icon className={`w-6 h-6 ${index === 0 ? "" : "text-gold-600"}`} />
+            <Icon className={cn("w-6 h-6", index !== 0 && "text-gold-600")} />
           </motion.div>
         ))}
       </div>
 
       {/* Connecting lines */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: -1 }}
+        className="absolute inset-0 w-full h-full pointer-events-none -z-10"
       >
         <motion.line
           x1="35%"
@@ -219,14 +219,14 @@ function FlowPattern({
               type: "spring",
               stiffness: 100,
             }}
-            className={`
-              flex items-center gap-3 px-4 py-2 rounded-lg
-              ${index === 0 ? "bg-gold-500 text-navy-950" : "bg-background border border-border"}
-            `}
+            className={cn(
+              "flex items-center gap-3 px-4 py-2 rounded-lg",
+              index === 0 ? "bg-gold-500 text-navy-950" : "bg-background border border-border",
+            )}
           >
-            <Icon className={`w-5 h-5 ${index === 0 ? "" : "text-gold-600"}`} />
+            <Icon className={cn("w-5 h-5", index !== 0 && "text-gold-600")} />
             <motion.div
-              className={`h-1 rounded-full ${index === 0 ? "bg-navy-950/30" : "bg-gold-500/30"}`}
+              className={cn("h-1 rounded-full", index === 0 ? "bg-navy-950/30" : "bg-gold-500/30")}
               initial={{ width: 0 }}
               animate={{ width: 40 + index * 10 }}
               transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
@@ -280,10 +280,10 @@ function ScatterPattern({
               delay: positions[index].delay,
             },
           }}
-          className={`
-            absolute w-12 h-12 rounded-xl flex items-center justify-center shadow-sm
-            ${index === 0 ? "bg-gold-500 text-navy-950 w-14 h-14" : "bg-background border border-border"}
-          `}
+          className={cn(
+            "absolute w-12 h-12 rounded-xl flex items-center justify-center shadow-sm",
+            index === 0 ? "bg-gold-500 text-navy-950 w-14 h-14" : "bg-background border border-border",
+          )}
           style={{
             left: positions[index].x,
             top: positions[index].y,
@@ -291,7 +291,7 @@ function ScatterPattern({
           }}
         >
           <Icon
-            className={`${index === 0 ? "w-7 h-7" : "w-5 h-5 text-gold-600"}`}
+            className={cn(index === 0 ? "w-7 h-7" : "w-5 h-5 text-gold-600")}
           />
         </motion.div>
       ))}
@@ -330,7 +330,7 @@ export function PillarVisual({ pillar, className }: PillarVisualProps) {
 
   return (
     <div
-      className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-muted/50 ${className}`}
+      className={cn("relative aspect-[4/3] rounded-xl overflow-hidden bg-muted/50", className)}
     >
       {/* Background gradient */}
       <div

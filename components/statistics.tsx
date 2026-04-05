@@ -11,9 +11,9 @@ interface StatItem {
 }
 
 const stats: StatItem[] = [
-  { value: 15, label: "Years of Experience", suffix: "+" },
+  { value: 14, label: "Years of Experience", suffix: "+" },
   { value: 150, label: "Projects Completed", suffix: "+" },
-  { value: 500, label: "Clients Served", suffix: "+" },
+  { value: 150, label: "Clients Served", suffix: "+" },
   { value: 5, label: "Countries Reached", suffix: "" },
 ];
 

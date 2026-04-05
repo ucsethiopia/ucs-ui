@@ -48,7 +48,7 @@ function NewsCard({
       }}
     >
       {/* Image */}
-      <div className="relative aspect-video overflow-hidden bg-muted">
+      <div className="relative aspect-[3/2] overflow-hidden bg-muted">
         {(item.images?.[0] ?? item.main_image) ? (
           <Image
             src={item.images?.[0] ?? item.main_image ?? ""}
@@ -127,13 +127,15 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="py-8 bg-background border-b border-border sticky top-20 z-30">
+        <section className="sticky top-14 sm:top-24 z-10 bg-background">
           <Container>
+            <div className="py-6 border-b border-border">
             <div className="flex flex-wrap gap-2">
               {newsCategories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
+                  aria-pressed={selectedCategory === category}
                   className={cn(
                     "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
                     selectedCategory === category
@@ -144,6 +146,7 @@ export default function NewsPage() {
                   {category}
                 </button>
               ))}
+            </div>
             </div>
           </Container>
         </section>
@@ -158,7 +161,7 @@ export default function NewsPage() {
                     key={i}
                     className="bg-card border border-border rounded-lg overflow-hidden"
                   >
-                    <div className="aspect-video bg-muted animate-pulse" />
+                    <div className="aspect-[3/2] bg-muted animate-pulse" />
                     <div className="p-5 space-y-3">
                       <div className="h-4 w-24 bg-muted animate-pulse rounded" />
                       <div className="h-6 w-full bg-muted animate-pulse rounded" />
@@ -175,7 +178,7 @@ export default function NewsPage() {
                 </p>
                 <button
                   onClick={() => setSelectedCategory("All")}
-                  className="mt-4 text-gold-600 font-semibold hover:text-gold-500 transition-colors"
+                  className="mt-4 text-gold-600 font-semibold hover:text-gold-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm"
                 >
                   View all news
                 </button>
@@ -202,7 +205,7 @@ export default function NewsPage() {
                     <button
                       onClick={loadMore}
                       disabled={isLoadingMore}
-                      className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
                     >
                       {isLoadingMore ? (
                         <>

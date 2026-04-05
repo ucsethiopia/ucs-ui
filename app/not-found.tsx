@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 export default function NotFound() {
   return (
     <>
-      <main className="relative min-h-[85vh] flex items-center justify-center bg-background overflow-hidden">
+      <main className="relative min-h-[calc(100vh-3.5rem)] flex items-center justify-center bg-background overflow-hidden">
         {/* Decorative top accent */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
 
@@ -52,7 +52,7 @@ export default function NotFound() {
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-sm bg-gold-500 text-navy-950 text-sm font-semibold hover:bg-gold-400 transition-colors"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-sm bg-gold-500 text-navy-950 text-sm font-semibold hover:bg-gold-400 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <ArrowLeft className="h-4 w-4" />
             Return to Home

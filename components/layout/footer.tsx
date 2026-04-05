@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Linkedin, Send } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { contactInfo } from "@/lib/mock-data";
@@ -33,10 +34,20 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
-              <div className="font-serif text-xl font-bold tracking-tight">
-                UCS
-                <span className="text-gold-500"> Ethiopia</span>
-              </div>
+              <Image
+                src="/images/logos/ucs/logo-white.png"
+                alt="Ultimate Consultancy Services"
+                width={154}
+                height={72}
+                className="h-16 sm:h-20 md:h-24 w-auto block [.inverted_&]:hidden"
+              />
+              <Image
+                src="/images/logos/ucs/logo-base.png"
+                alt="Ultimate Consultancy Services"
+                width={154}
+                height={72}
+                className="h-16 sm:h-20 md:h-24 w-auto hidden [.inverted_&]:block"
+              />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/70">
               Driving growth and transformation for Ethiopian enterprises since 2012.
@@ -60,7 +71,7 @@ export function Footer() {
           </div>
 
           {/* Company Links */}
-          <div>
+          <nav aria-label="Company">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
               Company
             </h3>
@@ -76,10 +87,10 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Services Links */}
-          <div>
+          <nav aria-label="Services">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
               Services
             </h3>
@@ -95,7 +106,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Contact Info */}
           <div>

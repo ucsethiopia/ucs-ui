@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Container } from "@/components/shared/container";
+import { useNavigation } from "@/components/navigation-provider";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -21,6 +23,12 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const { triggerNavigation } = useNavigation();
+
+  const handleNavClick = useCallback(() => {
+    triggerNavigation();
+    window.scrollTo({ top: 0 });
+  }, [triggerNavigation]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,18 +57,25 @@ export function Navbar() {
       )}
     >
       <Container as="nav">
-        <div className="flex h-14 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div
-              className={cn(
-                "font-serif text-base sm:text-lg font-bold tracking-tight transition-colors",
-                textClass,
-              )}
-            >
-              UCS
-              <span className="text-gold-500"> Ethiopia</span>
-            </div>
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo — swap based on theme class on <html> */}
+          <Link href="/" onClick={handleNavClick} className="flex items-center">
+            <Image
+              src="/images/logos/ucs/logo-white.png"
+              alt="Ultimate Consultancy Services"
+              width={154}
+              height={72}
+              className="h-15 sm:h-16 w-auto block [.inverted_&]:hidden"
+              priority
+            />
+            <Image
+              src="/images/logos/ucs/logo-base.png"
+              alt="Ultimate Consultancy Services"
+              width={154}
+              height={72}
+              className="h-15 sm:h-16 w-auto hidden [.inverted_&]:block"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -69,6 +84,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={handleNavClick}
                 className={cn(
                   "text-sm font-medium tracking-wide transition-colors hover:text-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm",
                   textClass,
@@ -81,6 +97,7 @@ export function Navbar() {
             <ThemeToggle inheritTextColor={true} className={cn(textClass)} />
             <Link
               href="/contact"
+              onClick={handleNavClick}
               className="inline-flex items-center justify-center rounded-sm bg-gold-500 px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"
             >
               Get in Touch
@@ -109,6 +126,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={handleNavClick}
                   className={cn(
                     "px-4 py-3 text-base font-medium transition-colors hover:bg-white/5",
                     pathname === link.href
@@ -123,6 +141,7 @@ export function Navbar() {
                 <ThemeToggle className="flex-shrink-0 text-white" inheritTextColor={true} />
                 <Link
                   href="/contact"
+                  onClick={handleNavClick}
                   className="flex-1 flex items-center justify-center rounded-sm bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"
                 >
                   Get in Touch

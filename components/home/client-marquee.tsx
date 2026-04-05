@@ -1,10 +1,10 @@
 "use client";
 
-import { clientLogos, strategicPartners } from "@/lib/mock-data";
+import { clientLogos } from "@/lib/mock-data";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 function ClientLogo({ name, logo }: { name: string; logo: string }) {
   const [imgError, setImgError] = useState(false);
@@ -45,100 +45,9 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
   );
 }
 
-function PartnerCard({
-  name,
-  logo,
-  country,
-}: {
-  name: string;
-  logo: string;
-  country?: string;
-}) {
-  const [imgError, setImgError] = useState(false);
-
-  const initials = name
-    .split(" ")
-    .map((word) => word[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  return (
-    <div className="group relative flex flex-col items-center text-center p-5 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-105 cursor-pointer">
-      {/* Logo area */}
-      <div className="w-full h-24 sm:h-28 mb-4 flex items-center justify-center relative transition-transform duration-300 group-hover:scale-110">
-        {logo && !imgError ? (
-          <div className="relative w-full h-full scale-[0.75]">
-            <Image
-              src={logo}
-              alt={name}
-              fill
-              className="object-contain"
-              onError={() => setImgError(true)}
-              sizes="240px"
-            />
-          </div>
-        ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
-            {initials}
-          </div>
-        )}
-      </div>
-      <h4 className="text-sm font-semibold text-foreground leading-tight">
-        {name}
-      </h4>
-      {country ? (
-        <p className="mt-1.5 text-[10px] uppercase tracking-wide text-muted-foreground/80 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          {country}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
 export function ClientMarquee() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
+  const [paused, setPaused] = useState(false);
   const duplicatedClients = [...clientLogos, ...clientLogos];
-
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let scrollPosition = 0;
-    let animationId: number;
-    let isPaused = false;
-
-    const scroll = () => {
-      if (!isPaused && scrollContainer) {
-        scrollPosition += 0.5;
-        if (scrollPosition >= scrollContainer.scrollWidth / 2) {
-          scrollPosition = 0;
-        }
-        scrollContainer.scrollLeft = scrollPosition;
-      }
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    animationId = requestAnimationFrame(scroll);
-
-    const handleMouseEnter = () => {
-      isPaused = true;
-    };
-
-    const handleMouseLeave = () => {
-      isPaused = false;
-    };
-
-    scrollContainer.addEventListener("mouseenter", handleMouseEnter);
-    scrollContainer.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      scrollContainer.removeEventListener("mouseenter", handleMouseEnter);
-      scrollContainer.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
 
   return (
     <section className="py-10 sm:py-14 lg:py-16 bg-secondary/30 overflow-hidden border-y border-border/50">
@@ -162,55 +71,32 @@ export function ClientMarquee() {
         </Container>
 
         {/* Marquee Container */}
-        <div className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]">
+        <div
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
 
           {/* Scrolling Track */}
-          <div
-            ref={scrollRef}
-            className="flex overflow-x-hidden py-3"
-            aria-hidden="true"
-            style={{ scrollBehavior: "auto", whiteSpace: "nowrap" }}
-          >
-            {duplicatedClients.map((client, index) => (
-              <div key={`${client.id}-${index}`} className="inline-block px-3">
-                <ClientLogo name={client.name} logo={client.logo} />
-              </div>
-            ))}
+          <div className="overflow-hidden">
+            <div
+              className="flex animate-marquee py-3"
+              style={{ animationPlayState: paused ? "paused" : "running" }}
+              aria-hidden="true"
+            >
+              {duplicatedClients.map((client, index) => (
+                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-2">
+                  <ClientLogo name={client.name} logo={client.logo} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Partners Section */}
-      <Container>
-        <ScrollReveal>
-          <div className="text-center mb-8">
-            <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-3">
-              Strategic Partnerships
-            </p>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
-              Global Network
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              We partner with established consulting firms and multidisciplinary
-              experts from around the world to deliver exceptional results
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
-          {strategicPartners.map((partner) => (
-            <PartnerCard
-              key={partner.id}
-              name={partner.name}
-              logo={partner.logo}
-              country={partner.country}
-            />
-          ))}
-        </div>
-      </Container>
     </section>
   );
 }
