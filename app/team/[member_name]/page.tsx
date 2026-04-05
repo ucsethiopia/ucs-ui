@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  Award,
   Linkedin,
   Mail,
   Phone,
@@ -16,6 +17,7 @@ import { EducationSection } from "@/components/team/education-section";
 import { ExperienceSection } from "@/components/team/experience-section";
 import { TrainingsSection } from "@/components/team/trainings-section";
 import { ProjectsSection } from "@/components/team/projects-section";
+import { BackToTop } from "@/components/shared/back-to-top";
 import { use } from "react";
 
 interface TeamMemberPageProps {
@@ -46,13 +48,13 @@ function PageSkeleton() {
         </div>
         {/* Content skeleton */}
         <div className="py-20 bg-background">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-14">
             <div className="space-y-4">
               <div className="aspect-[3/4] bg-muted rounded-xl animate-pulse" />
               <div className="h-10 bg-muted rounded animate-pulse" />
               <div className="h-10 bg-muted rounded animate-pulse" />
             </div>
-            <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-6">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="h-5 bg-muted rounded animate-pulse" />
               ))}
@@ -82,7 +84,6 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
     .slice(0, 2)
     .toUpperCase();
 
-  const displayTitle = member.titles?.[0] ?? member.role;
   const summaryParagraphs = member.summary.split("\n\n").filter(Boolean);
 
   // Related team members (exclude current)
@@ -95,15 +96,18 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
       <main>
         {/* ─── Hero ─── */}
         <section className="relative bg-navy-950 pt-28 pb-20 overflow-hidden">
-          {/* Background image */}
+          {/* Background — member's own image, heavily overlaid */}
           <div className="absolute inset-0">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1200&auto=format&fit=crop')`,
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-navy-950/70 via-navy-950/80 to-navy-950" />
+            {member.image && (
+              <Image
+                src={member.image}
+                alt=""
+                fill
+                className="object-cover object-top blur-sm scale-105"
+                priority
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-navy-950/80 via-navy-950/85 to-navy-950" />
           </div>
 
           {/* Ghost monogram watermark */}
@@ -169,8 +173,8 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                     : "—",
                 },
                 {
-                  label: "Industry",
-                  value: "Advisory",
+                  label: "Roles Held",
+                  value: member.experiences?.filter((e) => e.type === "job").length || "—",
                 },
               ].map((stat) => (
                 <div
@@ -191,8 +195,8 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
 
         {/* ─── Profile Content ─── */}
         <section className="py-20 lg:py-28 bg-background">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
+            <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10 lg:gap-14">
               {/* Left: Image and contact */}
               <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
                 {/* Profile image with gold accent frame */}
@@ -232,7 +236,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       href={member.contact.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
                     >
                       <Linkedin className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground group-hover:text-gold-600 transition-colors">
@@ -243,7 +247,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   {member.contact?.email && (
                     <a
                       href={`mailto:${member.contact.email}`}
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
                     >
                       <Mail className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground truncate group-hover:text-gold-600 transition-colors">
@@ -254,7 +258,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   {member.contact?.phone && (
                     <a
                       href={`tel:${member.contact.phone}`}
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-all group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
                     >
                       <Phone className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground group-hover:text-gold-600 transition-colors">
@@ -301,7 +305,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.25 }}
-                className="lg:col-span-2 space-y-16"
+                className="space-y-16"
               >
                 {/* Summary / biography */}
                 <div>
@@ -333,7 +337,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 {/* Work Experience */}
                 <ExperienceSection experiences={member.experiences} />
 
-                {/* Technical skills */}
+                {/* Technical skills — staggered entrance */}
                 {member.technical_skills && member.technical_skills.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
@@ -342,43 +346,66 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                         Areas of Expertise
                       </h3>
                     </div>
-                    <div className="flex flex-wrap gap-2.5">
+                    <motion.div
+                      className="flex flex-wrap gap-2.5"
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-40px" }}
+                      variants={{
+                        visible: {
+                          transition: { staggerChildren: 0.04 },
+                        },
+                      }}
+                    >
                       {member.technical_skills.flatMap((cat) => cat.skills).map((skill, idx) => (
-                        <span
+                        <motion.span
                           key={idx}
+                          variants={{
+                            hidden: { opacity: 0, scale: 0.85 },
+                            visible: { opacity: 1, scale: 1 },
+                          }}
+                          transition={{ duration: 0.3 }}
                           className="inline-flex items-center gap-1.5 px-4 py-2 bg-card border border-border rounded-full text-sm font-medium text-foreground hover:border-gold-500/50 hover:text-gold-600 transition-colors cursor-default"
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-gold-500 flex-shrink-0" />
                           {skill}
-                        </span>
+                        </motion.span>
                       ))}
-                    </div>
+                    </motion.div>
                   </div>
                 )}
 
-                {/* Grants & awards */}
+                {/* Grants & awards — dark gradient cards */}
                 {member.grants_awards && member.grants_awards.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-1 h-6 bg-gold-500 rounded-full" />
+                      <Award className="h-6 w-6 text-gold-500" />
                       <h3 className="font-serif text-2xl font-bold text-foreground">
                         Grants &amp; Awards
                       </h3>
                     </div>
-                    <div className="space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-5">
                       {member.grants_awards.map((award, idx) => (
-                        <div key={idx} className="flex gap-5 items-start">
-                          <span
-                            className="font-serif font-bold text-gold-500/30 leading-none flex-shrink-0 select-none"
-                            style={{ fontSize: "3.5rem", lineHeight: 1 }}
-                          >
-                            {String(idx + 1).padStart(2, "0")}
-                          </span>
-                          <p className="text-muted-foreground leading-relaxed pt-2 text-[15px]">
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, y: 12 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: Math.min(idx * 0.08, 0.4) }}
+                          viewport={{ once: true }}
+                          className="bg-gradient-to-br from-navy-950 to-navy-800 p-6 rounded-lg"
+                        >
+                          <div className="w-10 h-10 bg-gold-500/15 rounded-full flex items-center justify-center mb-4">
+                            <Award className="w-5 h-5 text-gold-500" />
+                          </div>
+                          <p className="text-sm text-white/90 leading-relaxed mb-3">
                             {award.description}
-                            {award.year ? ` (${award.year})` : ""}
                           </p>
-                        </div>
+                          {award.year > 0 && (
+                            <p className="text-gold-400 text-sm font-semibold">
+                              {award.year}
+                            </p>
+                          )}
+                        </motion.div>
                       ))}
                     </div>
                   </div>
@@ -440,7 +467,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       href={`/team/${teamMember.name.toLowerCase().replace(/\s+/g, "-")}`}
                       className="group block"
                     >
-                      <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30">
+                      <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">
                           {teamMember.image ? (
                             <Image
@@ -472,6 +499,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
           </section>
         )}
       </main>
+      <BackToTop />
     </>
   );
 }

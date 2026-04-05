@@ -1,7 +1,7 @@
 # PLAN.md — UCS Ethiopia Frontend Sprint
 
 > Active branch: `feat/ux-overhaul`
-> Last updated: 2026-04-04 (session 10)
+> Last updated: 2026-04-05 (session 11)
 
 ---
 
@@ -86,12 +86,22 @@ These are the immediate priority before resuming the phase queue.
 - [x] **13.9.11** Team bios — backend task, not frontend. ✅
 - [ ] **13.9.12** _(Blocked)_ Partner logos for B&M Development Consultants and Precise Corporate Services — uncomment in mock-data when assets arrive
 
-### Phase 14 — Component Sourcing (21st.dev)
+### Phase 14 — Component Sourcing & Polish (21st.dev + manual)
 
-- [ ] **14.1** Animated stats/metrics display
-- [ ] **14.2** Team members pages
+- [x] **14.1** Animated stats/metrics display — `HomeStatsStrip` polished: `requestAnimationFrame` counter with `easeOutQuart`, `prefers-reduced-motion` support, staggered entrance, editorial uppercase labels
+- [x] **14.2** Team member profile page overhaul:
+  - [x] Scroll-tracking Timeline component (`components/team/timeline.tsx`) with sticky year labels + gold gradient fill line
+  - [x] EducationSection refactored to use Timeline (degrees sorted by year desc)
+  - [x] ExperienceSection refactored to use Timeline (human-readable date formatting: "Jan 2012 – Present")
+  - [x] Awards section → dark navy gradient cards (2-col grid, gold icon circles, staggered entrance)
+  - [x] Skill pills → `whileInView` stagger animation (scale + fade)
+  - [x] Hero background → member's own blurred image instead of hardcoded stock photo
+  - [x] Removed hardcoded "Advisory" industry stat → data-driven "Roles Held" count
+  - [x] Added floating BackToTop button (`components/shared/back-to-top.tsx`) — navy/gold, gold ring, appears after 500px scroll
+  - [x] Widened content layout: `max-w-5xl` → `max-w-[1440px]` with `grid-cols-[280px_1fr]` for full-width content
+  - [x] Polish: removed dead code, `transition-all` → specific properties, consistent section spacing, capped stagger delays, timeline headings as `<p>` for a11y
 - [ ] **14.3** Services animations
-- [ ] **14.3** Global Partners Section
+- [ ] **14.3b** Global Partners Section
 - [ ] **14.4** Hero background element (subtle gradient or geometric SVG, no parallax)
 - [ ] **14.5** Service comparison / feature-matrix table
 - [ ] **14.6** Timeline component for About milestones
@@ -120,7 +130,7 @@ These are the immediate priority before resuming the phase queue.
 
 ## Current Task
 
-> > **14.x** — Component Sourcing (21st.dev with MagicMCP)
+> > **14.3** — Services animations (next up)
 ---
 
 ## Blocked Items
