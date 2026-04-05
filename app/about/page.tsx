@@ -151,7 +151,9 @@ export default function AboutPage() {
           eyebrow="About Us"
           title="Our Story"
           description="Established in 2012 G.C. with a mission to make a positive difference in organizations and individuals' life through the provision of value adding advisory and training services."
-          backgroundImage="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop"
+          backgroundImage="/images/hero/about-hero-background.png"
+          backgroundPositionClass="bg-top"
+          contentWrapperClassName="ml-4 lg:mr-30"
           condensed
         />
 
@@ -185,16 +187,15 @@ export default function AboutPage() {
                     they do business to compete and thrive on a global scale.
                   </p>
                   <p className="text-justify">
-                    UCS, thus, primarily works to support organizations in
-                    order to effectively design and implement strategic
-                    organizational change and transformation initiatives in
-                    response to the profound changes that are taking place in
-                    many frontiers. UCS, through its structured and organized
-                    approach in its advisory and training services, has the
-                    mission to inspire organizations for change and
-                    transformation through the integration and application of
-                    the latest knowledge, skills, tools and techniques available
-                    in the relevant field.
+                    UCS, thus, primarily works to support organizations in order
+                    to effectively design and implement strategic organizational
+                    change and transformation initiatives in response to the
+                    profound changes that are taking place in many frontiers.
+                    UCS, through its structured and organized approach in its
+                    advisory and training services, has the mission to inspire
+                    organizations for change and transformation through the
+                    integration and application of the latest knowledge, skills,
+                    tools and techniques available in the relevant field.
                   </p>
                   <p className="text-justify">
                     While providing its service, UCS brings in the professional
@@ -275,66 +276,66 @@ export default function AboutPage() {
         <section className="py-10 md:py-16 bg-secondary/50">
           <Container>
             <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Mission */}
-              <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Mission */}
+                <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
+                    <svg
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
+                    Our Mission
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-justify">
+                    To conduct research, deliver trainings, advise and support
+                    organizations in the attainment of their corporate strategic
+                    goals and objectives both in the short and long term.
+                  </p>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
-                  Our Mission
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-justify">
-                  To conduct research, deliver trainings, advise and support
-                  organizations in the attainment of their corporate strategic
-                  goals and objectives both in the short and long term.
-                </p>
-              </div>
 
-              {/* Vision */}
-              <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
+                {/* Vision */}
+                <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
+                    <svg
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
+                    Our Vision
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-justify">
+                    To become a change and transformation catalyst within
+                    organizations in Ethiopia and beyond.
+                  </p>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
-                  Our Vision
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-justify">
-                  To become a change and transformation catalyst within
-                  organizations in Ethiopia and beyond.
-                </p>
               </div>
-            </div>
             </ScrollReveal>
           </Container>
         </section>
@@ -353,19 +354,19 @@ export default function AboutPage() {
           <Container>
             {/* Section Header */}
             <ScrollReveal>
-            <div className="text-center max-w-3xl mx-auto mb-10">
-              <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
-                Leadership
-              </p>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 text-balance">
-                Meet Our Team
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Our experienced team combines deep local expertise with
-                international best practices to deliver exceptional results for
-                our clients.
-              </p>
-            </div>
+              <div className="text-center max-w-3xl mx-auto mb-10">
+                <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
+                  Leadership
+                </p>
+                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 text-balance">
+                  Meet Our Team
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Our experienced team combines deep local expertise with
+                  international best practices to deliver exceptional results
+                  for our clients.
+                </p>
+              </div>
             </ScrollReveal>
 
             {/* Team Grid */}

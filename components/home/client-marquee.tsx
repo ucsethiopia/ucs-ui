@@ -64,22 +64,25 @@ function PartnerCard({
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-110 cursor-pointer">
-      <div className="relative w-full h-14 mb-3 brightness-95 group-hover:brightness-125 transition-[filter] flex items-center justify-center duration-300">
-        {logo && !imgError ? (
-          <Image
-            src={logo}
-            alt={name}
-            fill
-            className="object-contain"
-            onError={() => setImgError(true)}
-            sizes="180px"
-          />
-        ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
-            {initials}
-          </div>
-        )}
+    <div className="group relative flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-105 cursor-pointer">
+      {/* Logo chip — white tile so logo white-backgrounds are intentional */}
+      <div className="w-full h-14 mb-3 flex items-center justify-center">
+        <div className="relative w-full h-full bg-white rounded-md p-2 flex items-center justify-center shadow-sm group-hover:shadow transition-shadow duration-300">
+          {logo && !imgError ? (
+            <Image
+              src={logo}
+              alt={name}
+              fill
+              className="object-contain p-1.5 mix-blend-multiply"
+              onError={() => setImgError(true)}
+              sizes="180px"
+            />
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
+              {initials}
+            </div>
+          )}
+        </div>
       </div>
       <h4 className="text-xs font-medium text-foreground leading-tight">
         {name}
@@ -159,10 +162,10 @@ export function ClientMarquee() {
         </Container>
 
         {/* Marquee Container */}
-        <div className="relative">
+        <div className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]">
           {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
 
           {/* Scrolling Track */}
           <div
@@ -197,7 +200,7 @@ export function ClientMarquee() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
           {strategicPartners.map((partner) => (
             <PartnerCard
               key={partner.id}

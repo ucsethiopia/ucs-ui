@@ -856,7 +856,7 @@ export const clientLogos: ClientLogo[] = [
   {
     id: "12",
     name: "National Alcohol and Liquor Factory",
-    logo: "/images/logos/clients/national-alcohol-and-liquor-factory-nobg.png",
+    logo: "/images/logos/clients/nalf.png",
   },
   {
     id: "13",
