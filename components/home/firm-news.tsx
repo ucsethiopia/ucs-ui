@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFirmNews, type NewsItem } from "@/hooks/use-news";
@@ -35,7 +35,6 @@ export const FirmNews = () => {
     if (containerRef.current) {
       const scrollAmount = direction === "left" ? -400 : 400;
       containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      setTimeout(checkScrollBoundaries, 300);
     }
   };
 
@@ -109,7 +108,7 @@ export const FirmNews = () => {
               : data.map((news, index) => (
                   <motion.article
                     key={news.id}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 group-hover:shadow-xl"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 hover:shadow-xl"
                     style={{ scrollSnapAlign: "start" }}
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -127,13 +126,14 @@ export const FirmNews = () => {
                     {/* Image */}
                     <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
                       {(news.images?.[0] ?? news.main_image) ? (
-                        <Image
+                        <SafeImage
                           src={news.images?.[0] ?? news.main_image ?? ""}
                           alt={news.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           priority={index === 0}
                           className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                          fallbackClassName="absolute inset-0"
                         />
                       ) : (
                         <div className="absolute inset-0 bg-navy-900" />

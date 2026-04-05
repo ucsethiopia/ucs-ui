@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/shared/safe-image";
 import { notFound } from "next/navigation";
 import { useTeamMember, useTeamApi } from "@/hooks/use-team";
 import Link from "next/link";
@@ -99,12 +99,13 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
           {/* Background — member's own image, heavily overlaid */}
           <div className="absolute inset-0">
             {member.image && (
-              <Image
+              <SafeImage
                 src={member.image}
                 alt=""
                 fill
                 sizes="100vw"
                 className="object-cover object-top blur-sm scale-105"
+                fallbackClassName="absolute inset-0"
                 priority
               />
             )}
@@ -209,12 +210,13 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 >
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-muted shadow-xl">
                     {member.image ? (
-                      <Image
+                      <SafeImage
                         src={member.image}
                         alt={member.name}
                         fill
                         sizes="(max-width: 1024px) 100vw, 33vw"
                         className="object-cover object-top"
+                        fallbackClassName="absolute inset-0"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-navy-900 flex items-center justify-center">
@@ -471,12 +473,13 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">
                           {teamMember.image ? (
-                            <Image
+                            <SafeImage
                               src={teamMember.image}
                               alt={teamMember.name}
                               fill
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                               className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                              fallbackClassName="absolute inset-0"
                             />
                           ) : (
                             <div className="absolute inset-0 bg-navy-900" />

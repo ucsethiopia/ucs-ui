@@ -111,30 +111,32 @@ export function TickerBar() {
                 percentageChange={commodity.percentageChange}
               />
             ))}
-            {/* Duplicate for seamless loop */}
-            {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
-              <TickerItem
-                key={`${code}-dup`}
-                icon={FLAGS[code]}
-                label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
-                value={fx.rate.toFixed(2)}
-                trend={fx.trend}
-                percentageChange={fx.percentageChange}
-              />
-            ))}
-            {Object.values(data?.commodities || {}).map((commodity) => (
-              <TickerItem
-                key={`${commodity.symbol}-dup`}
-                icon="✦"
-                label={commodity.name}
-                value={commodity.price.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-                trend={commodity.trend}
-                percentageChange={commodity.percentageChange}
-              />
-            ))}
+            {/* Duplicate for seamless loop — hidden from screen readers */}
+            <div aria-hidden="true" className="flex items-center h-full">
+              {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
+                <TickerItem
+                  key={`${code}-dup`}
+                  icon={FLAGS[code]}
+                  label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
+                  value={fx.rate.toFixed(2)}
+                  trend={fx.trend}
+                  percentageChange={fx.percentageChange}
+                />
+              ))}
+              {Object.values(data?.commodities || {}).map((commodity) => (
+                <TickerItem
+                  key={`${commodity.symbol}-dup`}
+                  icon="✦"
+                  label={commodity.name}
+                  value={commodity.price.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  trend={commodity.trend}
+                  percentageChange={commodity.percentageChange}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
 import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
@@ -43,12 +43,13 @@ function TeamMemberCard({
             {/* Image - Takes 2 columns on lg */}
             <div className="relative lg:col-span-2 aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
               {member.image ? (
-                <Image
+                <SafeImage
                   src={member.image}
                   alt={member.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  fallbackClassName="absolute inset-0"
                 />
               ) : (
                 <div className="absolute inset-0 bg-navy-900" />
@@ -110,12 +111,13 @@ function TeamMemberCard({
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-muted">
           {member.image ? (
-            <Image
+            <SafeImage
               src={member.image}
               alt={member.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              fallbackClassName="absolute inset-0"
             />
           ) : (
             <div className="absolute inset-0 bg-navy-900" />

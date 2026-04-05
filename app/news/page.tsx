@@ -6,7 +6,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
-import Image from "next/image";
+import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
@@ -32,7 +32,7 @@ function NewsCard({
   return (
     <article
       className={cn(
-        "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer",
+        "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
       )}
       style={{
@@ -50,12 +50,13 @@ function NewsCard({
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
         {(item.images?.[0] ?? item.main_image) ? (
-          <Image
+          <SafeImage
             src={item.images?.[0] ?? item.main_image ?? ""}
             alt={item.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
+            fallbackClassName="absolute inset-0"
           />
         ) : (
           <div className="absolute inset-0 bg-navy-900" />
@@ -136,7 +137,7 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="sticky top-9 sm:top-19 z-10 bg-background">
+        <section className="sticky top-19 sm:top-29 z-10 bg-background">
           <Container>
             <div className="py-6 border-b border-border">
             <div className="flex flex-wrap gap-2">
