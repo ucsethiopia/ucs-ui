@@ -80,7 +80,7 @@ export function ServicesOverview() {
                   <h3 className="font-serif text-xl font-bold text-foreground mb-2 group-hover:text-gold-600 transition-colors">
                     {pillar.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 text-justify">
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                     {pillar.description}
                   </p>
                 </div>

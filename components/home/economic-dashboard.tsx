@@ -162,7 +162,7 @@ export function EconomicDashboard() {
           </p>
           <button
             onClick={refetch}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-card hover:bg-muted border border-border rounded-md text-foreground"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-card hover:bg-muted border border-border rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
           >
             <RefreshCw className="w-4 h-4" />
             Retry Connection

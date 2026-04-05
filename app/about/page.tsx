@@ -10,6 +10,8 @@ import { useTeamApi, type TeamMember } from "@/hooks/use-team";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { VisionMissionTabs } from "@/components/about/vision-mission-tabs";
+import { OrbitalPartners } from "@/components/about/orbital-partners";
 
 function TeamMemberCard({
   member,
@@ -267,7 +269,7 @@ export default function AboutPage() {
                             {item.title}
                           </h3>
                         </div>
-                        <p className="text-sm text-muted-foreground leading-relaxed text-justify">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
                           {item.desc}
                         </p>
                       </div>
@@ -283,68 +285,17 @@ export default function AboutPage() {
         <section className="py-10 md:py-16 bg-secondary/50">
           <Container>
             <ScrollReveal>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Mission */}
-                <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
-                    Our Mission
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-justify">
-                    To inspire and benefit organizations by applying the latest
-                    knowledge, skills, and tools, supporting sustainable
-                    development and driving positive change for individuals and
-                    institutions.
-                  </p>
-                </div>
-
-                {/* Vision */}
-                <div className="bg-card border border-border rounded-lg p-8 lg:p-10">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600 mb-6">
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
-                    Our Vision
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-justify">
-                    To be the leading catalyst for organizational transformation
-                    and professional growth, enabling clients to excel in an
-                    evolving business landscape.
-                  </p>
-                </div>
+              <div className="text-center mb-2">
+                <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
+                  Purpose & Direction
+                </p>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+                  What Guides Us
+                </h2>
               </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.1}>
+              <VisionMissionTabs />
             </ScrollReveal>
           </Container>
         </section>
@@ -354,6 +305,9 @@ export default function AboutPage() {
 
         {/* Core Values - Reintegrated */}
         <CoreValues />
+
+        {/* Strategic Partners - Orbital Visualization */}
+        <OrbitalPartners />
 
         {/* Team Section */}
         <section

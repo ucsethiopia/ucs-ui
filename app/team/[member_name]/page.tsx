@@ -114,7 +114,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
           <div
             aria-hidden="true"
             className="pointer-events-none select-none absolute right-8 top-1/2 -translate-y-1/2 font-serif font-bold text-white/[0.04] leading-none hidden lg:block"
-            style={{ fontSize: "clamp(8rem, 18vw, 16rem)" }}
+            style={{ fontSize: "clamp(8rem, 18vw, 16rem)" }} /* dynamic clamp requires style prop */
           >
             {initials}
           </div>
@@ -122,7 +122,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
           <div className="relative mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
             <Link
               href="/about#team"
-              className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm mb-8"
+              className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm mb-8 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Team
@@ -236,7 +236,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       href={member.contact.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     >
                       <Linkedin className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground group-hover:text-gold-600 transition-colors">
@@ -247,7 +247,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   {member.contact?.email && (
                     <a
                       href={`mailto:${member.contact.email}`}
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     >
                       <Mail className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground truncate group-hover:text-gold-600 transition-colors">
@@ -258,7 +258,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   {member.contact?.phone && (
                     <a
                       href={`tel:${member.contact.phone}`}
-                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group"
+                      className="inline-flex items-center gap-3 w-full px-4 py-3 bg-card border border-border rounded-lg hover:border-gold-500/40 hover:shadow-sm transition-[border-color,box-shadow] duration-200 group outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     >
                       <Phone className="h-4 w-4 text-gold-500" />
                       <span className="text-sm font-medium text-foreground group-hover:text-gold-600 transition-colors">
@@ -465,7 +465,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   >
                     <Link
                       href={`/team/${teamMember.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="group block"
+                      className="group block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     >
                       <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">

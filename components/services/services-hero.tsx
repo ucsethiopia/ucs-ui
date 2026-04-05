@@ -15,9 +15,7 @@ export function ServicesHero({
 }: ServicesHeroProps) {
   return (
     <section
-      className={`relative bg-navy-950 ${
-        condensed ? "min-h-[68vh] py-20 lg:py-24 flex items-end" : "pt-32 pb-20"
-      }`}
+      className="relative bg-navy-950 pt-32 pb-20"
     >
       {/* Background with overlay */}
       <div className="absolute inset-0 overflow-hidden">

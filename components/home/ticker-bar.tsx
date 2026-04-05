@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,7 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 
 export function TickerBar() {
   const { data, loading, error } = useEconomicDashboard();
+  const [paused, setPaused] = useState(false);
 
   const isError = !loading && (error || !data);
 
@@ -73,9 +75,11 @@ export function TickerBar() {
 
   return (
     <div
-      className="fixed top-14 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
+      className="fixed top-16 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
       aria-label="Live financial data ticker"
       aria-live="polite"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
       {loading ? (
         <div className="flex items-center h-full px-4">
@@ -83,7 +87,7 @@ export function TickerBar() {
         </div>
       ) : (
         <div className="flex items-center h-full overflow-hidden">
-          <div className="animate-marquee flex items-center h-full">
+          <div className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
             {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
               <TickerItem
                 key={code}

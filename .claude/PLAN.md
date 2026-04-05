@@ -100,14 +100,12 @@ These are the immediate priority before resuming the phase queue.
   - [x] Added floating BackToTop button (`components/shared/back-to-top.tsx`) — navy/gold, gold ring, appears after 500px scroll
   - [x] Widened content layout: `max-w-5xl` → `max-w-[1440px]` with `grid-cols-[280px_1fr]` for full-width content
   - [x] Polish: removed dead code, `transition-all` → specific properties, consistent section spacing, capped stagger delays, timeline headings as `<p>` for a11y
-- [ ] **14.3** Services animations
-- [ ] **14.3b** Global Partners Section
-- [ ] **14.4** Hero background element (subtle gradient or geometric SVG, no parallax)
-- [ ] **14.5** Service comparison / feature-matrix table
-- [ ] **14.6** Timeline component for About milestones
-- [ ] **14.7** Integrate sourced components, style to brand tokens
-- [ ] **14.8** Vision and Mission tabs
-- [ ] **14.9** UI review pass on all pages
+- [x] **14.3** Services animations
+- [x] **14.3b** Global Partners Section
+- [x] **14.4** Hero background element (subtle gradient or geometric SVG, no parallax)
+- [x] **14.7** Integrate sourced components, style to brand tokens
+- [x] **14.8** Vision and Mission tabs
+- [x] **14.9** UI review pass on all pages
 
 ### Phase 15 — Security + Performance
 

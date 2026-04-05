@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useFirmNews, type NewsItem } from "@/hooks/use-news";
 import { Container } from "@/components/shared/container";
 import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
@@ -12,6 +13,7 @@ import { NewsModal } from "@/components/home/news-modal";
 import { Skeleton } from "@/components/ui/charts";
 
 export const FirmNews = () => {
+  const router = useRouter();
   const { data, loading, hasMore } = useFirmNews(9);
   const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef(null);
@@ -44,7 +46,7 @@ export const FirmNews = () => {
 
   const handleLoadMore = () => {
     // Navigate to full news page
-    window.location.href = "/news";
+    router.push("/news");
   };
 
   return (
@@ -58,7 +60,7 @@ export const FirmNews = () => {
               <button
                 onClick={() => scrollNews("left")}
                 disabled={!canScrollLeft}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 aria-label="Previous news"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -66,7 +68,7 @@ export const FirmNews = () => {
               <button
                 onClick={() => scrollNews("right")}
                 disabled={!canScrollRight}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 aria-label="Next news"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -105,18 +107,25 @@ export const FirmNews = () => {
                   </div>
                 ))
               : data.map((news, index) => (
-                  <motion.div
+                  <motion.article
                     key={news.id}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[420px]"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[450px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl"
                     style={{ scrollSnapAlign: "start" }}
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: index * 0.05 }}
                     whileHover={{ y: -5 }}
                     onClick={() => handleNewsClick(news)}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleNewsClick(news);
+                      }
+                    }}
                   >
                     {/* Image */}
-                    <div className="relative aspect-video rounded-t-xl overflow-hidden flex-shrink-0">
+                    <div className="relative aspect-[3/2] rounded-t-xl overflow-hidden flex-shrink-0">
                       {(news.images?.[0] ?? news.main_image) ? (
                         <Image
                           src={news.images?.[0] ?? news.main_image ?? ""}
@@ -155,7 +164,7 @@ export const FirmNews = () => {
                         <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </span>
                     </div>
-                  </motion.div>
+                  </motion.article>
                 ))}
           </div>
           </div>
