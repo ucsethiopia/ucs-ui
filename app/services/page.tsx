@@ -1,9 +1,6 @@
 import { Metadata } from "next";
-import {
-  ServicesHero,
-  ServicePillars,
-  ServicesCTA,
-} from "@/components/services";
+import { ServicePillars, ServicesCTA } from "@/components/services";
+import { PageHero } from "@/components/shared/page-hero";
 import { servicePillars } from "@/lib/mock-data";
 
 export const metadata: Metadata = {
@@ -15,10 +12,14 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <main>
-      <ServicesHero
+      <PageHero
         eyebrow="What We Do"
         title="Our Services"
         description="Comprehensive solutions to help your organization achieve its strategic objectives and build lasting capabilities."
+        backgroundImage="/images/hero/services-hero-background.png"
+        backgroundPositionClass="bg-top"
+        contentWrapperClassName="ml-4 lg:mr-30"
+        condensed
       />
       <ServicePillars services={servicePillars} />
       <ServicesCTA />

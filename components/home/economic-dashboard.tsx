@@ -175,7 +175,7 @@ export function EconomicDashboard() {
 
         {/* Compact inline stat row — GDP + interest rates */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 lg:px-6 xl:px-12"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 lg:px-4 xl:px-8"
           initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.05 }}
@@ -202,7 +202,7 @@ export function EconomicDashboard() {
 
         {/* Sparkline grid — commodities (row 1) + FX (row 2) */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:px-6 xl:px-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:px-4 xl:px-8"
           initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}

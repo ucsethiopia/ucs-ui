@@ -25,7 +25,7 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden"
+      className="relative h-[90vh] min-h-[650px] flex items-center overflow-hidden"
     >
       {/* Background */}
       <motion.div
@@ -34,7 +34,7 @@ export function Hero() {
       >
         <div className="absolute inset-0">
           <Image
-            src="/hero-background.jpg"
+            src="/images/hero/hero-background.jpg"
             alt=""
             fill
             priority

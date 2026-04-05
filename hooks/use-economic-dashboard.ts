@@ -6,10 +6,19 @@ import { LRUCache } from "lru-cache";
 const BASE_URL = process.env.NEXT_PUBLIC_MARKET_DATA_API_URL ?? "";
 
 // ─── Cache ────────────────────────────────────────────────────────────────────
-// HF-5.2: 1-hour TTL LRU cache for market data (ensures we don't spam the API)
-const dataCache = new LRUCache<string, EconomicDashboardData>({
-  max: 1, // Only need to cache the dashboard data object
-  ttl: 1000 * 60 * 60, // 1 hour
+// HF-5.2: Indefinite TTL LRU cache for historical market data (12-hour refresh)
+interface CachedHistoricalData {
+  timestamp: number;
+  data: {
+    gold: TimeSeriesData[];
+    silver: TimeSeriesData[];
+    coffee: TimeSeriesData[];
+  };
+}
+
+const historicalCache = new LRUCache<string, CachedHistoricalData>({
+  max: 1, // Only need to cache the commodities history
+  ttl: 0, // indefinite, we use manual timestamp checks
 });
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -193,69 +202,100 @@ export const useEconomicDashboard = () => {
 
       try {
         const { from, to } = buildDateRange(12);
-        const commodFrom = "2015-01-01";
+        // HF-5.2: Fetch 5 years of historical data for commodities
+        const { from: commodFrom } = buildDateRange(60);
 
-        const [
-          fxRes,
-          commodRes,
-          interestRes,
-          gdpRes,
-          fxHistUsdRes,
-          fxHistEurRes,
-          fxHistCnyRes,
-          commodHistGoldRes,
-          commodHistSilverRes,
-          commodHistCoffeeRes,
-        ] = await Promise.all([
+        const cachedObj = historicalCache.get("commoditiesHist");
+        const now = Date.now();
+        const twelveHours = 12 * 60 * 60 * 1000;
+        
+        const fetchCommodities = !cachedObj || (now - cachedObj.timestamp >= twelveHours);
+
+        const basePromises = [
           fetch(`${BASE_URL}/fx/latest`),
           fetch(`${BASE_URL}/commodities/latest`),
           fetch(`${BASE_URL}/interest`),
           fetch(`${BASE_URL}/gdp`),
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=USD`),
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=EUR`),
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=CNY`),
-          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`),
-          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`),
-          fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`),
-        ]);
+          // It's okay if these fail (we handle .ok checks down below), but catch network errors so it doesn't break Promise.all
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=USD`).catch(() => new Response(null, { status: 500 })),
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=EUR`).catch(() => new Response(null, { status: 500 })),
+          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=CNY`).catch(() => new Response(null, { status: 500 })),
+        ];
 
-        // Throw on critical HTTP errors (Live endpoints ONLY)
-        for (const res of [fxRes, commodRes, interestRes, gdpRes]) {
-          if (!res.ok) throw new Error(`API error: ${res.status} ${res.url}`);
+        if (fetchCommodities) {
+          basePromises.push(
+            fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`).catch(() => new Response(null, { status: 500 })),
+            fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`).catch(() => new Response(null, { status: 500 })),
+            fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`).catch(() => new Response(null, { status: 500 }))
+          );
+        }
+
+        const responses = await Promise.all(basePromises);
+
+        // Throw on critical HTTP errors (Live endpoints ONLY -> indices 0 to 3)
+        for (let i = 0; i < 4; i++) {
+          if (!responses[i].ok) throw new Error(`API error: ${responses[i].status} ${responses[i].url}`);
         }
 
         const [fx, commod, interest, gdp] = await Promise.all([
-          fxRes.json(),
-          commodRes.json(),
-          interestRes.json(),
-          gdpRes.json(),
+          responses[0].json(),
+          responses[1].json(),
+          responses[2].json(),
+          responses[3].json(),
         ]);
 
-        // Parse historical safely (fallback to null if !ok)
-        const [fxHistUsd, fxHistEur, fxHistCny, commodGold, commodSilver, commodCoffee] =
-          await Promise.all([
-            fxHistUsdRes.ok ? fxHistUsdRes.json() : null,
-            fxHistEurRes.ok ? fxHistEurRes.json() : null,
-            fxHistCnyRes.ok ? fxHistCnyRes.json() : null,
-            commodHistGoldRes.ok ? commodHistGoldRes.json() : null,
-            commodHistSilverRes.ok ? commodHistSilverRes.json() : null,
-            commodHistCoffeeRes.ok ? commodHistCoffeeRes.json() : null,
+        const [fxHistUsd, fxHistEur, fxHistCny] = await Promise.all([
+          responses[4].ok ? responses[4].json().catch(() => null) : null,
+          responses[5].ok ? responses[5].json().catch(() => null) : null,
+          responses[6].ok ? responses[6].json().catch(() => null) : null,
+        ]);
+
+        let commodGold = null;
+        let commodSilver = null;
+        let commodCoffee = null;
+
+        if (fetchCommodities) {
+          const commodResData = await Promise.all([
+            responses[7]?.ok ? responses[7].json().catch(() => null) : null,
+            responses[8]?.ok ? responses[8].json().catch(() => null) : null,
+            responses[9]?.ok ? responses[9].json().catch(() => null) : null,
           ]);
+          commodGold = commodResData[0];
+          commodSilver = commodResData[1];
+          commodCoffee = commodResData[2];
+        }
 
         if (cancelled) return;
 
-        const cached = dataCache.get("dashboard_data");
         const rates = fx.rates ?? {};
         const commodities = commod.commodities ?? {};
 
-        // HF-5.2: Fallback to cache for historical endpoint failures
-        const usdHistory = fxHistUsd ? processFXHistory(fxHistUsd.data, "USD") : (cached?.fxRates.usd.history ?? []);
-        const eurHistory = fxHistEur ? processFXHistory(fxHistEur.data, "EUR") : (cached?.fxRates.eur.history ?? []);
-        const cnyHistory = fxHistCny ? processFXHistory(fxHistCny.data, "CNY") : (cached?.fxRates.cny.history ?? []);
+        // HF-5.2: Fallback correctly to empty array for now since we do not cache FX historically yet
+        const usdHistory = fxHistUsd ? processFXHistory(fxHistUsd.data, "USD") : [];
+        const eurHistory = fxHistEur ? processFXHistory(fxHistEur.data, "EUR") : [];
+        const cnyHistory = fxHistCny ? processFXHistory(fxHistCny.data, "CNY") : [];
 
-        const goldHistory = commodGold ? processCommodityHistory(commodGold.data) : (cached?.commodityHistory.gold ?? []);
-        const silverHistory = commodSilver ? processCommodityHistory(commodSilver.data) : (cached?.commodityHistory.silver ?? []);
-        const coffeeHistory = commodCoffee ? processCommodityHistory(commodCoffee.data) : (cached?.commodityHistory.coffee ?? []);
+        let goldHistory: TimeSeriesData[] = [];
+        let silverHistory: TimeSeriesData[] = [];
+        let coffeeHistory: TimeSeriesData[] = [];
+
+        if (fetchCommodities) {
+          goldHistory = commodGold ? processCommodityHistory(commodGold.data) : (cachedObj?.data.gold ?? []);
+          silverHistory = commodSilver ? processCommodityHistory(commodSilver.data) : (cachedObj?.data.silver ?? []);
+          coffeeHistory = commodCoffee ? processCommodityHistory(commodCoffee.data) : (cachedObj?.data.coffee ?? []);
+
+          // HF-5.2: Store the condensed (downsampled) data in the cache to minimize memory overhead
+          if (commodGold && commodSilver && commodCoffee) {
+             historicalCache.set("commoditiesHist", {
+               timestamp: Date.now(),
+               data: { gold: goldHistory, silver: silverHistory, coffee: coffeeHistory }
+             });
+          }
+        } else if (cachedObj) {
+          goldHistory = cachedObj.data.gold;
+          silverHistory = cachedObj.data.silver;
+          coffeeHistory = cachedObj.data.coffee;
+        }
 
         const gdpGrowth = computeGdpGrowth();
         const lastGdp = GDP_HISTORY_VALUES[GDP_HISTORY_VALUES.length - 1];
@@ -326,9 +366,6 @@ export const useEconomicDashboard = () => {
           },
           lastUpdated: new Date().toISOString(),
         };
-
-        // Cache the newly fetched history along with current data so we can reuse it
-        dataCache.set("dashboard_data", newData);
         
         setData(newData);
       } catch (err) {
