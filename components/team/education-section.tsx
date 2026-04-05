@@ -49,7 +49,7 @@ export function EducationSection({ education }: EducationSectionProps) {
       title: yearLabel || deg.level,
       content: (
         <div className="mb-6">
-          <p className="text-xs font-semibold text-gold-500 uppercase tracking-wider mb-1.5">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
             {deg.level}
           </p>
           <h4 className="text-lg font-bold text-foreground font-serif mb-1">
@@ -67,7 +67,7 @@ export function EducationSection({ education }: EducationSectionProps) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <GraduationCap className="h-6 w-6 text-gold-500" />
+        <GraduationCap className="h-6 w-6 text-foreground" />
         <h3 className="font-serif text-2xl font-bold text-foreground">
           Education
         </h3>

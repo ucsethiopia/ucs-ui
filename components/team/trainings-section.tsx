@@ -16,7 +16,7 @@ export function TrainingsSection({ trainings }: TrainingsSectionProps) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-1 h-6 bg-gold-500 rounded-full" />
+        <div className="w-1 h-6 bg-foreground/20 rounded-full" />
         <h3 className="font-serif text-2xl font-bold text-foreground">
           Professional Training
         </h3>
@@ -30,7 +30,7 @@ export function TrainingsSection({ trainings }: TrainingsSectionProps) {
             <ul className="space-y-2">
               {trainings.international.map((t, idx) => (
                 <li key={idx} className="flex gap-3 items-start pl-1">
-                  <BookOpen className="h-4 w-4 text-gold-500 flex-shrink-0 mt-0.5" />
+                  <BookOpen className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <span className="text-sm text-muted-foreground leading-relaxed">
                     {t}
                   </span>
@@ -47,7 +47,7 @@ export function TrainingsSection({ trainings }: TrainingsSectionProps) {
             <ul className="space-y-2">
               {trainings.local.map((t, idx) => (
                 <li key={idx} className="flex gap-3 items-start pl-1">
-                  <BookOpen className="h-4 w-4 text-gold-500 flex-shrink-0 mt-0.5" />
+                  <BookOpen className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <span className="text-sm text-muted-foreground leading-relaxed">
                     {t}
                   </span>

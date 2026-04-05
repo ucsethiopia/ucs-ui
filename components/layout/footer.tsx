@@ -27,122 +27,131 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-white border-t-2 border-white/10">
+    <footer className="bg-navy-950 text-white border-t border-white/10 relative overflow-hidden">
+      {/* Ghost motto watermark */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif font-bold text-white/[0.02] whitespace-nowrap leading-none"
+        style={{ fontSize: "clamp(4rem, 10vw, 8rem)" }}
+      >
+        Think Agile, Get Inspired
+      </div>
+
       <Container>
-        {/* Main Footer */}
-        <div className="grid grid-cols-1 gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Column */}
-          <div className="lg:col-span-1">
+        {/* Main Footer — asymmetric 2-column */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 py-16 relative">
+          {/* Left — Brand + description + social */}
+          <div className="max-w-md">
             <Link href="/" className="inline-block">
               <Image
                 src="/images/logos/ucs/logo-white.png"
                 alt="Ultimate Consultancy Services"
                 width={154}
                 height={72}
-                className="h-16 sm:h-20 md:h-24 w-auto block [.inverted_&]:hidden"
+                className="h-16 sm:h-20 w-auto block [.inverted_&]:hidden"
               />
               <Image
                 src="/images/logos/ucs/logo-base.png"
                 alt="Ultimate Consultancy Services"
                 width={154}
                 height={72}
-                className="h-16 sm:h-20 md:h-24 w-auto hidden [.inverted_&]:block"
+                className="h-16 sm:h-20 w-auto hidden [.inverted_&]:block"
               />
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
+            <p className="mt-4 text-sm leading-relaxed text-white/60">
               Driving growth and transformation for Ethiopian enterprises since 2012.
               Your trusted partner for advisory, training, and research services.
             </p>
-            {/* Social Links */}
-            <div className="mt-6 flex gap-4">
+            {/* Social Links — simple text links */}
+            <div className="mt-6 flex gap-6">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-gold-500 hover:text-gold-500"
+                  className="inline-flex items-center gap-2 text-sm text-white/50 transition-colors hover:text-white"
                   aria-label={social.label}
                 >
                   <social.icon className="h-4 w-4" />
+                  {social.label}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Company Links */}
-          <nav aria-label="Company">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
-              Company
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
+          {/* Right — stacked link groups + contact */}
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-10 sm:gap-16 lg:gap-8">
+            {/* Company links */}
+            <nav aria-label="Company">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 mb-3">
+                Company
+              </h3>
+              <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+                {footerLinks.company.map((link) => (
                   <Link
+                    key={link.href}
                     href={link.href}
-                    className="text-sm text-white/70 transition-colors hover:text-gold-500"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                ))}
+              </div>
+            </nav>
 
-          {/* Services Links */}
-          <nav aria-label="Services">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
-              Services
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.services.map((link) => (
-                <li key={link.href}>
+            {/* Services links */}
+            <nav aria-label="Services">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 mb-3">
+                Services
+              </h3>
+              <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+                {footerLinks.services.map((link) => (
                   <Link
+                    key={link.href}
                     href={link.href}
-                    className="text-sm text-white/70 transition-colors hover:text-gold-500"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                ))}
+              </div>
+            </nav>
 
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/90">
-              Contact
-            </h3>
-            <address className="mt-4 space-y-3 text-sm not-italic text-white/70">
-              <p>Gurd Shola, near Century Mall</p>
-              <p>Abenezer Building, 3rd Floor</p>
-              <p>Addis Ababa, Ethiopia</p>
-              <p>P.O. Box {contactInfo.poBox}</p>
-              <p className="pt-2">
-                <a href={`tel:${contactInfo.phones[0]}`} className="hover:text-gold-500 transition-colors">
-                  {contactInfo.phones[0]}
-                </a>
-              </p>
-              <p>
-                <a href={`mailto:${contactInfo.emails[0]}`} className="hover:text-gold-500 transition-colors">
-                  {contactInfo.emails[0]}
-                </a>
-              </p>
-            </address>
+            {/* Contact */}
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 mb-3">
+                Contact
+              </h3>
+              <address className="text-sm not-italic text-white/60 space-y-1">
+                <p>Gurd Shola, near Century Mall</p>
+                <p>Addis Ababa, Ethiopia</p>
+                <p className="pt-1">
+                  <a href={`tel:${contactInfo.phones[0]}`} className="hover:text-white transition-colors">
+                    {contactInfo.phones[0]}
+                  </a>
+                </p>
+                <p>
+                  <a href={`mailto:${contactInfo.emails[0]}`} className="hover:text-white transition-colors">
+                    {contactInfo.emails[0]}
+                  </a>
+                </p>
+              </address>
+            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 py-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-xs text-white/50">
+            <p className="text-xs text-white/40">
               © {new Date().getFullYear()} Ultimate Consultancy Service Ethiopia. All rights reserved.
             </p>
-            <div className="flex gap-6 text-xs text-white/50">
-              <Link href="/privacy" className="hover:text-gold-500 transition-colors">
+            <div className="flex gap-6 text-xs text-white/40">
+              <Link href="/privacy" className="hover:text-white transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-gold-500 transition-colors">
+              <Link href="/terms" className="hover:text-white transition-colors">
                 Terms of Service
               </Link>
             </div>

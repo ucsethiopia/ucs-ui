@@ -11,14 +11,14 @@ import { HomeStatsStrip } from "@/components/home/home-stats-strip";
 export default function HomePage() {
   return (
     <EconomicDashboardProvider>
-      <TickerBar />
       <main id="main-content">
         <Hero />
-        <ClientMarquee />
-        <EconomicDashboard />
+        <TickerBar />
         <ServicesOverview />
         <HomeStatsStrip />
+        <EconomicDashboard />
         <CoreValues />
+        <ClientMarquee />
         <FirmNews />
       </main>
     </EconomicDashboardProvider>

@@ -5,13 +5,13 @@ import { useEconomicDashboardContext } from "@/components/home/economic-dashboar
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
-const FLAGS: Record<string, string> = {
-  usd: "🇺🇸",
-  eur: "🇪🇺",
-  gbp: "🇬🇧",
-  aud: "🇦🇺",
-  jpy: "🇯🇵",
-  cny: "🇨🇳",
+const COUNTRY_CODES: Record<string, string> = {
+  usd: "US",
+  eur: "EU",
+  gbp: "GB",
+  aud: "AU",
+  jpy: "JP",
+  cny: "CN",
 };
 
 const FX_LABELS: Record<string, string> = {
@@ -24,14 +24,14 @@ const FX_LABELS: Record<string, string> = {
 };
 
 interface TickerItemProps {
-  icon?: string;
+  code?: string;
   label: string;
   value: string;
   trend: "up" | "down" | "unchanged";
   percentageChange?: number;
 }
 
-function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemProps) {
+function TickerItem({ code, label, value, trend, percentageChange }: TickerItemProps) {
   const change = percentageChange ?? 0;
   const colorClass =
     change > 0
@@ -42,7 +42,11 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 
   return (
     <div className="flex items-center gap-2 px-4 border-r border-white/15 whitespace-nowrap">
-      {icon && <span className="text-base">{icon}</span>}
+      {code && (
+        <span className="font-mono text-[10px] font-bold text-white/40 tracking-wider">
+          {code}
+        </span>
+      )}
       <span className="text-xs font-medium text-white/60 uppercase tracking-wide">
         {label}
       </span>
@@ -75,7 +79,7 @@ export function TickerBar() {
 
   return (
     <div
-      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
+      className="h-10 bg-navy-900/80 backdrop-blur-sm border-b border-white/10 overflow-hidden hidden sm:block"
       aria-label="Live financial data ticker"
       aria-live="polite"
       onMouseEnter={() => setPaused(true)}
@@ -87,11 +91,17 @@ export function TickerBar() {
         </div>
       ) : (
         <div className="flex items-center h-full overflow-hidden">
-          <div className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
+          <div
+            className="animate-marquee flex items-center h-full"
+            style={{
+              animationPlayState: paused ? "paused" : "running",
+              animationDuration: "60s",
+            }}
+          >
             {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
               <TickerItem
                 key={code}
-                icon={FLAGS[code]}
+                code={COUNTRY_CODES[code]}
                 label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                 value={fx.rate.toFixed(2)}
                 trend={fx.trend}
@@ -101,7 +111,6 @@ export function TickerBar() {
             {Object.values(data?.commodities || {}).map((commodity) => (
               <TickerItem
                 key={commodity.symbol}
-                icon="✦"
                 label={commodity.name}
                 value={commodity.price.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
@@ -111,12 +120,12 @@ export function TickerBar() {
                 percentageChange={commodity.percentageChange}
               />
             ))}
-            {/* Duplicate for seamless loop — hidden from screen readers */}
+            {/* Duplicate for seamless loop */}
             <div aria-hidden="true" className="flex items-center h-full">
               {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
                 <TickerItem
                   key={`${code}-dup`}
-                  icon={FLAGS[code]}
+                  code={COUNTRY_CODES[code]}
                   label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                   value={fx.rate.toFixed(2)}
                   trend={fx.trend}
@@ -126,7 +135,6 @@ export function TickerBar() {
               {Object.values(data?.commodities || {}).map((commodity) => (
                 <TickerItem
                   key={`${commodity.symbol}-dup`}
-                  icon="✦"
                   label={commodity.name}
                   value={commodity.price.toLocaleString("en-US", {
                     minimumFractionDigits: 2,

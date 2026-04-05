@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
+import { ease } from "@/lib/motion";
 
 export default function NotFound() {
   return (
     <>
       <main className="relative min-h-[calc(100vh-3.5rem)] flex items-center justify-center bg-background overflow-hidden">
-        {/* Decorative top accent */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
-
         {/* Ghost "404" watermark */}
         <div
           aria-hidden="true"
@@ -24,30 +22,34 @@ export default function NotFound() {
           </span>
         </div>
 
-        {/* Decorative corner lines */}
-        <div aria-hidden="true" className="absolute top-16 left-6 sm:left-12 w-8 sm:w-12 h-8 sm:h-12 border-l-2 border-t-2 border-gold-500/20" />
-        <div aria-hidden="true" className="absolute bottom-16 right-6 sm:right-12 w-8 sm:w-12 h-8 sm:h-12 border-r-2 border-b-2 border-gold-500/20" />
-
         {/* Content */}
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 text-center px-6 max-w-lg mx-auto"
+          transition={{ duration: 0.5, ease: ease.out }}
+          className="relative z-10 px-6 max-w-lg mx-auto"
         >
-          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-5">
-            Error 404
-          </p>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-0.5 h-6 bg-foreground/20" />
+            <p className="text-muted-foreground text-sm font-semibold uppercase tracking-[0.2em]">
+              Error 404
+            </p>
+          </div>
 
-          <div className="mx-auto mb-8 w-12 h-px bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
-
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-5 text-balance">
+          <h1
+            className="font-serif font-bold text-foreground mb-5 text-balance"
+            style={{ fontSize: "var(--font-size-display)" }}
+          >
             Page Not Found
           </h1>
 
-          <p className="text-muted-foreground leading-relaxed mb-10 max-w-sm mx-auto text-base">
+          <p className="text-muted-foreground leading-relaxed mb-4 max-w-sm text-base">
             The page you&apos;re looking for has moved, been removed, or
             doesn&apos;t exist.
+          </p>
+
+          <p className="text-sm text-muted-foreground/70 mb-10 max-w-sm">
+            Try navigating from the menu above, or return home.
           </p>
 
           <Link

@@ -14,6 +14,12 @@
   --gold-400: oklch(0.82 0.12 85);
   --gold-600: oklch(0.65 0.15 85);
 
+  /* Subtle gold for secondary UI — less intense than gold-500 */
+  --accent-subtle: oklch(0.82 0.06 85);
+
+  /* Warm surface for alternating section backgrounds */
+  --surface-warm: oklch(0.975 0.006 75);
+
   --background: oklch(0.99 0.002 90);
   --foreground: var(--navy-950);
   --card: oklch(1 0 0);
@@ -22,16 +28,17 @@
   --popover-foreground: var(--navy-950);
   --primary: var(--navy-900);
   --primary-foreground: oklch(0.99 0.002 90);
-  --secondary: oklch(0.97 0.005 90);
+  /* Navy-tinted neutrals — hue 255 instead of 90 for cohesion */
+  --secondary: oklch(0.97 0.004 255);
   --secondary-foreground: var(--navy-900);
-  --muted: oklch(0.96 0.005 90);
+  --muted: oklch(0.96 0.004 255);
   --muted-foreground: oklch(0.45 0.02 255);
   --accent: var(--gold-500);
   --accent-foreground: var(--navy-950);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.01 90);
-  --input: oklch(0.92 0.005 90);
+  --border: oklch(0.91 0.008 255);
+  --input: oklch(0.92 0.005 255);
   --ring: var(--gold-500);
   --chart-1: var(--navy-900);
   --chart-2: var(--gold-500);
@@ -131,8 +138,20 @@
 
 @theme inline {
   --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, sans-serif;
-  --font-serif: "Playfair Display", "Playfair Display Fallback", Georgia, serif;
+  --font-serif: "Fraunces", "Fraunces Fallback", Georgia, serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback";
+
+  /* Fluid type scale — 5 levels */
+  --font-size-display: clamp(2.75rem, 5vw + 1rem, 4.5rem);
+  --font-size-heading-1: clamp(2rem, 3.5vw + 0.5rem, 3.25rem);
+  --font-size-heading-2: clamp(1.5rem, 2.5vw + 0.25rem, 2.25rem);
+  --font-size-heading-3: clamp(1.125rem, 1.5vw + 0.25rem, 1.5rem);
+  --font-size-body-lg: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+
+  /* Section spacing rhythm tokens */
+  --space-section-tight: clamp(2.5rem, 4vw, 4rem);
+  --space-section-normal: clamp(4rem, 6vw, 6rem);
+  --space-section-generous: clamp(5rem, 8vw, 8rem);
 
   /* Navy scale */
   --color-navy-950: var(--navy-950);
@@ -145,6 +164,11 @@
   --color-gold-600: var(--gold-600);
   --color-gold-500: var(--gold-500);
   --color-gold-400: var(--gold-400);
+
+  /* New tokens */
+  --color-accent-subtle: var(--accent-subtle);
+  --color-surface-warm: var(--surface-warm);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -189,6 +213,10 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Tabular nums utility for financial/stat data */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
 

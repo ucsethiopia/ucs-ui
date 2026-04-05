@@ -9,6 +9,7 @@ import { ContactForm } from "@/components/contact/contact-form";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { contactInfo } from "@/lib/mock-data";
+import { ease } from "@/lib/motion";
 
 function ContactInfo({
   icon: Icon,
@@ -20,14 +21,12 @@ function ContactInfo({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex gap-4">
-      <div className="flex-shrink-0">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold-500/10 text-gold-600">
-          <Icon className="h-5 w-5" />
-        </div>
+    <div className="flex gap-4 py-4 border-b border-border last:border-b-0">
+      <div className="flex-shrink-0 pt-0.5">
+        <Icon className="h-4 w-4 text-muted-foreground" />
       </div>
       <div>
-        <h3 className="font-semibold text-foreground mb-1">{title}</h3>
+        <h3 className="font-semibold text-foreground text-sm mb-1">{title}</h3>
         <div className="text-muted-foreground text-sm leading-relaxed">{children}</div>
       </div>
     </div>
@@ -49,18 +48,21 @@ export default function ContactPage() {
           description="Ready to transform your organization? Let's start a conversation."
         />
 
-        <section className="py-10 sm:py-16 lg:py-20 bg-background">
+        <section style={{ paddingBlock: "var(--space-section-normal)" }}>
           <Container>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-16">
 
-              {/* Contact Form */}
+              {/* Contact Form — wider left column */}
               <motion.div
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.5, delay: 0.1, ease: ease.out }}
               >
                 <div className="mb-8">
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
+                  <h2
+                    className="font-serif font-bold text-foreground mb-4"
+                    style={{ fontSize: "var(--font-size-heading-2)" }}
+                  >
                     Send Us a Message
                   </h2>
                   <p className="text-muted-foreground">
@@ -70,15 +72,17 @@ export default function ContactPage() {
                 <ContactForm />
               </motion.div>
 
-              {/* Contact Info */}
+              {/* Contact Info — narrower right column */}
               <motion.div
-                className="lg:pl-8"
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.5, delay: 0.2, ease: ease.out }}
               >
                 <div className="mb-8">
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
+                  <h2
+                    className="font-serif font-bold text-foreground mb-4"
+                    style={{ fontSize: "var(--font-size-heading-2)" }}
+                  >
                     Contact Information
                   </h2>
                   <p className="text-muted-foreground">
@@ -86,7 +90,7 @@ export default function ContactPage() {
                   </p>
                 </div>
 
-                <div className="space-y-6 mb-10">
+                <div className="mb-10">
                   <ContactInfo icon={MapPin} title="Office Address">
                     <p>Gurd Shola, around Century Mall</p>
                     <p>Abenezer Building, 3rd Floor</p>
@@ -96,7 +100,7 @@ export default function ContactPage() {
                   <ContactInfo icon={Phone} title="Phone">
                     {contactInfo.phones.map((phone) => (
                       <p key={phone}>
-                        <a href={`tel:${phone}`} className="hover:text-gold-600 transition-colors">
+                        <a href={`tel:${phone}`} className="hover:text-foreground transition-colors">
                           {phone}
                         </a>
                       </p>
@@ -106,7 +110,7 @@ export default function ContactPage() {
                   <ContactInfo icon={Mail} title="Email">
                     {contactInfo.emails.map((email) => (
                       <p key={email}>
-                        <a href={`mailto:${email}`} className="hover:text-gold-600 transition-colors">
+                        <a href={`mailto:${email}`} className="hover:text-foreground transition-colors">
                           {email}
                         </a>
                       </p>
@@ -124,8 +128,8 @@ export default function ContactPage() {
                   </ContactInfo>
                 </div>
 
-                {/* Google Maps embed — Gurd Shola, Addis Ababa */}
-                <div className="aspect-video rounded-lg overflow-hidden border border-border">
+                {/* Google Maps embed — sharp corners */}
+                <div className="aspect-video overflow-hidden border border-border">
                   <iframe
                     title="Map of UCS Ethiopia office in Gurd Shola, Addis Ababa"
                     src="https://maps.google.com/maps?q=9.0227,38.7873&t=&z=15&ie=UTF8&iwloc=&output=embed"

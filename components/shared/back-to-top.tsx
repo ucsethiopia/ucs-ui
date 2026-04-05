@@ -20,7 +20,7 @@ export function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
         "fixed bottom-6 right-6 z-50 h-10 w-10 rounded-full",
-        "bg-navy-900 text-gold-500 shadow-lg ring-1 ring-gold-500/30",
+        "bg-navy-900 text-white shadow-lg ring-1 ring-white/20",
         "flex items-center justify-center",
         "transition-[opacity,transform] duration-300",
         "hover:bg-navy-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500",

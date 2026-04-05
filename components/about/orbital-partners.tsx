@@ -1,27 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { Globe } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { strategicPartners } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
+import { Container } from "@/components/shared/container";
+import { ease, staggerContainer, staggerItem } from "@/lib/motion";
 
-function PartnerNode({
-  name,
-  logo,
-  country,
-  isHovered,
-  onHover,
-  onLeave,
-}: {
-  name: string;
-  logo: string;
-  country?: string;
-  isHovered: boolean;
-  onHover: () => void;
-  onLeave: () => void;
-}) {
+function PartnerLogo({ name, logo, country }: { name: string; logo: string; country?: string }) {
   const [imgError, setImgError] = useState(false);
 
   const initials = name
@@ -32,54 +18,34 @@ function PartnerNode({
     .toUpperCase();
 
   return (
-    <motion.div
-      className={cn(
-        "relative -ml-9 -mt-9 flex h-18 w-18 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300",
-        isHovered ? "border-gold-500" : "border-border"
-      )}
-      whileHover={{ scale: 1.15 }}
-      onHoverStart={onHover}
-      onHoverEnd={onLeave}
-    >
-      {logo && !imgError ? (
-        <div className="relative h-full w-full">
+    <div className="flex items-center gap-4 py-3">
+      <div className="relative h-12 w-12 flex-shrink-0 rounded-lg border border-border bg-card overflow-hidden flex items-center justify-center">
+        {logo && !imgError ? (
           <Image
             src={logo}
             alt={name}
             fill
-            className="object-contain"
+            className="object-contain p-1.5"
             onError={() => setImgError(true)}
-            sizes="72px"
+            sizes="48px"
           />
-        </div>
-      ) : (
-        <span className="text-[10px] font-semibold text-muted-foreground tracking-wide">
-          {initials}
-        </span>
-      )}
-      {isHovered && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute -bottom-14 left-1/2 z-50 w-28 -translate-x-1/2 rounded-md border border-gold-500/30 bg-card px-2.5 py-1.5 text-center shadow-xl"
-        >
-          <p className="text-[11px] font-semibold text-foreground leading-tight">
-            {name}
-          </p>
-          {country && (
-            <p className="text-[10px] text-gold-600">{country}</p>
-          )}
-        </motion.div>
-      )}
-    </motion.div>
+        ) : (
+          <span className="text-[10px] font-semibold text-muted-foreground tracking-wide">
+            {initials}
+          </span>
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-foreground leading-tight truncate">{name}</p>
+        {country && (
+          <p className="text-xs text-muted-foreground">{country}</p>
+        )}
+      </div>
+    </div>
   );
 }
 
 export function OrbitalPartners() {
-  const [hoveredPartner, setHoveredPartner] = useState<string | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const inView = useInView(sectionRef, { once: true, margin: "-80px 0px" });
-
   const localPartners = strategicPartners.filter(
     (p) => p.partnerType === "local"
   );
@@ -87,189 +53,80 @@ export function OrbitalPartners() {
     (p) => p.partnerType === "overseas"
   );
 
-  const innerRadius = 150;
-  const outerRadius = 240;
-
-  const getOrbitPosition = (
-    index: number,
-    total: number,
-    radius: number
-  ) => {
-    const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-    };
-  };
-
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-secondary/30 overflow-hidden">
-      <div className="text-center mb-6">
-        <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
-          Strategic Partnerships
-        </p>
-        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
-          Global Network
-        </h2>
-        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          We partner with established consulting firms and multidisciplinary
-          experts from around the world to deliver exceptional results
-        </p>
-      </div>
-
-      {/* Orbital visualization */}
-      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center">
-        {/* Orbit rings — SVG */}
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="-260 -260 520 520"
-          style={{ overflow: "visible" }}
-        >
-          <defs>
-            <linearGradient
-              id="orbitStroke"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-            >
-              <stop
-                offset="0%"
-                stopColor="var(--gold-500)"
-                stopOpacity="0.08"
-              />
-              <stop
-                offset="50%"
-                stopColor="var(--gold-500)"
-                stopOpacity="0.2"
-              />
-              <stop
-                offset="100%"
-                stopColor="var(--gold-500)"
-                stopOpacity="0.08"
-              />
-            </linearGradient>
-          </defs>
-
-          {/* Inner orbit */}
-          <motion.circle
-            cx="0"
-            cy="0"
-            r={innerRadius}
-            fill="none"
-            stroke="url(#orbitStroke)"
-            strokeWidth="1"
-            strokeDasharray="4 6"
-            initial={{ rotate: 0 }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-          />
-
-          {/* Outer orbit */}
-          <motion.circle
-            cx="0"
-            cy="0"
-            r={outerRadius}
-            fill="none"
-            stroke="url(#orbitStroke)"
-            strokeWidth="1"
-            strokeDasharray="4 6"
-            initial={{ rotate: 0 }}
-            animate={{ rotate: -360 }}
-            transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-          />
-        </svg>
-
-        {/* Center hub */}
+    <section style={{ paddingBlock: "var(--space-section-normal)" }}>
+      <Container>
+        {/* Header — left-aligned */}
         <motion.div
-          className="relative flex h-24 w-24 items-center justify-center rounded-full border border-gold-500/30 bg-card shadow-xl"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          className="mb-10 max-w-xl"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, ease: ease.out }}
         >
-          <div className="absolute inset-0 rounded-full bg-gold-500/5 blur-xl" />
-          <Globe
-            className="relative z-10 h-9 w-9 text-gold-500"
-            strokeWidth={1.5}
-          />
+          <h2
+            className="font-serif font-bold text-foreground mb-4"
+            style={{ fontSize: "var(--font-size-heading-1)" }}
+          >
+            Strategic Partnerships
+          </h2>
+          <p className="text-muted-foreground leading-relaxed" style={{ fontSize: "var(--font-size-body-lg)" }}>
+            We partner with established consulting firms and multidisciplinary
+            experts to deliver exceptional results.
+          </p>
         </motion.div>
 
-        {/* Inner ring — Local partners */}
-        {localPartners.map((partner, index) => {
-          const pos = getOrbitPosition(
-            index,
-            localPartners.length,
-            innerRadius
-          );
-          return (
+        {/* Two-row partner grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Local partners */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-4 pb-3 border-b border-border">
+              Local Partners
+            </p>
             <motion.div
-              key={`local-${partner.id}`}
-              className="absolute"
-              style={{ left: "50%", top: "50%" }}
-              initial={{ x: 0, y: 0, opacity: 0 }}
-              animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
-              transition={{
-                x: { duration: 1.2, delay: index * 0.1 },
-                y: { duration: 1.2, delay: index * 0.1 },
-                opacity: { duration: 0.5, delay: index * 0.1 },
-              }}
+              className="space-y-0 divide-y divide-border/50"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
             >
-              <PartnerNode
-                name={partner.name}
-                logo={partner.logo}
-                country={partner.country}
-                isHovered={hoveredPartner === partner.name}
-                onHover={() => setHoveredPartner(partner.name)}
-                onLeave={() => setHoveredPartner(null)}
-              />
+              {localPartners.map((partner) => (
+                <motion.div key={partner.id} variants={staggerItem}>
+                  <PartnerLogo
+                    name={partner.name}
+                    logo={partner.logo}
+                    country={partner.country}
+                  />
+                </motion.div>
+              ))}
             </motion.div>
-          );
-        })}
+          </div>
 
-        {/* Outer ring — Overseas partners */}
-        {overseasPartners.map((partner, index) => {
-          const pos = getOrbitPosition(
-            index,
-            overseasPartners.length,
-            outerRadius
-          );
-          return (
+          {/* Overseas partners */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-4 pb-3 border-b border-border">
+              Overseas Partners
+            </p>
             <motion.div
-              key={`overseas-${partner.id}`}
-              className="absolute"
-              style={{ left: "50%", top: "50%" }}
-              initial={{ x: 0, y: 0, opacity: 0 }}
-              animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
-              transition={{
-                x: { duration: 1.5, delay: 0.4 + index * 0.12 },
-                y: { duration: 1.5, delay: 0.4 + index * 0.12 },
-                opacity: { duration: 0.5, delay: 0.4 + index * 0.12 },
-              }}
+              className="space-y-0 divide-y divide-border/50"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
             >
-              <PartnerNode
-                name={partner.name}
-                logo={partner.logo}
-                country={partner.country}
-                isHovered={hoveredPartner === partner.name}
-                onHover={() => setHoveredPartner(partner.name)}
-                onLeave={() => setHoveredPartner(null)}
-              />
+              {overseasPartners.map((partner) => (
+                <motion.div key={partner.id} variants={staggerItem}>
+                  <PartnerLogo
+                    name={partner.name}
+                    logo={partner.logo}
+                    country={partner.country}
+                  />
+                </motion.div>
+              ))}
             </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Legend */}
-      <div className="mt-8 flex justify-center gap-8 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-gold-500/40 border border-gold-500/60" />
-          <span>Local Partners</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-primary/30 border border-primary/50" />
-          <span>Overseas Partners</span>
-        </div>
-      </div>
+      </Container>
     </section>
   );
 }

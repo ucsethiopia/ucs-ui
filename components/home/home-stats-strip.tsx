@@ -86,31 +86,34 @@ export function HomeStatsStrip() {
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="py-14 md:py-20 bg-secondary/40">
+    <section className="border-t border-border" style={{ paddingBlock: "var(--space-section-tight)" }}>
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
         <div
           ref={ref}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 sm:gap-x-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-6"
         >
           {stats.map((stat, index) => (
             <div
               key={stat.label}
               className={cn(
-                "text-center transition-[opacity,transform] duration-600 ease-out",
+                "text-left transition-[opacity,transform] duration-600 ease-out lg:border-r lg:last:border-r-0 border-border lg:pr-6",
                 DELAY_CLASSES[index],
                 isInView
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-6",
               )}
             >
-              <p className="font-serif text-5xl sm:text-6xl font-bold tracking-tight text-gold-500">
+              <p
+                className="font-serif font-bold tracking-tight text-foreground tabular-nums"
+                style={{ fontSize: "var(--font-size-heading-1)" }}
+              >
                 <AnimatedCounter
                   target={stat.value}
                   suffix={stat.suffix}
                   isVisible={isInView}
                 />
               </p>
-              <p className="mt-3 text-sm sm:text-base text-muted-foreground font-medium uppercase tracking-widest">
+              <p className="mt-1 text-sm text-muted-foreground font-medium uppercase tracking-widest">
                 {stat.label}
               </p>
             </div>

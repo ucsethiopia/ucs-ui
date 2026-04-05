@@ -40,7 +40,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
               <h4 className="text-lg font-bold text-foreground font-serif mb-1">
                 {data.position_title}
               </h4>
-              <p className="text-base text-gold-600 font-semibold mb-2">
+              <p className="text-base text-muted-foreground font-semibold mb-2">
                 {data.company}
                 {data.location ? `, ${data.location}` : ""}
               </p>
@@ -51,7 +51,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
                       key={i}
                       className="text-sm text-muted-foreground leading-relaxed flex gap-2"
                     >
-                      <span className="text-gold-500/50 flex-shrink-0">
+                      <span className="text-muted-foreground/40 flex-shrink-0">
                         &bull;
                       </span>
                       {point}
@@ -79,7 +79,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
                   key={i}
                   className="text-sm text-muted-foreground leading-relaxed flex gap-2"
                 >
-                  <span className="text-gold-500/50 flex-shrink-0">
+                  <span className="text-muted-foreground/40 flex-shrink-0">
                     &bull;
                   </span>
                   {title}
@@ -94,7 +94,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Briefcase className="h-6 w-6 text-gold-500" />
+        <Briefcase className="h-6 w-6 text-foreground" />
         <h3 className="font-serif text-2xl font-bold text-foreground">
           Work Experience
         </h3>

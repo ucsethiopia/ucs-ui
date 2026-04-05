@@ -2,7 +2,6 @@
 
 import { clientLogos } from "@/lib/mock-data";
 import { Container } from "@/components/shared/container";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -17,9 +16,8 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
-      {/* Logo area */}
-      <div className="relative w-full h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
+    <div className="flex flex-col items-center h-16 w-36 flex-shrink-0 px-4">
+      <div className="relative w-full h-10 opacity-60">
         {logo && !imgError ? (
           <Image
             src={logo}
@@ -27,7 +25,7 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
             fill
             className="object-contain"
             onError={() => setImgError(true)}
-            sizes="160px"
+            sizes="144px"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -37,10 +35,6 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
           </div>
         )}
       </div>
-      {/* Company name — fades up on hover */}
-      <span className="mt-0.5 text-[10px] font-medium text-center text-foreground/60 leading-tight opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 line-clamp-1 w-full">
-        {name}
-      </span>
     </div>
   );
 }
@@ -50,53 +44,36 @@ export function ClientMarquee() {
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50">
-      {/* Clients Section */}
-      <div>
-        <Container className="mb-6">
-          <ScrollReveal>
-            <div className="text-center">
-              <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-3">
-                Trusted by Leaders
-              </p>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
-                Our Valued Clients
-              </h2>
-              <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-                Serving Ethiopia&apos;s leading banks, insurance companies,
-                government institutions, and private enterprises
-              </p>
-            </div>
-          </ScrollReveal>
-        </Container>
+    <section
+      className="overflow-hidden"
+      style={{ paddingBlock: "var(--space-section-tight)" }}
+    >
+      {/* Simple label */}
+      <Container className="mb-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Trusted by
+        </p>
+      </Container>
 
-        {/* Marquee Container */}
-        <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
-
-          {/* Scrolling Track */}
-          <div className="overflow-hidden">
-            <div
-              className="flex animate-marquee py-3"
-              style={{ animationPlayState: paused ? "paused" : "running" }}
-              aria-hidden="true"
-            >
-              {duplicatedClients.map((client, index) => (
-                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-2">
-                  <ClientLogo name={client.name} logo={client.logo} />
-                </div>
-              ))}
-            </div>
+      {/* Marquee Container — no gradients, no borders */}
+      <div
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className="overflow-hidden">
+          <div
+            className="flex animate-marquee py-2"
+            style={{ animationPlayState: paused ? "paused" : "running" }}
+            aria-hidden="true"
+          >
+            {duplicatedClients.map((client, index) => (
+              <div key={`${client.id}-${index}`} className="flex-shrink-0 px-1">
+                <ClientLogo name={client.name} logo={client.logo} />
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
     </section>
   );
 }

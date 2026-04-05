@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { motion } from "framer-motion";
+import { ease } from "@/lib/motion";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -8,46 +9,20 @@ interface ScrollRevealProps {
   className?: string;
 }
 
+/**
+ * Unified scroll-reveal wrapper using Framer Motion whileInView.
+ * Replaces the previous IntersectionObserver + style-prop approach.
+ */
 export function ScrollReveal({ children, delay = 0, className = '' }: ScrollRevealProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px',
-      }
-    );
-
-    const currentElement = elementRef.current;
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
-      }
-    };
-  }, []);
-
   return (
-    <div
-      ref={elementRef}
+    <motion.div
       className={className}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-        transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s ease-out ${delay}s`,
-      }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay, ease: ease.out }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

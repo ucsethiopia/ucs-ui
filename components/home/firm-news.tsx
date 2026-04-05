@@ -1,119 +1,125 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useFirmNews, type NewsItem } from "@/hooks/use-news";
 import { Container } from "@/components/shared/container";
-import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
 import { NewsModal } from "@/components/home/news-modal";
 import { Skeleton } from "@/components/ui/charts";
+import { ease, staggerContainer, staggerItem } from "@/lib/motion";
 
 export const FirmNews = () => {
-  const router = useRouter();
-  const { data, loading, hasMore } = useFirmNews(9);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { data, loading } = useFirmNews(4);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const checkScrollBoundaries = () => {
-    if (containerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-
-  const scrollNews = (direction: "left" | "right") => {
-    if (containerRef.current) {
-      const scrollAmount = direction === "left" ? -400 : 400;
-      containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
 
   const handleNewsClick = (news: NewsItem) => {
     setSelectedNews(news);
     setIsModalOpen(true);
   };
 
-  const handleLoadMore = () => {
-    // Navigate to full news page
-    router.push("/news");
-  };
+  const featured = data[0] ?? null;
+  const rest = data.slice(1, 4);
 
   return (
     <>
-      <NewsCarouselLayout
-        title="News & Insights"
-        titleHighlight="Firm Updates"
-        rightAction={
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2">
-              <button
-                onClick={() => scrollNews("left")}
-                disabled={!canScrollLeft}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
-                aria-label="Previous news"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => scrollNews("right")}
-                disabled={!canScrollRight}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
-                aria-label="Next news"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+      <section style={{ paddingBlock: "var(--space-section-normal)" }}>
+        <Container>
+          {/* Header */}
+          <motion.div
+            className="flex items-end justify-between mb-8"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5, ease: ease.out }}
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                Firm Updates
+              </p>
+              <h2 className="font-serif font-bold text-foreground" style={{ fontSize: "var(--font-size-heading-1)" }}>
+                News & Insights
+              </h2>
             </div>
             <Link
               href="/news"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:text-accent hover:gap-3"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-opacity hover:opacity-70"
             >
-              Load More News
+              All News
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </div>
-        }
-      >
-        <Container>
-          <div ref={ref}>
-          <div
-            ref={containerRef}
-            className="relative flex gap-6 overflow-x-auto scrollbar-hide pb-4"
-            style={{ scrollSnapType: "x mandatory" }}
-            onScroll={checkScrollBoundaries}
-          >
-            {loading
-              ? [...Array(4)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] rounded-xl overflow-hidden h-[500px] flex flex-col"
-                  >
-                    <Skeleton className="aspect-[3/2] w-full flex-shrink-0" />
-                    <div className="p-6 bg-card border border-t-0 flex-1">
-                      <Skeleton className="h-4 w-20 mb-3" />
-                      <Skeleton className="h-6 w-full mb-2" />
-                      <Skeleton className="h-4 w-3/4" />
-                    </div>
+          </motion.div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Skeleton className="aspect-[3/2] w-full rounded-lg" />
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-24 w-full rounded-lg" />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <motion.div
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+            >
+              {/* Featured article — large */}
+              {featured && (
+                <motion.article
+                  variants={staggerItem}
+                  className="group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-lg overflow-hidden"
+                  onClick={() => handleNewsClick(featured)}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleNewsClick(featured);
+                    }
+                  }}
+                >
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-lg bg-muted">
+                    {(featured.images?.[0] ?? featured.main_image) ? (
+                      <SafeImage
+                        src={featured.images?.[0] ?? featured.main_image ?? ""}
+                        alt={featured.title}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        priority
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        fallbackClassName="absolute inset-0"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-navy-900" />
+                    )}
                   </div>
-                ))
-              : data.map((news, index) => (
+                  <div className="mt-4">
+                    <time className="text-xs text-muted-foreground">
+                      {new Date(featured.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                    </time>
+                    <h3
+                      className="font-serif font-bold text-foreground mt-1 line-clamp-2 transition-opacity group-hover:opacity-70"
+                      style={{ fontSize: "var(--font-size-heading-2)" }}
+                    >
+                      {featured.title}
+                    </h3>
+                  </div>
+                </motion.article>
+              )}
+
+              {/* Smaller articles — stacked */}
+              <div className="flex flex-col divide-y divide-border">
+                {rest.map((news) => (
                   <motion.article
                     key={news.id}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 hover:shadow-xl"
-                    style={{ scrollSnapAlign: "start" }}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                    whileHover={{ y: -5 }}
+                    variants={staggerItem}
+                    className="group cursor-pointer py-4 first:pt-0 last:pb-0 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-sm"
                     onClick={() => handleNewsClick(news)}
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -123,63 +129,39 @@ export const FirmNews = () => {
                       }
                     }}
                   >
-                    {/* Image */}
-                    <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
-                      {(news.images?.[0] ?? news.main_image) ? (
-                        <SafeImage
-                          src={news.images?.[0] ?? news.main_image ?? ""}
-                          alt={news.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          priority={index === 0}
-                          className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                          fallbackClassName="absolute inset-0"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 bg-navy-900" />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {(news.tags ?? ["News"]).slice(0, 2).map((tag) => (
-                            <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                              {tag}
-                            </span>
-                          ))}
-                          {(news.tags?.length ?? 0) > 2 && (
-                            <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
-                              +{(news.tags?.length ?? 0) - 2}
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-xs text-muted-foreground shrink-0">
-                          {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                        </span>
+                    <div className="flex gap-4">
+                      {/* Thumbnail */}
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-24 flex-shrink-0 rounded-md overflow-hidden bg-muted">
+                        {(news.images?.[0] ?? news.main_image) ? (
+                          <SafeImage
+                            src={news.images?.[0] ?? news.main_image ?? ""}
+                            alt={news.title}
+                            fill
+                            sizes="128px"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            fallbackClassName="absolute inset-0"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-navy-900" />
+                        )}
                       </div>
-
-                      <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                        {news.title}
-                      </h3>
-
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {news.subtitle}
-                      </p>
-
-                      <span className="inline-flex items-center text-gold-600 font-medium text-sm group-hover:gap-2 transition-all">
-                        Read more
-                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </span>
+                      {/* Text */}
+                      <div className="min-w-0 flex flex-col justify-center">
+                        <time className="text-xs text-muted-foreground">
+                          {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        </time>
+                        <h3 className="font-serif font-semibold text-foreground mt-0.5 line-clamp-2 text-base transition-opacity group-hover:opacity-70">
+                          {news.title}
+                        </h3>
+                      </div>
                     </div>
                   </motion.article>
                 ))}
-          </div>
-          </div>
+              </div>
+            </motion.div>
+          )}
         </Container>
-      </NewsCarouselLayout>
+      </section>
 
       {/* Modal */}
       <NewsModal

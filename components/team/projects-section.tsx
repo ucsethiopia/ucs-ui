@@ -16,7 +16,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-1 h-6 bg-gold-500 rounded-full" />
+        <div className="w-1 h-6 bg-foreground/20 rounded-full" />
         <h3 className="font-serif text-2xl font-bold text-foreground">
           Projects
         </h3>
@@ -30,7 +30,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
             <div className="space-y-5">
               {projects.research.map((proj, idx) => (
                 <div key={idx} className="flex gap-4 items-start pl-1">
-                  <FlaskConical className="h-5 w-5 text-gold-500 flex-shrink-0 mt-0.5" />
+                  <FlaskConical className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-foreground">
                       {proj.title}
@@ -59,7 +59,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
             <div className="space-y-5">
               {projects.software.map((proj, idx) => (
                 <div key={idx} className="flex gap-4 items-start pl-1">
-                  <Code2 className="h-5 w-5 text-gold-500 flex-shrink-0 mt-0.5" />
+                  <Code2 className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-foreground">
                       {proj.title}
@@ -69,7 +69,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                         {proj.tech_stack.map((tech, i) => (
                           <span
                             key={i}
-                            className="px-2 py-0.5 bg-gold-500/10 text-gold-600 text-xs font-medium rounded"
+                            className="px-2 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded"
                           >
                             {tech}
                           </span>
@@ -83,7 +83,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                             key={i}
                             className="text-sm text-muted-foreground leading-relaxed flex gap-2"
                           >
-                            <span className="text-gold-500/50 flex-shrink-0">
+                            <span className="text-muted-foreground/40 flex-shrink-0">
                               &bull;
                             </span>
                             {desc}
@@ -99,7 +99,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-500 transition-colors rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+                            className="inline-flex items-center gap-1.5 text-sm text-foreground hover:opacity-70 transition-colors rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
                             {link.title}

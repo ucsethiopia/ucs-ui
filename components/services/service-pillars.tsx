@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { PillarVisual } from "./pillar-visual";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { ease } from "@/lib/motion";
 import {
   Accordion,
   AccordionContent,
@@ -60,20 +61,20 @@ export function ServicePillars({ services }: ServicePillarsProps) {
   const isHeaderVisible = useInView(headerRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-12 md:py-20 bg-background">
+    <section style={{ paddingBlock: "var(--space-section-normal)" }}>
       <Container>
         {/* Header Section */}
         <motion.div
           ref={headerRef}
           className="text-center mb-8 md:mb-12"
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={isHeaderVisible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.5, ease: ease.out }}
         >
-          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            Our Expertise
-          </p>
-          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
+          <h2
+            className="font-serif font-bold text-foreground mb-4"
+            style={{ fontSize: "var(--font-size-heading-1)" }}
+          >
             Four Pillars of Excellence
           </h2>
           <p className="text-muted-foreground max-w-[520px] mx-auto leading-relaxed">
@@ -102,8 +103,8 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                 className={cn(
                   "px-3 sm:px-5 py-2 sm:py-2.5 rounded-md border-[1.5px] flex items-center gap-1.5 transition-all duration-200 cursor-pointer text-xs sm:text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isActive
-                    ? "bg-gold-500 border-gold-500 text-navy-950"
-                    : "bg-transparent border-border text-muted-foreground hover:border-gold-500/50 hover:text-foreground",
+                    ? "bg-foreground border-foreground text-background"
+                    : "bg-transparent border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
                 )}
               >
                 <Icon size={15} />
@@ -128,11 +129,11 @@ export function ServicePillars({ services }: ServicePillarsProps) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
             >
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gold-500 flex items-center justify-center text-navy-950">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-muted flex items-center justify-center text-foreground">
                 <ActiveIcon size={28} />
               </div>
               <div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-foreground">
+                <h3 className="font-serif font-bold text-foreground" style={{ fontSize: "var(--font-size-heading-2)" }}>
                   {activeService.title}
                 </h3>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
@@ -196,9 +197,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                               key={idx}
                               className="flex items-start gap-2.5 py-1.5 text-muted-foreground"
                             >
-                              <div className="flex-shrink-0 mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
-                                <Check className="h-3 w-3 text-gold-600" />
-                              </div>
+                              <span className="text-muted-foreground/50 mt-0.5 flex-shrink-0">—</span>
                               <span className="text-xs sm:text-sm leading-tight">
                                 {course}
                               </span>
@@ -222,9 +221,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                       key={index}
                       className="flex items-center gap-2.5 py-2 text-foreground"
                     >
-                      <div className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
-                        <Check className="h-3 w-3 text-gold-600" />
-                      </div>
+                      <span className="text-muted-foreground/50 flex-shrink-0">—</span>
                       <span className="text-sm sm:text-base">{offering}</span>
                     </div>
                   ))}
