@@ -25,8 +25,8 @@ export default function NotFound() {
         </div>
 
         {/* Decorative corner lines */}
-        <div aria-hidden="true" className="absolute top-16 left-12 w-12 h-12 border-l-2 border-t-2 border-gold-500/20" />
-        <div aria-hidden="true" className="absolute bottom-16 right-12 w-12 h-12 border-r-2 border-b-2 border-gold-500/20" />
+        <div aria-hidden="true" className="absolute top-16 left-6 sm:left-12 w-8 sm:w-12 h-8 sm:h-12 border-l-2 border-t-2 border-gold-500/20" />
+        <div aria-hidden="true" className="absolute bottom-16 right-6 sm:right-12 w-8 sm:w-12 h-8 sm:h-12 border-r-2 border-b-2 border-gold-500/20" />
 
         {/* Content */}
         <motion.div

@@ -4,7 +4,7 @@ import { useEffect, useId, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import Image from "next/image";
+import { SafeImage } from "@/components/shared/safe-image";
 import { NewsItem } from "@/hooks/use-news";
 import { cn } from "@/lib/utils";
 
@@ -152,12 +152,13 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                         <div className="flex h-full">
                           {images.map((src, i) => (
                             <div key={i} className="relative flex-[0_0_100%] h-full">
-                              <Image
+                              <SafeImage
                                 src={src}
                                 alt={`${news.title} — ${i + 1} of ${images.length}`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 640px"
                                 className="object-contain"
+                                fallbackClassName="absolute inset-0"
                               />
                             </div>
                           ))}
@@ -205,12 +206,13 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                     </>
                   ) : (
                     <>
-                      <Image
+                      <SafeImage
                         src={images[0]}
                         alt={news.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 640px"
                         className="object-contain"
+                        fallbackClassName="absolute inset-0"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                     </>

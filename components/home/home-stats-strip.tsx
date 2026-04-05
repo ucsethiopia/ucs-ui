@@ -25,7 +25,7 @@ function AnimatedCounter({
   suffix?: string;
   isVisible: boolean;
 }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number | null>(null);
   const rafRef = useRef<number>(0);
 
   const prefersReducedMotion = useCallback(() => {
@@ -61,6 +61,10 @@ function AnimatedCounter({
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, [isVisible, target, prefersReducedMotion]);
+
+  if (count === null) {
+    return <span className="invisible">{target}{suffix}</span>;
+  }
 
   return (
     <span>
