@@ -48,7 +48,7 @@ function NewsCard({
       }}
     >
       {/* Image */}
-      <div className="relative aspect-[3/2] overflow-hidden bg-muted">
+      <div className="relative aspect-video overflow-hidden bg-muted">
         {(item.images?.[0] ?? item.main_image) ? (
           <Image
             src={item.images?.[0] ?? item.main_image ?? ""}
@@ -127,7 +127,7 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="sticky top-14 sm:top-24 z-10 bg-background">
+        <section className="sticky top-9 sm:top-19 z-10 bg-background">
           <Container>
             <div className="py-6 border-b border-border">
             <div className="flex flex-wrap gap-2">

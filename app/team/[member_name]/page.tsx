@@ -103,6 +103,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 src={member.image}
                 alt=""
                 fill
+                sizes="100vw"
                 className="object-cover object-top blur-sm scale-105"
                 priority
               />

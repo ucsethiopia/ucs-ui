@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { Globe } from "lucide-react";
 import Image from "next/image";
 import { strategicPartners } from "@/lib/mock-data";
@@ -77,6 +77,8 @@ function PartnerNode({
 
 export function OrbitalPartners() {
   const [hoveredPartner, setHoveredPartner] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px 0px" });
 
   const localPartners = strategicPartners.filter(
     (p) => p.partnerType === "local"
@@ -101,7 +103,7 @@ export function OrbitalPartners() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-secondary/30 overflow-hidden">
+    <section ref={sectionRef} className="py-16 md:py-24 bg-secondary/30 overflow-hidden">
       <div className="text-center mb-6">
         <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
           Strategic Partnerships
@@ -182,7 +184,7 @@ export function OrbitalPartners() {
         <motion.div
           className="relative flex h-24 w-24 items-center justify-center rounded-full border border-gold-500/30 bg-card shadow-xl"
           initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
+          animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
           transition={{ duration: 0.8 }}
         >
           <div className="absolute inset-0 rounded-full bg-gold-500/5 blur-xl" />
@@ -205,7 +207,7 @@ export function OrbitalPartners() {
               className="absolute"
               style={{ left: "50%", top: "50%" }}
               initial={{ x: 0, y: 0, opacity: 0 }}
-              animate={{ x: pos.x, y: pos.y, opacity: 1 }}
+              animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
               transition={{
                 x: { duration: 1.2, delay: index * 0.1 },
                 y: { duration: 1.2, delay: index * 0.1 },
@@ -237,7 +239,7 @@ export function OrbitalPartners() {
               className="absolute"
               style={{ left: "50%", top: "50%" }}
               initial={{ x: 0, y: 0, opacity: 0 }}
-              animate={{ x: pos.x, y: pos.y, opacity: 1 }}
+              animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
               transition={{
                 x: { duration: 1.5, delay: 0.4 + index * 0.12 },
                 y: { duration: 1.5, delay: 0.4 + index * 0.12 },
