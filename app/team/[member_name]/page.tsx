@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { useTeamMember, useTeamApi } from "@/hooks/use-team";
 import Link from "next/link";
@@ -11,6 +12,10 @@ import {
   Phone,
   Briefcase,
 } from "lucide-react";
+import { EducationSection } from "@/components/team/education-section";
+import { ExperienceSection } from "@/components/team/experience-section";
+import { TrainingsSection } from "@/components/team/trainings-section";
+import { ProjectsSection } from "@/components/team/projects-section";
 import { use } from "react";
 
 interface TeamMemberPageProps {
@@ -199,10 +204,12 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 >
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-muted shadow-xl">
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 33vw"
+                        className="object-cover object-top"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-navy-900 flex items-center justify-center">
@@ -320,6 +327,12 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   </div>
                 </div>
 
+                {/* Education */}
+                <EducationSection education={member.education} />
+
+                {/* Work Experience */}
+                <ExperienceSection experiences={member.experiences} />
+
                 {/* Technical skills */}
                 {member.technical_skills && member.technical_skills.length > 0 && (
                   <div>
@@ -392,6 +405,11 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                     </ul>
                   </div>
                 )}
+                {/* Professional Training */}
+                <TrainingsSection trainings={member.trainings_taken} />
+
+                {/* Projects */}
+                <ProjectsSection projects={member.projects} />
               </motion.div>
             </div>
           </div>
@@ -425,10 +443,12 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                       <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">
                           {teamMember.image ? (
-                            <img
+                            <Image
                               src={teamMember.image}
                               alt={teamMember.name}
-                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                             />
                           ) : (
                             <div className="absolute inset-0 bg-navy-900" />

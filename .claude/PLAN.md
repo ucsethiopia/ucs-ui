@@ -49,7 +49,7 @@ These are the immediate priority before resuming the phase queue.
   - Implement indefinite TTL LRU cache for commodities historical data to minimize redundant API calls.
   - Store data thinned (downsampled) from original ~6000 lines (5 years) to ~1000 points in cache overhead.
   - Set cache to manually refresh through the API only once every 12 hours, using cached data as fallback.
-- [ ] **5.3 Loader Resilience**: Fix bug where skeleton loaders fail to reset/disappear after API failure or subsequent successful fetch.
+- [x] **5.3 Loader Resilience**: Fix bug where skeleton loaders fail to reset/disappear after API failure or subsequent successful fetch.
 
 ---
 
@@ -57,18 +57,19 @@ These are the immediate priority before resuming the phase queue.
 
 ### Phase 12 — News + About Improvements
 
-- [ ] **12.2** Date-range filter for news archive (month/year picker against `publishedAt`)
-- [ ] **12.3** Improve `NewsModal` — drop cap, pull quote typography, keyboard trap, smooth open/close
-- [ ] **12.4** Fix the news filtering system so tag filtering works reliably again
-- [ ] **12.5** Update the available news filter tags to match the real content tags, including leadership
-- [ ] **12.6** Unify the news tag set between the home page and news page so both use the home-page tag list under the News section
+- [ ] **12.2** _(Paused)_ Date-range filter for news archive (month/year picker against `publishedAt`)
+- [x] **12.3** Improve `NewsModal` — drop cap, pull quote typography, keyboard trap, smooth open/close
+- [x] **12.4** Fix the news filtering system so tag filtering works reliably again
+- [x] **12.5** Update the available news filter tags to match the real content tags, including leadership
+- [x] **12.6** Unify the news tag set between the home page and news page so both use the home-page tag list under the News section
+- [ ] **12.7** _(Paused)_ The news api returns multiple tags, but we only display one. Suggest a fix for that
 
 ### Phase 13 — Remaining API Tasks
 
-- [ ] **13.1** Image audit — enforce `aspect-square object-cover object-top` on team photos; `aspect-video object-cover` on news cards; `object-contain` in news modal carousel; migrate bare `<img>` tags to `next/image`
-- [ ] **13.2** Use percentage based change key value pair from api for trend change. 
-- [ ] **13.3** Use the team/team_member endpoint data appropriately
-- [ ] **13.4** Commit + push, note phase 9 complete
+- [x] **13.1** Image audit — enforce `aspect-square object-cover object-top` on team photos; `aspect-video object-cover` on news cards; `object-contain` in news modal carousel; migrate bare `<img>` tags to `next/image`
+- [x] **13.2** Use percentage based change key value pair from api for trend change. 
+- [x] **13.3** Use the team/team_member endpoint data appropriately
+- [x] **13.4** Commit + push, note phase 9 complete
 
 ### Phase 13.9 — Stakeholder Data Confirmation Gate 
 
@@ -108,7 +109,7 @@ These are the immediate priority before resuming the phase queue.
 
 ## Current Task
 
-> > **HF-5.3** — Data Visualization & Performance: Loader Resilience
+> > **13.4** — Phase 13: Commit + push
 
 ---
 

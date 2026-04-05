@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
 import { NewsItem } from "@/hooks/use-news";
 import { cn } from "@/lib/utils";
 
@@ -20,14 +21,58 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
-  // Keyboard close
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Keyboard close and focus trap
   useEffect(() => {
     if (!isOpen) return;
+
+    // Small delay to ensure elements are rendered
+    const timer = setTimeout(() => {
+      const focusable = modalRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) as NodeListOf<HTMLElement>;
+      
+      if (focusable && focusable.length > 0) {
+        // Focus the close button (which is often the first button)
+        focusable[0].focus();
+      }
+    }, 10);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        ) as NodeListOf<HTMLElement>;
+        
+        if (!focusable || focusable.length === 0) return;
+        
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      clearTimeout(timer);
+    };
   }, [isOpen, onClose]);
 
   // Track active slide + prev/next availability
@@ -77,14 +122,15 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
           {/* Modal */}
           <motion.div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
             className="fixed inset-x-4 top-[5%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-3xl max-h-[85vh] bg-card rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col"
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
           >
             {/* Close Button */}
             <button
@@ -106,10 +152,12 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                         <div className="flex h-full">
                           {images.map((src, i) => (
                             <div key={i} className="relative flex-[0_0_100%] h-full">
-                              <img
+                              <Image
                                 src={src}
                                 alt={`${news.title} — ${i + 1} of ${images.length}`}
-                                className="w-full h-full object-cover"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 640px"
+                                className="object-contain"
                               />
                             </div>
                           ))}
@@ -157,10 +205,12 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                     </>
                   ) : (
                     <>
-                      <img
+                      <Image
                         src={images[0]}
                         alt={news.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 640px"
+                        className="object-contain"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                     </>
@@ -203,10 +253,36 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
                 {/* Full body text */}
                 {news.news && (
-                  <div className="prose prose-sm max-w-none">
-                    <p className="text-foreground leading-relaxed whitespace-pre-line">
-                      {news.news}
-                    </p>
+                  <div className="prose prose-sm max-w-none pb-8 text-foreground/90">
+                    {news.news.split(/\n\n+/).filter(Boolean).map((paragraph, idx) => {
+                      const trimmed = paragraph.trim();
+                      const isQuote = /^["“][\s\S]*["”]$/.test(trimmed);
+
+                      if (isQuote) {
+                        return (
+                          <blockquote
+                            key={idx}
+                            className="border-l-4 border-gold-500 pl-5 py-2 my-8 italic text-muted-foreground font-serif text-lg md:text-xl leading-relaxed bg-muted/30 rounded-r-lg"
+                          >
+                            {trimmed.replace(/^["“]|["”]$/g, "")}
+                          </blockquote>
+                        );
+                      }
+
+                      const isFirst = idx === 0;
+                      return (
+                        <p
+                          key={idx}
+                          className={cn(
+                            "leading-relaxed mb-5",
+                            isFirst &&
+                              "first-letter:text-6xl first-letter:font-serif first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:text-gold-600 first-letter:mt-1.5 first-letter:leading-[0.8]"
+                          )}
+                        >
+                          {trimmed}
+                        </p>
+                      );
+                    })}
                   </div>
                 )}
               </div>

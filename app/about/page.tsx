@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
@@ -39,14 +40,17 @@ function TeamMemberCard({
           <div className="grid grid-cols-1 lg:grid-cols-5 lg:min-h-[400px]">
             {/* Image - Takes 2 columns on lg */}
             <div className="relative lg:col-span-2 aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                style={{
-                  backgroundImage: member.image
-                    ? `url('${member.image}')`
-                    : `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop')`,
-                }}
-              />
+              {member.image ? (
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-navy-900" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
             </div>
 
@@ -103,14 +107,17 @@ function TeamMemberCard({
       >
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-muted">
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-            style={{
-              backgroundImage: member.image
-                ? `url('${member.image}')`
-                : `url('https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop')`,
-            }}
-          />
+          {member.image ? (
+            <Image
+              src={member.image}
+              alt={member.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-navy-900" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
         </div>
 

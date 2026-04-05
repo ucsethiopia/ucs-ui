@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useFirmNews, type NewsItem } from "@/hooks/use-news";
 import { Container } from "@/components/shared/container";
@@ -115,20 +116,25 @@ export const FirmNews = () => {
                     onClick={() => handleNewsClick(news)}
                   >
                     {/* Image */}
-                    <div className="relative h-48 rounded-t-xl overflow-hidden flex-shrink-0">
-                      <img
-                        src={news.images?.[0] ?? news.main_image ?? ""}
-                        alt={news.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
+                    <div className="relative aspect-video rounded-t-xl overflow-hidden flex-shrink-0">
+                      {(news.images?.[0] ?? news.main_image) ? (
+                        <Image
+                          src={news.images?.[0] ?? news.main_image ?? ""}
+                          alt={news.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-navy-900" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
 
                     {/* Content */}
                     <div className="p-6 bg-card border border-t-0 rounded-b-xl group-hover:border-gold-500/30 transition-colors duration-300 shadow-sm group-hover:shadow-xl flex-1 flex flex-col">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full">
+                        <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
                           {news.tags?.[0] ?? "News"}
                         </span>
                         <span className="text-xs text-muted-foreground">
