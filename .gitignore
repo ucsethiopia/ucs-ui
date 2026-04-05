@@ -49,5 +49,7 @@ screenshots
 assets/inspo
 assets/logos
 .1notes.md
-.claude/prompts
+.claude/
+.agents
+skills-lock.json
 
