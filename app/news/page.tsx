@@ -66,11 +66,20 @@ function NewsCard({
       {/* Content */}
       <div className="flex flex-col flex-1 p-5">
         {/* Category & Date */}
-        <div className="flex items-center gap-3 mb-3">
-          <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-            {item.tags?.[0] ?? "News"}
-          </span>
-          <time className="text-xs text-muted-foreground">{formattedDate}</time>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {(item.tags ?? ["News"]).slice(0, 2).map((tag) => (
+              <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                {tag}
+              </span>
+            ))}
+            {(item.tags?.length ?? 0) > 2 && (
+              <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
+                +{(item.tags?.length ?? 0) - 2}
+              </span>
+            )}
+          </div>
+          <time className="text-xs text-muted-foreground shrink-0">{formattedDate}</time>
         </div>
 
         {/* Title */}

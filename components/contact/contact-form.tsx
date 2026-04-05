@@ -52,6 +52,20 @@ export function ContactForm() {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema) });
 
+  const formatPhone = (value: string): string => {
+    const digits = value.replace(/[^\d+]/g, "");
+    if (digits.startsWith("+251")) {
+      const local = digits.slice(4).replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3").trim();
+      return local ? `+251 ${local}` : "+251";
+    }
+    if (digits.startsWith("0")) {
+      return digits.replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3").trim();
+    }
+    return digits;
+  };
+
+  const { onChange: phoneRegisterOnChange, ...phoneFieldProps } = register("phone");
+
   useEffect(() => {
     if (isSubmitSuccessful) {
       successRef.current?.focus();
@@ -129,6 +143,7 @@ export function ContactForm() {
             {...register("fullname")}
             id="fullname"
             type="text"
+            autoFocus
             placeholder="John Doe"
             aria-describedby={errors.fullname ? "fullname-error" : undefined}
             className={cn(inputClass, errors.fullname && "border-destructive")}
@@ -172,12 +187,16 @@ export function ContactForm() {
             Phone Number
           </label>
           <input
-            {...register("phone")}
+            {...phoneFieldProps}
             id="phone"
             type="tel"
             placeholder="+251 911 234 567"
             aria-describedby={errors.phone ? "phone-error" : undefined}
             className={cn(inputClass, errors.phone && "border-destructive")}
+            onChange={(e) => {
+              e.target.value = formatPhone(e.target.value);
+              phoneRegisterOnChange(e);
+            }}
           />
           <FieldError id="phone-error" message={errors.phone?.message} />
         </div>

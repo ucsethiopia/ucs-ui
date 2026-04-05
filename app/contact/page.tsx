@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { MapPin, Phone, Mail, Clock, Mailbox } from "lucide-react";
+import { motion } from "framer-motion";
 import { PageHero } from "@/components/shared/page-hero";
 import { ContactForm } from "@/components/contact/contact-form";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,9 @@ function ContactInfo({
 
 export default function ContactPage() {
   const { resolvedTheme } = useTheme();
-  const shouldInvertMap = resolvedTheme === "inverted";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const shouldInvertMap = mounted && resolvedTheme === "inverted";
 
   return (
     <>
@@ -51,7 +54,11 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
 
               {/* Contact Form */}
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <div className="mb-8">
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
                     Send Us a Message
@@ -61,10 +68,15 @@ export default function ContactPage() {
                   </p>
                 </div>
                 <ContactForm />
-              </div>
+              </motion.div>
 
               {/* Contact Info */}
-              <div className="lg:pl-8">
+              <motion.div
+                className="lg:pl-8"
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <div className="mb-8">
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
                     Contact Information
@@ -112,21 +124,24 @@ export default function ContactPage() {
                   </ContactInfo>
                 </div>
 
-                {/* OpenStreetMap embed — Bole, Addis Ababa */}
+                {/* Google Maps embed — Gurd Shola, Addis Ababa */}
                 <div className="aspect-video rounded-lg overflow-hidden border border-border">
                   <iframe
-                    title="Map of UCS Ethiopia office in Bole, Addis Ababa"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=38.770%2C9.010%2C38.805%2C9.035&layer=mapnik&marker=9.0227%2C38.7873"
+                    title="Map of UCS Ethiopia office in Gurd Shola, Addis Ababa"
+                    src="https://maps.google.com/maps?q=9.0227,38.7873&t=&z=15&ie=UTF8&iwloc=&output=embed"
                     width="100%"
                     height="100%"
                     className={cn(
                       "w-full h-full transition-[filter] duration-300",
                       shouldInvertMap && "invert hue-rotate-180 brightness-90 saturate-[0.85]",
                     )}
+                    style={{ border: 0, colorScheme: "light" }}
+                    allowFullScreen
                     loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
                   />
                 </div>
-              </div>
+              </motion.div>
 
             </div>
           </Container>

@@ -23,7 +23,7 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[90vh] min-h-[650px] flex items-center overflow-hidden"
+      className="relative h-[90vh] min-h-[500px] sm:min-h-[580px] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -44,13 +44,13 @@ export function Hero() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 py-32 text-center"
+        className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 py-8 sm:py-12 lg:py-16 text-center"
         style={{ opacity }}
       >
         <div className="max-w-4xl mx-auto">
           {/* Eyebrow */}
           <motion.p
-            className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-6"
+            className="text-gold-500 text-xs sm:text-sm font-semibold uppercase tracking-widest mb-4 sm:mb-6"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -59,9 +59,9 @@ export function Hero() {
           </motion.p>
 
           {/* Main Heading with word-by-word animation */}
-          <div className="overflow-hidden mb-8">
+          <div className="overflow-hidden mb-5 sm:mb-8">
             <motion.h1
-              className="flex flex-wrap justify-center gap-x-4 font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
+              className="flex flex-wrap justify-center gap-x-3 sm:gap-x-4 font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
               initial="hidden"
               animate="visible"
             >
@@ -84,7 +84,7 @@ export function Hero() {
 
           {/* Location indicator with line */}
           <motion.div
-            className="overflow-hidden mb-8"
+            className="overflow-hidden mb-5 sm:mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.75, duration: 0.6 }}
@@ -99,7 +99,7 @@ export function Hero() {
 
           {/* Subheading */}
           <motion.p
-            className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.9 }}
@@ -118,14 +118,14 @@ export function Hero() {
           >
             <Link
               href="/services"
-              className="inline-flex items-center justify-center gap-2 rounded-sm bg-gold-500 px-8 py-4 text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:gap-3 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
+              className="inline-flex items-center justify-center gap-2 rounded-sm bg-gold-500 px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base font-semibold text-navy-950 transition-all hover:bg-gold-400 hover:gap-3 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
             >
               Explore Our Services
               <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
               href="/about"
-              className="inline-flex items-center justify-center gap-2 rounded-sm border border-white/40 bg-transparent px-8 py-4 text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/50 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
+              className="inline-flex items-center justify-center gap-2 rounded-sm border border-white/40 bg-transparent px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/50 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950"
             >
               Learn About Us
             </Link>
@@ -135,7 +135,7 @@ export function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/30"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-white/30"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}

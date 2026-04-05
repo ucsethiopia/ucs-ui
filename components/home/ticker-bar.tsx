@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
+import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +64,7 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 }
 
 export function TickerBar() {
-  const { data, loading, error } = useEconomicDashboard();
+  const { data, loading, error } = useEconomicDashboardContext();
   const [paused, setPaused] = useState(false);
 
   const isError = !loading && (error || !data);

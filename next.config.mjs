@@ -18,10 +18,10 @@ const cspHeader = [
   // Add 'unsafe-eval' ONLY in development mode
   `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: *.backblazeb2.com",
+  "img-src 'self' data: blob: *.backblazeb2.com *.gstatic.com *.googleapis.com",
   "font-src 'self'",
-  `connect-src 'self' ${API_DOMAINS.join(" ")}`,
-  "frame-src 'none'",
+  `connect-src 'self' ${API_DOMAINS.join(" ")} *.googleapis.com`,
+  "frame-src https://maps.google.com https://www.google.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

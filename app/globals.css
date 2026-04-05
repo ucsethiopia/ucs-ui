@@ -121,6 +121,14 @@
   --sidebar-ring: var(--gold-500);
 }
 
+@supports not (color: oklch(0 0 0)) {
+  :root {
+    --navy-950: #0a0f1e;
+    --gold-500: #c9a84c;
+    --gold-400: #d4b96a;
+  }
+}
+
 @theme inline {
   --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, sans-serif;
   --font-serif: "Playfair Display", "Playfair Display Fallback", Georgia, serif;

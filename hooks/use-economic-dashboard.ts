@@ -428,7 +428,7 @@ export const useEconomicDashboard = () => {
       }
     }
 
-    fetchAll();
+    fetchAll().catch((err) => console.error("[useEconomicDashboard] uncaught:", err));
     return () => {
       cancelled = true;
     };

@@ -50,10 +50,10 @@ export function ClientMarquee() {
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   return (
-    <section className="py-10 sm:py-14 lg:py-16 bg-secondary/30 overflow-hidden border-y border-border/50">
+    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50">
       {/* Clients Section */}
-      <div className="mb-8">
-        <Container className="mb-8">
+      <div>
+        <Container className="mb-6">
           <ScrollReveal>
             <div className="text-center">
               <p className="text-gold-600 text-xs font-semibold uppercase tracking-widest mb-3">

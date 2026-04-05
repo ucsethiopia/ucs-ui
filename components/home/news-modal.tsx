@@ -105,7 +105,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
     year: "numeric",
   });
 
-  const primaryTag = news.tags?.[0] ?? null;
+  const tags = news.tags ?? [];
 
   return (
     <AnimatePresence>
@@ -222,11 +222,11 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
               <div className="p-6 md:p-8">
                 {/* Category & Meta */}
                 <div className="flex flex-wrap items-center gap-3 mb-4">
-                  {primaryTag && (
-                    <span className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
-                      {primaryTag}
+                  {tags.map((tag) => (
+                    <span key={tag} className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
+                      {tag}
                     </span>
-                  )}
+                  ))}
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{formattedDate}</span>

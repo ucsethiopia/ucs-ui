@@ -88,7 +88,7 @@ export const FirmNews = () => {
           <div ref={ref}>
           <div
             ref={containerRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+            className="relative flex gap-6 overflow-x-auto scrollbar-hide pb-4"
             style={{ scrollSnapType: "x mandatory" }}
             onScroll={checkScrollBoundaries}
           >
@@ -96,10 +96,10 @@ export const FirmNews = () => {
               ? [...Array(4)].map((_, i) => (
                   <div
                     key={i}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] rounded-xl overflow-hidden"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] rounded-xl overflow-hidden h-[500px] flex flex-col"
                   >
-                    <Skeleton className="h-48 w-full" />
-                    <div className="p-6 bg-card border border-t-0 rounded-b-xl">
+                    <Skeleton className="aspect-[3/2] w-full flex-shrink-0" />
+                    <div className="p-6 bg-card border border-t-0 flex-1">
                       <Skeleton className="h-4 w-20 mb-3" />
                       <Skeleton className="h-6 w-full mb-2" />
                       <Skeleton className="h-4 w-3/4" />
@@ -109,7 +109,7 @@ export const FirmNews = () => {
               : data.map((news, index) => (
                   <motion.article
                     key={news.id}
-                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[450px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl"
+                    className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 group-hover:shadow-xl"
                     style={{ scrollSnapAlign: "start" }}
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -125,13 +125,14 @@ export const FirmNews = () => {
                     }}
                   >
                     {/* Image */}
-                    <div className="relative aspect-[3/2] rounded-t-xl overflow-hidden flex-shrink-0">
+                    <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
                       {(news.images?.[0] ?? news.main_image) ? (
                         <Image
                           src={news.images?.[0] ?? news.main_image ?? ""}
                           alt={news.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          priority={index === 0}
                           className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
@@ -141,12 +142,21 @@ export const FirmNews = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 bg-card border border-t-0 rounded-b-xl group-hover:border-gold-500/30 transition-colors duration-300 shadow-sm group-hover:shadow-xl flex-1 flex flex-col">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                          {news.tags?.[0] ?? "News"}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
+                    <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {(news.tags ?? ["News"]).slice(0, 2).map((tag) => (
+                            <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                              {tag}
+                            </span>
+                          ))}
+                          {(news.tags?.length ?? 0) > 2 && (
+                            <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
+                              +{(news.tags?.length ?? 0) - 2}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground shrink-0">
                           {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                         </span>
                       </div>
