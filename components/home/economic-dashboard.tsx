@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
+import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
 import { SparklineChart, Skeleton } from "@/components/ui/charts";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,24 +29,28 @@ interface TextStatCardProps {
 function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex items-center gap-3">
-        <Skeleton className="h-3 w-20 flex-shrink-0" />
-        <div className="w-px h-4 bg-border flex-shrink-0" />
-        <Skeleton className="h-5 w-16 flex-shrink-0" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-3 w-20 flex-shrink-0" />
+          <div className="w-px h-4 bg-border flex-shrink-0" />
+          <Skeleton className="h-5 w-16 flex-shrink-0" />
+        </div>
         <Skeleton className="h-3 w-28" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex items-center gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <span className="text-[10px] text-muted-foreground uppercase tracking-widest whitespace-nowrap flex-shrink-0">
-        {label}
-      </span>
-      <div className="w-px h-4 bg-border flex-shrink-0" />
-      <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
-        {value}
-      </span>
-      <span className="text-xs text-muted-foreground truncate">{subLabel}</span>
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] text-muted-foreground uppercase tracking-widest whitespace-nowrap flex-shrink-0">
+          {label}
+        </span>
+        <div className="w-px h-4 bg-border flex-shrink-0" />
+        <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+          {value}
+        </span>
+      </div>
+      <span className="text-xs text-muted-foreground">{subLabel}</span>
     </div>
   );
 }
@@ -145,7 +149,7 @@ function trendVariant(trend: "up" | "down" | "unchanged"): "up" | "down" | "neut
 // ─── EconomicDashboard ────────────────────────────────────────────────────────
 
 export function EconomicDashboard() {
-  const { data, loading, error, refetch } = useEconomicDashboard();
+  const { data, loading, error, refetch } = useEconomicDashboardContext();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
