@@ -882,7 +882,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "1",
     name: "Glocal Management Partners",
-    logo: "/images/logos/partners/glocal-management-partners.png",
+    logo: "/images/logos/partners/glocal-management-partners-removebg-preview.png",
     description: "Strategic management consulting",
     country: "Ethiopia",
     partnerType: "local",
@@ -890,7 +890,7 @@ export const strategicPartners: Partner[] = [
   // {
   //   id: "2",
   //   name: "B and M Development Consultants",
-  //   logo: "/images/logos/partners/b-and-m-development-consultants.png",
+  //   logo: "/images/logos/partners/b-and-m-development-consultants-removebg-preview.png",
   //   description: "Development consulting",
   //   country: "Ethiopia",
   //   partnerType: "local",
@@ -899,7 +899,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "2",
     name: "Path Consulting",
-    logo: "/images/logos/partners/path-consulting.png",
+    logo: "/images/logos/partners/path-consulting-removebg-preview.png",
     description: "Management and strategy consulting",
     country: "Ethiopia",
     partnerType: "local",
@@ -907,7 +907,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "3",
     name: "Askiibez Consulting",
-    logo: "/images/logos/partners/askiibez-consulting.png",
+    logo: "/images/logos/partners/askiibez-consulting-removebg-preview.png",
     description: "Business consulting",
     country: "Ethiopia",
     partnerType: "local",
@@ -916,7 +916,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "4",
     name: "Trempplin",
-    logo: "/images/logos/partners/trempplin.png",
+    logo: "/images/logos/partners/trempplin-removebg-preview.png",
     description: "Training and development",
     country: "India",
     partnerType: "overseas",
@@ -924,7 +924,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "5",
     name: "Zinger Solutions",
-    logo: "/images/logos/partners/zinger-solutions.png",
+    logo: "/images/logos/partners/zinger-solutions-removebg-preview.png",
     description: "Business solutions",
     country: "Kenya",
     partnerType: "overseas",
@@ -940,7 +940,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "7",
     name: "AaRohan Service Management Solutions",
-    logo: "/images/logos/partners/aarohan-service-management-solutions.png",
+    logo: "/images/logos/partners/aarohan-service-management-solutions-removebg-preview.png",
     description: "Service management consulting",
     country: "India",
     partnerType: "overseas",
@@ -948,7 +948,7 @@ export const strategicPartners: Partner[] = [
   // {
   //   id: "8",
   //   name: "Precise Corporate Services",
-  //   logo: "/images/logos/partners/precise-corporate-services.png",
+  //   logo: "/images/logos/partners/precise-corporate-services-removebg-preview.png",
   //   description: "Corporate services",
   //   country: "India",
   //   partnerType: "overseas",
@@ -957,7 +957,7 @@ export const strategicPartners: Partner[] = [
   {
     id: "8",
     name: "Purchasing and Procurement Center",
-    logo: "/images/logos/partners/purchasing-and-procurement-center.png",
+    logo: "/images/logos/partners/purchasing-and-procurement-center-removebg-preview.png",
     description: "Procurement and supply chain consulting",
     country: "USA",
     partnerType: "overseas",

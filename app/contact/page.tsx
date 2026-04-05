@@ -34,7 +34,7 @@ function ContactInfo({
 
 export default function ContactPage() {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const shouldInvertMap = resolvedTheme === "inverted";
 
   return (
     <>
@@ -122,7 +122,7 @@ export default function ContactPage() {
                     height="100%"
                     className={cn(
                       "w-full h-full transition-[filter] duration-300",
-                      isDark && "invert hue-rotate-180 brightness-90 saturate-[0.85]",
+                      shouldInvertMap && "invert hue-rotate-180 brightness-90 saturate-[0.85]",
                     )}
                     loading="lazy"
                   />

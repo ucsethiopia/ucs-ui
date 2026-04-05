@@ -20,15 +20,15 @@ These are the immediate priority before resuming the phase queue.
 #### HF-1 — Color Scheme Migration _(no blockers)_
 
 - [x] **HF-1.1** Audit current `globals.css` — verify the default color scheme is ucs-brand navy/gold color
-- [ ] **HF-1.2** Audit current `globals.css` to make sure dark mode in broswers don't invert anything. Also make sure the default mode is alwasy the company brand color
+- [x] **HF-1.2** Audit current `globals.css` to make sure dark mode in broswers don't invert anything. Also make sure the default mode is alwasy the company brand color
 
 #### HF-2 — Client & Partner Logo Hover Effects _(no blockers)_
 
 - [x] **HF-2.1** Audit current marquee hover state for client logos (`brightness-95` default, `brightness-100 scale-110` hover) — increase brightness boost to match new spec (visibly brighter + scaled)
 - [x] **HF-2.2** Apply identical static display + hover treatment to partner logos section (currently partners may not have same hover behavior as clients)
 - [x] **HF-2.3** Confirm hover effect is consistent across both rows; test at multiple viewport widths
-- [ ] **HF-2.4** Remove partner logo background treatments and scale all partner logos proportionally so they read consistently
-- [ ] **HF-2.5** Refine partner logo sizing for a more balanced, visually appealing presentation across the row
+- [x] **HF-2.4** Remove partner logo background treatments and scale all partner logos proportionally so they read consistently
+- [x] **HF-2.5** Refine partner logo sizing for a more balanced, visually appealing presentation across the row
 
 #### HF-3 — Background Images: About & Services _(BLOCKED: waiting on Natoli's image decision)_
 
@@ -38,7 +38,7 @@ These are the immediate priority before resuming the phase queue.
 - [x] **HF-3.2** _(Natoli)_ Choose hero/section background image for About page; copy to `public/images/about-bg.jpg` (or similar)
 - [x] **HF-3.3** _(Natoli)_ Choose background image for Services page; copy to `public/images/services-bg.jpg`
 - [x] **HF-3.4** Integrate images using `next/image` with `fill` layout, `object-cover`, correct `objectPosition`; add to `next.config` `remotePatterns` if external
-- [ ] **HF-4.4** Verify no layout shift (CLS) introduced; confirm images render across dark/light modes
+- [x] **HF-4.4** Verify no layout shift (CLS) introduced; confirm images render across dark/light modes
 
 #### HF-5 — Data Visualization & Performance
 
@@ -55,13 +55,6 @@ These are the immediate priority before resuming the phase queue.
 
 ## Remaining Phase Queue
 
-### Phase 9 — Remaining API Tasks
-
-- [ ] **9.5** UI review pass — all pages
-- [ ] **9.6** Commit + push, note phase 9 complete
-- [ ] **9.7** Fix Backblaze B2 image URLs — add `*.backblazeb2.com` to `next.config` `images.remotePatterns`; write `getImageUrl()` helper in `lib/utils.ts`; migrate team + news `<img>` tags to `next/image`
-- [ ] **9.8** Image audit — enforce `aspect-square object-cover object-top` on team photos; `aspect-video object-cover` on news cards; `object-contain` in news modal carousel; migrate bare `<img>` tags to `next/image`
-
 ### Phase 12 — News + About Improvements
 
 - [ ] **12.2** Date-range filter for news archive (month/year picker against `publishedAt`)
@@ -70,15 +63,24 @@ These are the immediate priority before resuming the phase queue.
 - [ ] **12.5** Update the available news filter tags to match the real content tags, including leadership
 - [ ] **12.6** Unify the news tag set between the home page and news page so both use the home-page tag list under the News section
 
-### Phase 13.9 — Stakeholder Data Confirmation Gate _(BLOCKED: waiting on stakeholders)_
+### Phase 13 — Remaining API Tasks
 
-- [ ] **13.9.1–13.9.10** Confirm/correct: vision, mission, SPEED descriptions, contact details, partner list, client list, stats, milestone years, team bios, publications, `internationalTrainingCountries`; flip `logoMissing` flags as assets arrive
+- [ ] **13.1** Image audit — enforce `aspect-square object-cover object-top` on team photos; `aspect-video object-cover` on news cards; `object-contain` in news modal carousel; migrate bare `<img>` tags to `next/image`
+- [ ] **13.2** Use percentage based change key value pair from api for trend change. 
+- [ ] **13.3** Use the team/team_member endpoint data appropriately
+- [ ] **13.4** Commit + push, note phase 9 complete
+
+### Phase 13.9 — Stakeholder Data Confirmation Gate 
+
+- [ ] **13.9.1–13.9.10** Confirm/correct: vision, mission, SPEED descriptions, contact details, partner list, client list, stats, milestone years, team bios, publications, `internationalTrainingCountries`; flip `logoMissing` flags as assets arrive. (Natoli Will Provide two documets with data to compare against)
 
 ### Phase 14 — Component Sourcing (21st.dev)
 
+- [ ] **14.0** UI review pass — all pages
 - [ ] **14.1** Animated stats/metrics display
 - [ ] **14.2** Team members pages
 - [ ] **14.3** Services animations
+- [ ] **14.3** Global Partners Section
 - [ ] **14.4** Hero background element (subtle gradient or geometric SVG, no parallax)
 - [ ] **14.5** Service comparison / feature-matrix table
 - [ ] **14.6** Timeline component for About milestones
@@ -106,7 +108,7 @@ These are the immediate priority before resuming the phase queue.
 
 ## Current Task
 
-> > **HF-1** — Color Scheme Migration (default → UCS navy/gold)
+> > **HF-5.3** — Data Visualization & Performance: Loader Resilience
 
 ---
 

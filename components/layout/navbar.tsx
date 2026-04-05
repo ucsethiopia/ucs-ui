@@ -35,15 +35,11 @@ export function Navbar() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const navBgClass =
-    isHomePage && !isMobileMenuOpen
-      ? "bg-navy-950/80 backdrop-blur-sm border-b border-white/10"
-      : "bg-background/95 backdrop-blur-md border-b border-border";
+  const navBgClass = isMobileMenuOpen 
+    ? "bg-navy-950 border-b border-white/10"
+    : "bg-navy-950/90 backdrop-blur-md border-b border-white/10";
 
-  const textClass =
-    isHomePage && !isMobileMenuOpen
-      ? "text-white"
-      : "text-foreground";
+  const textClass = "text-white";
 
   return (
     <header
@@ -107,24 +103,24 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background">
+          <div className="md:hidden border-t border-white/10 bg-navy-950">
             <div className="flex flex-col py-4 gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "px-4 py-3 text-base font-medium transition-colors hover:bg-muted",
+                    "px-4 py-3 text-base font-medium transition-colors hover:bg-white/5",
                     pathname === link.href
-                      ? "text-gold-500 bg-muted"
-                      : "text-foreground",
+                      ? "text-gold-500 bg-white/5"
+                      : "text-white/90",
                   )}
                 >
                   {link.label}
                 </Link>
               ))}
               <div className="px-4 pt-4 flex items-center gap-3">
-                <ThemeToggle className="flex-shrink-0" />
+                <ThemeToggle className="flex-shrink-0 text-white" inheritTextColor={true} />
                 <Link
                   href="/contact"
                   className="flex-1 flex items-center justify-center rounded-sm bg-gold-500 px-5 py-3 text-sm font-semibold text-navy-950 transition-colors hover:bg-gold-400"

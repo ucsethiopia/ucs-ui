@@ -64,31 +64,31 @@ function PartnerCard({
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-105 cursor-pointer">
-      {/* Logo chip — white tile so logo white-backgrounds are intentional */}
-      <div className="w-full h-14 mb-3 flex items-center justify-center">
-        <div className="relative w-full h-full bg-white rounded-md p-2 flex items-center justify-center shadow-sm group-hover:shadow transition-shadow duration-300">
-          {logo && !imgError ? (
+    <div className="group relative flex flex-col items-center text-center p-5 rounded-lg border border-border/40 bg-card/50 transition-all duration-300 hover:border-border hover:shadow-sm hover:scale-105 cursor-pointer">
+      {/* Logo area */}
+      <div className="w-full h-24 sm:h-28 mb-4 flex items-center justify-center relative transition-transform duration-300 group-hover:scale-110">
+        {logo && !imgError ? (
+          <div className="relative w-full h-full scale-[0.75]">
             <Image
               src={logo}
               alt={name}
               fill
-              className="object-contain p-1.5 mix-blend-multiply"
+              className="object-contain"
               onError={() => setImgError(true)}
-              sizes="180px"
+              sizes="240px"
             />
-          ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
-              {initials}
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted text-muted-foreground text-sm font-semibold">
+            {initials}
+          </div>
+        )}
       </div>
-      <h4 className="text-xs font-medium text-foreground leading-tight">
+      <h4 className="text-sm font-semibold text-foreground leading-tight">
         {name}
       </h4>
       {country ? (
-        <p className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground/80 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+        <p className="mt-1.5 text-[10px] uppercase tracking-wide text-muted-foreground/80 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           {country}
         </p>
       ) : null}
