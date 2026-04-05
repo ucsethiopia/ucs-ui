@@ -109,19 +109,19 @@ These are the immediate priority before resuming the phase queue.
 
 ### Phase 15 — Security + Performance
 
-- [ ] **15.1** Security audit — XSS vectors, no exposed secrets, CSP headers in `next.config`
-- [ ] **15.2** Bundle size audit — `ANALYZE=true npm run build`, eliminate heavy deps
-- [ ] **15.3** Image optimization — all `<img>` → `next/image`, explicit dimensions, WebP
-- [ ] **15.4** Core Web Vitals — Lighthouse (LCP < 2.5s, CLS < 0.1, FID < 100ms)
-- [ ] **15.5** Final build verification — clean `npm run build` with zero TS errors + ESLint warnings
+- [x] **15.1** Security audit — XSS vectors, no exposed secrets, CSP headers in `next.config`
+- [x] **15.2** Bundle size audit — `ANALYZE=true npm run build`, eliminate heavy deps
+- [x] **15.3** Image optimization — all `<img>` → `next/image`, explicit dimensions, WebP
+- [x] **15.4** Core Web Vitals — Lighthouse (LCP < 2.5s, CLS < 0.1, FID < 100ms)
+- [x] **15.5** Final build verification — clean `npm run build` with zero TS errors + ESLint warnings
 
 ### Phase 16 — Demo Prep
 
-- [ ] **16.1** Full-site UI review — all pages: home, about, services, news, contact, 404
-- [ ] **16.2** Cross-browser — Chrome, Firefox, Safari (macOS + iOS)
-- [ ] **16.3** Mobile viewports — iPhone SE (375px), iPhone 14 Pro (393px), iPad (768px)
+- [x] **16.1** Full-site UI review — all pages: home, about, services, news, contact, 404
+- [x] **16.2** Cross-browser — Chrome, Firefox, Safari (macOS + iOS)
+- [x] **16.3** Mobile viewports — iPhone SE (375px), iPhone 14 Pro (393px), iPad (768px)
 - [ ] **16.4** Deploy to staging — Vercel preview, share URL with stakeholders
-- [ ] **16.5** Demo script — page-by-page walkthrough notes + talking points
+- [x] **16.5** Demo script — page-by-page walkthrough notes + talking points
 - [ ] **16.6** Final stakeholder sign-off on UI, content, and data
 
 ---
