@@ -83,7 +83,7 @@ export const mission =
 
 // Company stats
 export const companyStats = [
-  { label: "Years of Excellence", value: "15+", suffix: "" },
+  { label: "Years of Excellence", value: "14+", suffix: "" },
   { label: "Professionals Trained", value: "5,000+", suffix: "" },
   { label: "Service Pillars", value: "4", suffix: "" },
   { label: "Strategic Partners", value: "10+", suffix: "" },
@@ -457,10 +457,10 @@ The workshop will be held at the UCS Training Center in Bole and is limited to 5
   },
   {
     id: "10",
-    title: "UCS Ethiopia Celebrates 15 Years of Excellence",
+    title: "UCS Ethiopia Celebrates 13 Years of Excellence",
     excerpt:
-      "Milestone anniversary marks a decade and a half of serving Ethiopian enterprises.",
-    content: `UCS Ethiopia proudly celebrates its 15th anniversary, marking a decade and a half of dedicated service to Ethiopian enterprises and institutions. Since our founding in 2011, we have partnered with over 150 organizations across banking, manufacturing, government, and other sectors.
+      "Milestone anniversary marks over a decade of serving Ethiopian enterprises.",
+    content: `UCS Ethiopia proudly celebrates its 13th anniversary, marking over a decade of dedicated service to Ethiopian enterprises and institutions. Since our founding in 2012, we have partnered with over 150 organizations across banking, manufacturing, government, and other sectors.
 
 Our journey has been defined by a commitment to excellence, integrity, and client success. We have evolved from a small advisory firm to a comprehensive consultancy offering training, research, and communications services alongside our core advisory practice.
 
@@ -747,12 +747,10 @@ export const servicePillars: ServicePillar[] = [
       "UCS offers consultancy and advisory services to help organizations effectively design and implement strategic change and transformation initiatives.",
     offerings: [
       "Strategic Planning",
-      "Organizational Change Management",
-      "Transformation Management",
+      "Organizational Change and Transformation Management",
       "Organizational Development",
       "Project Portfolio Management",
-      "Performance Improvement",
-      "Risk Management Advisory",
+      "Feasibility and Impact Studies",
     ],
     image: "/images/services/advisory.jpg",
   },
@@ -828,6 +826,14 @@ export const publications: Publication[] = [
     type: "Anniversary Publication",
     description:
       "A commemorative publication celebrating 25 years of Awash Bank and Awash Insurance, produced by UCS.",
+  },
+  {
+    title: "Awash Bank and Awash Insurance 30th Anniversary Book",
+    client: "Awash Bank S.C. / Awash Insurance S.C.",
+    year: 2024,
+    type: "Anniversary Publication",
+    description:
+      "A commemorative publication celebrating 30 years of Awash Bank and Awash Insurance, produced by UCS.",
   },
   {
     title: "Oda Animal Feed Processing Factory Company Profile",

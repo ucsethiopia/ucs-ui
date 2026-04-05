@@ -5,7 +5,7 @@ import { useInView } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const stats = [
-  { value: 15, suffix: "+", label: "Years of Experience" },
+  { value: 14, suffix: "+", label: "Years of Experience" },
   { value: 150, suffix: "+", label: "Projects Completed" },
   { value: 500, suffix: "+", label: "Clients Served" },
   { value: 5, suffix: "", label: "Countries Reached" },
