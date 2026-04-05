@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useEconomicDashboard } from "@/hooks/use-economic-dashboard";
 import { SparklineChart, Skeleton } from "@/components/ui/charts";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Chart colors — chosen for visibility on dark navy cards
@@ -124,7 +125,12 @@ function StatCard({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function trendBadge(trend: "up" | "down" | "unchanged"): string {
+function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
+  if (pct != null) {
+    const sign = pct >= 0 ? "+" : "";
+    const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
+    return `${arrow} ${sign}${pct}%`.trim();
+  }
   if (trend === "up") return "▲ Rising";
   if (trend === "down") return "▼ Falling";
   return "Unchanged";
@@ -139,9 +145,32 @@ function trendVariant(trend: "up" | "down" | "unchanged"): "up" | "down" | "neut
 // ─── EconomicDashboard ────────────────────────────────────────────────────────
 
 export function EconomicDashboard() {
-  const { data, loading } = useEconomicDashboard();
+  const { data, loading, error, refetch } = useEconomicDashboard();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const isError = !loading && (error || !data);
+
+  if (isError) {
+    return (
+      <section ref={ref} className="py-8 bg-muted/20 border-b border-border">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14 flex flex-col items-center justify-center py-12 text-center">
+          <AlertCircle className="w-10 h-10 text-muted-foreground/50 mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">Market Data Temporarily Unavailable</h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+            We're having trouble connecting to the live financial feed. Please try again later.
+          </p>
+          <button
+            onClick={refetch}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-card hover:bg-muted border border-border rounded-md text-foreground"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry Connection
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={ref} className="py-8 bg-muted/20 border-b border-border">
@@ -182,19 +211,19 @@ export function EconomicDashboard() {
         >
           <TextStatCard
             label="Ethiopian GDP"
-            value={loading ? "—" : `$${data?.gdp.value}B`}
-            subLabel={loading ? "—" : `FY ${data?.gdp.year} · +${data?.gdp.growth.toFixed(1)}% YoY`}
+            value={loading ? "—" : `$${data?.gdp?.value}B`}
+            subLabel={loading ? "—" : `FY ${data?.gdp?.year} · +${data?.gdp?.growth?.toFixed(1)}% YoY`}
             loading={loading}
           />
           <TextStatCard
             label="T-Bill Yield"
-            value={loading ? "—" : `${data?.interestRate.tbillYield.toFixed(2)}%`}
+            value={loading ? "—" : `${data?.interestRate?.tbillYield?.toFixed(2)}%`}
             subLabel="91-day NBE T-Bill"
             loading={loading}
           />
           <TextStatCard
             label="Policy Rate"
-            value={loading ? "—" : `${data?.interestRate.policyRate.toFixed(2)}%`}
+            value={loading ? "—" : `${data?.interestRate?.policyRate?.toFixed(2)}%`}
             subLabel="National Bank of Ethiopia"
             loading={loading}
           />
@@ -209,30 +238,30 @@ export function EconomicDashboard() {
         >
           <StatCard
             label="Gold (XAU/USD)"
-            value={loading ? "—" : `$${data?.commodities.gold.price.toLocaleString()}`}
-            badge={loading ? "—" : trendBadge(data?.commodities.gold.trend ?? "unchanged")}
-            badgeVariant={trendVariant(data?.commodities.gold.trend ?? "unchanged")}
-            chartData={data?.commodityHistory.gold}
+            value={loading ? "—" : `$${data?.commodities?.gold?.price?.toLocaleString()}`}
+            badge={loading ? "—" : trendBadge(data?.commodities?.gold?.trend ?? "unchanged", data?.commodities?.gold?.percentageChange)}
+            badgeVariant={trendVariant(data?.commodities?.gold?.trend ?? "unchanged")}
+            chartData={data?.commodityHistory?.gold}
             chartColor={COLORS.gold}
             valueFormatter={(v) => `$${v.toLocaleString()}`}
             loading={loading}
           />
           <StatCard
             label="Silver (XAG/USD)"
-            value={loading ? "—" : `$${data?.commodities.silver.price.toFixed(2)}`}
-            badge={loading ? "—" : trendBadge(data?.commodities.silver.trend ?? "unchanged")}
-            badgeVariant={trendVariant(data?.commodities.silver.trend ?? "unchanged")}
-            chartData={data?.commodityHistory.silver}
+            value={loading ? "—" : `$${data?.commodities?.silver?.price?.toFixed(2)}`}
+            badge={loading ? "—" : trendBadge(data?.commodities?.silver?.trend ?? "unchanged", data?.commodities?.silver?.percentageChange)}
+            badgeVariant={trendVariant(data?.commodities?.silver?.trend ?? "unchanged")}
+            chartData={data?.commodityHistory?.silver}
             chartColor={COLORS.silver}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
             loading={loading}
           />
           <StatCard
             label="Coffee (KC1)"
-            value={loading ? "—" : `$${data?.commodities.coffee.price.toFixed(2)}`}
-            badge={loading ? "—" : trendBadge(data?.commodities.coffee.trend ?? "unchanged")}
-            badgeVariant={trendVariant(data?.commodities.coffee.trend ?? "unchanged")}
-            chartData={data?.commodityHistory.coffee}
+            value={loading ? "—" : `$${data?.commodities?.coffee?.price?.toFixed(2)}`}
+            badge={loading ? "—" : trendBadge(data?.commodities?.coffee?.trend ?? "unchanged", data?.commodities?.coffee?.percentageChange)}
+            badgeVariant={trendVariant(data?.commodities?.coffee?.trend ?? "unchanged")}
+            chartData={data?.commodityHistory?.coffee}
             chartColor={COLORS.coffee}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
             loading={loading}
@@ -241,7 +270,7 @@ export function EconomicDashboard() {
           <StatCard
             label="USD / ETB"
             value={loading ? "—" : (data?.fxRates.usd.rate.toFixed(2) ?? "—")}
-            badge={loading ? "—" : trendBadge(data?.fxRates.usd.trend ?? "unchanged")}
+            badge={loading ? "—" : trendBadge(data?.fxRates.usd.trend ?? "unchanged", data?.fxRates.usd.percentageChange)}
             badgeVariant={trendVariant(data?.fxRates.usd.trend ?? "unchanged")}
             chartData={data?.fxRates.usd.history}
             chartColor={COLORS.usd}
@@ -251,7 +280,7 @@ export function EconomicDashboard() {
           <StatCard
             label="EUR / ETB"
             value={loading ? "—" : (data?.fxRates.eur.rate.toFixed(2) ?? "—")}
-            badge={loading ? "—" : trendBadge(data?.fxRates.eur.trend ?? "unchanged")}
+            badge={loading ? "—" : trendBadge(data?.fxRates.eur.trend ?? "unchanged", data?.fxRates.eur.percentageChange)}
             badgeVariant={trendVariant(data?.fxRates.eur.trend ?? "unchanged")}
             chartData={data?.fxRates.eur.history}
             chartColor={COLORS.eur}
@@ -261,7 +290,7 @@ export function EconomicDashboard() {
           <StatCard
             label="CNY / ETB"
             value={loading ? "—" : (data?.fxRates.cny.rate.toFixed(2) ?? "—")}
-            badge={loading ? "—" : trendBadge(data?.fxRates.cny.trend ?? "unchanged")}
+            badge={loading ? "—" : trendBadge(data?.fxRates.cny.trend ?? "unchanged", data?.fxRates.cny.percentageChange)}
             badgeVariant={trendVariant(data?.fxRates.cny.trend ?? "unchanged")}
             chartData={data?.fxRates.cny.history}
             chartColor={COLORS.cny}

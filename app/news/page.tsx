@@ -6,6 +6,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
@@ -49,29 +50,27 @@ function NewsCard({
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
         {(item.images?.[0] ?? item.main_image) ? (
-          <img
+          <Image
             src={item.images?.[0] ?? item.main_image ?? ""}
             alt={item.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 bg-navy-900" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
-
-        {/* Category Tag */}
-        <span className="absolute top-4 left-4 px-3 py-1 bg-gold-500 text-navy-950 text-xs font-semibold rounded-sm uppercase tracking-wide">
-          {item.tags?.[0] ?? "News"}
-        </span>
       </div>
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-5">
-        {/* Date */}
-        <div className="flex items-center gap-2 text-muted-foreground mb-3">
-          <Calendar className="h-3.5 w-3.5" />
-          <time className="text-xs">{formattedDate}</time>
+        {/* Category & Date */}
+        <div className="flex items-center gap-3 mb-3">
+          <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+            {item.tags?.[0] ?? "News"}
+          </span>
+          <time className="text-xs text-muted-foreground">{formattedDate}</time>
         </div>
 
         {/* Title */}
@@ -84,9 +83,9 @@ function NewsCard({
           {item.subtitle}
         </p>
 
-        {/* Read More */}
+        {/* Read more */}
         <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all group-hover:text-gold-600 group-hover:gap-3">
-          Read More
+          Read more
           <ArrowRight className="h-4 w-4" />
         </span>
       </div>
@@ -108,7 +107,9 @@ export default function NewsPage() {
 
   const filteredNews = useMemo(() => {
     if (selectedCategory === "All") return data;
-    return data.filter((item) => item.tags?.includes(selectedCategory));
+    return data.filter((item) =>
+      item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
+    );
   }, [data, selectedCategory]);
 
   const handleReadMore = (item: NewsItem) => {

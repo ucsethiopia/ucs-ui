@@ -27,9 +27,18 @@ interface TickerItemProps {
   label: string;
   value: string;
   trend: "up" | "down" | "unchanged";
+  percentageChange?: number;
 }
 
-function TickerItem({ icon, label, value, trend }: TickerItemProps) {
+function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemProps) {
+  const change = percentageChange ?? 0;
+  const colorClass =
+    change > 0
+      ? "text-emerald-400"
+      : change < 0
+        ? "text-red-400"
+        : "text-white/50";
+
   return (
     <div className="flex items-center gap-2 px-4 border-r border-white/15 whitespace-nowrap">
       {icon && <span className="text-base">{icon}</span>}
@@ -39,22 +48,28 @@ function TickerItem({ icon, label, value, trend }: TickerItemProps) {
       <span className="text-sm font-bold text-white tabular-nums">
         {value}
       </span>
-      <span
-        className={cn(
-          "text-xs font-medium",
-          trend === "up" && "text-emerald-400",
-          trend === "down" && "text-red-400",
-          trend === "unchanged" && "text-white/50",
+      <span className={cn("text-xs font-medium tabular-nums", colorClass)}>
+        {percentageChange != null ? (
+          <>
+            {change > 0 ? "+" : ""}
+            {change === 0 ? "0.00%" : `${change.toFixed(2)}%`}
+          </>
+        ) : (
+          trend === "up" ? "▲" : trend === "down" ? "▼" : "—"
         )}
-      >
-        {trend === "up" ? "▲" : trend === "down" ? "▼" : "—"}
       </span>
     </div>
   );
 }
 
 export function TickerBar() {
-  const { data, loading } = useEconomicDashboard();
+  const { data, loading, error } = useEconomicDashboard();
+
+  const isError = !loading && (error || !data);
+
+  if (isError) {
+    return null;
+  }
 
   return (
     <div
@@ -76,6 +91,7 @@ export function TickerBar() {
                 label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                 value={fx.rate.toFixed(2)}
                 trend={fx.trend}
+                percentageChange={fx.percentageChange}
               />
             ))}
             {Object.values(data?.commodities || {}).map((commodity) => (
@@ -88,6 +104,7 @@ export function TickerBar() {
                   maximumFractionDigits: 2,
                 })}
                 trend={commodity.trend}
+                percentageChange={commodity.percentageChange}
               />
             ))}
             {/* Duplicate for seamless loop */}
@@ -98,6 +115,7 @@ export function TickerBar() {
                 label={FX_LABELS[code] ?? `${code.toUpperCase()}/ETB`}
                 value={fx.rate.toFixed(2)}
                 trend={fx.trend}
+                percentageChange={fx.percentageChange}
               />
             ))}
             {Object.values(data?.commodities || {}).map((commodity) => (
@@ -110,6 +128,7 @@ export function TickerBar() {
                   maximumFractionDigits: 2,
                 })}
                 trend={commodity.trend}
+                percentageChange={commodity.percentageChange}
               />
             ))}
           </div>

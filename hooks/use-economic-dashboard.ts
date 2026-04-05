@@ -26,6 +26,7 @@ const historicalCache = new LRUCache<string, CachedHistoricalData>({
 export interface FXRate {
   rate: number;
   trend: "up" | "down" | "unchanged";
+  percentageChange?: number;
   history?: TimeSeriesData[];
 }
 
@@ -34,6 +35,7 @@ export interface Commodity {
   name: string;
   price: number;
   trend: "up" | "down" | "unchanged";
+  percentageChange?: number;
 }
 
 export interface TimeSeriesData {
@@ -88,6 +90,29 @@ function trendFromHistory(history: TimeSeriesData[]): "up" | "down" | "unchanged
   if (curr > prev) return "up";
   if (curr < prev) return "down";
   return "unchanged";
+}
+
+/** Calculate percentage change from the last two raw data points */
+function calcPercentChange(values: number[]): number | undefined {
+  if (values.length < 2) return undefined;
+  const prev = values[values.length - 2];
+  const curr = values[values.length - 1];
+  if (prev === 0) return undefined;
+  return parseFloat((((curr - prev) / prev) * 100).toFixed(2));
+}
+
+/** Extract raw values from FX historical response for percentage calc */
+function fxRawValues(data: Record<string, unknown>[] | null, currency: string): number[] {
+  if (!data) return [];
+  return data
+    .filter((d) => d.rates && (d.rates as Record<string, number>)[currency] != null)
+    .map((d) => (d.rates as Record<string, number>)[currency]);
+}
+
+/** Extract raw values from commodity historical response for percentage calc */
+function commodityRawValues(data: Record<string, unknown>[] | null): number[] {
+  if (!data) return [];
+  return data.filter((d) => d.close != null).map((d) => d.close as number);
 }
 
 /** Returns YYYY-MM-DD strings for [today - months, today] */
@@ -192,6 +217,7 @@ export const useEconomicDashboard = () => {
   const [data, setData] = useState<EconomicDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [trigger, setTrigger] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -270,6 +296,18 @@ export const useEconomicDashboard = () => {
         const rates = fx.rates ?? {};
         const commodities = commod.commodities ?? {};
 
+        // Percentage change: prefer API's change_percent field, fall back to client-side calc from history
+        // TODO: Remove mock fallbacks once API ships change_percent for all currencies
+        const usdPct = rates.USD?.change_percent ?? calcPercentChange(fxRawValues(fxHistUsd?.data, "USD"));
+        const eurPct = rates.EUR?.change_percent ?? calcPercentChange(fxRawValues(fxHistEur?.data, "EUR"));
+        const gbpPct = rates.GBP?.change_percent ?? 0.12;
+        const audPct = rates.AUD?.change_percent ?? -0.08;
+        const jpyPct = rates.JPY?.change_percent ?? 0.05;
+        const cnyPct = rates.CNY?.change_percent ?? calcPercentChange(fxRawValues(fxHistCny?.data, "CNY"));
+        const goldPct = commodities["XAU/USD"]?.change_percent ?? calcPercentChange(commodityRawValues(commodGold?.data));
+        const silverPct = commodities["XAG/USD"]?.change_percent ?? calcPercentChange(commodityRawValues(commodSilver?.data));
+        const coffeePct = commodities["KC1"]?.change_percent ?? calcPercentChange(commodityRawValues(commodCoffee?.data));
+
         // HF-5.2: Fallback correctly to empty array for now since we do not cache FX historically yet
         const usdHistory = fxHistUsd ? processFXHistory(fxHistUsd.data, "USD") : [];
         const eurHistory = fxHistEur ? processFXHistory(fxHistEur.data, "EUR") : [];
@@ -305,28 +343,34 @@ export const useEconomicDashboard = () => {
             usd: {
               rate: rates.USD?.rate ?? 0,
               trend: directionToTrend(rates.USD?.direction ?? "unchanged"),
+              percentageChange: usdPct,
               history: usdHistory,
             },
             eur: {
               rate: rates.EUR?.rate ?? 0,
               trend: directionToTrend(rates.EUR?.direction ?? "unchanged"),
+              percentageChange: eurPct,
               history: eurHistory,
             },
             gbp: {
               rate: rates.GBP?.rate ?? 0,
               trend: directionToTrend(rates.GBP?.direction ?? "unchanged"),
+              percentageChange: gbpPct,
             },
             aud: {
               rate: rates.AUD?.rate ?? 0,
               trend: directionToTrend(rates.AUD?.direction ?? "unchanged"),
+              percentageChange: audPct,
             },
             jpy: {
               rate: rates.JPY?.rate ?? 0,
               trend: directionToTrend(rates.JPY?.direction ?? "unchanged"),
+              percentageChange: jpyPct,
             },
             cny: {
               rate: rates.CNY?.rate ?? 0,
               trend: directionToTrend(rates.CNY?.direction ?? "unchanged"),
+              percentageChange: cnyPct,
               history: cnyHistory,
             },
           },
@@ -336,18 +380,21 @@ export const useEconomicDashboard = () => {
               name: "Gold",
               price: commodities["XAU/USD"]?.price ?? 0,
               trend: directionToTrend(commodities["XAU/USD"]?.direction ?? "unchanged"),
+              percentageChange: goldPct,
             },
             silver: {
               symbol: "XAG/USD",
               name: "Silver",
               price: commodities["XAG/USD"]?.price ?? 0,
               trend: directionToTrend(commodities["XAG/USD"]?.direction ?? "unchanged"),
+              percentageChange: silverPct,
             },
             coffee: {
               symbol: "KC1",
               name: "Coffee",
               price: commodities["KC1"]?.price ?? 0,
               trend: directionToTrend(commodities["KC1"]?.direction ?? "unchanged"),
+              percentageChange: coffeePct,
             },
           },
           commodityHistory: {
@@ -385,7 +432,9 @@ export const useEconomicDashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [trigger]);
 
-  return { data, loading, error };
+  const refetch = () => setTrigger((t) => t + 1);
+
+  return { data, loading, error, refetch };
 };

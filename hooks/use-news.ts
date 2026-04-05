@@ -9,13 +9,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_UCS_SERVICE_API_URL ?? "";
 
 export const newsCategories = [
   "All",
+  "Leadership",
   "Strategy",
   "Partnership",
   "Training",
   "Research",
   "Events",
   "Advisory",
-  "Company News",
+  "Policy",
 ];
 
 // ─── useFirmNews ──────────────────────────────────────────────────────────────
