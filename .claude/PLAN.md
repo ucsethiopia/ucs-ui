@@ -73,11 +73,21 @@ These are the immediate priority before resuming the phase queue.
 
 ### Phase 13.9 — Stakeholder Data Confirmation Gate 
 
-- [ ] **13.9.1–13.9.10** Confirm/correct: vision, mission, SPEED descriptions, contact details, partner list, client list, stats, milestone years, team bios, publications, `internationalTrainingCountries`; flip `logoMissing` flags as assets arrive. (Natoli Will Provide two documets with data to compare against)
+- [x] **13.9.1** Vision & Mission — aligned to Document 1 site-wide (mock-data + about page)
+- [x] **13.9.2** SPEED core value titles confirmed ✅ (descriptions are expanded versions, titles match docs exactly)
+- [x] **13.9.3** Contact details — fixed address, phones, emails, P.O. Box, map coords in contact page + footer; refactored to use `contactInfo` from mock-data
+- [x] **13.9.4** Partner list — B&M and Precise Corporate Services confirmed as partners but commented out (no logo assets available); will uncomment when logos arrive
+- [x] **13.9.5** Client list — confirmed 15 clients match both documents ✅
+- [x] **13.9.6** Stats — fixed years 15+ → 14+ (founded 2012, now 2026)
+- [x] **13.9.7** Milestone years — user confirmed 2014, 2017, 2020 are accurate ✅
+- [x] **13.9.8** Publications — added 30th Anniversary Book
+- [x] **13.9.9** `internationalTrainingCountries` — Kenya, Thailand, Turkey confirmed ✅
+- [x] **13.9.10** Advisory offerings — aligned with Document 2; founding year fixed 2011→2012 everywhere; social links trimmed to LinkedIn + Telegram only
+- [x] **13.9.11** Team bios — backend task, not frontend. ✅
+- [ ] **13.9.12** _(Blocked)_ Partner logos for B&M Development Consultants and Precise Corporate Services — uncomment in mock-data when assets arrive
 
 ### Phase 14 — Component Sourcing (21st.dev)
 
-- [ ] **14.0** UI review pass — all pages
 - [ ] **14.1** Animated stats/metrics display
 - [ ] **14.2** Team members pages
 - [ ] **14.3** Services animations
@@ -86,7 +96,8 @@ These are the immediate priority before resuming the phase queue.
 - [ ] **14.5** Service comparison / feature-matrix table
 - [ ] **14.6** Timeline component for About milestones
 - [ ] **14.7** Integrate sourced components, style to brand tokens
-- [ ] **14.8** UI review pass on all affected pages
+- [ ] **14.8** Vision and Mission tabs
+- [ ] **14.9** UI review pass on all pages
 
 ### Phase 15 — Security + Performance
 
@@ -109,19 +120,17 @@ These are the immediate priority before resuming the phase queue.
 
 ## Current Task
 
-> > **13.4** — Phase 13: Commit + push
-
+> > **14.x** — Component Sourcing (21st.dev with MagicMCP)
 ---
 
 ## Blocked Items
 
 | Item                                  | Blocker                          | Owner            |
 | ------------------------------------- | -------------------------------- | ---------------- |
-| HF-3 Partner logos                    | Natoli sourcing + rembg pipeline | @Natoli74        |
-| HF-4 About/Services background images | Natoli selects images            | @Natoli74        |
-| Phase 13.9 data confirmation          | Stakeholder review               | Stakeholders     |
 | Home page section reorder             | Input from @jaft24               | @Natoli74        |
-| Google Maps embed (Contact)           | Maps API key decision            | Project decision |
+| Date-range filter for news archive (month/year picker against `publishedAt`)             | Input from ucs-service-api              | @Natoli74        |
+| The news api returns multiple tags, but we only display one. Suggest a fix for that           | Input from ucs-service-api              | @Natoli74        |
+| Partner logos for B&M Development Consultants and Precise Corporate Services           | Missing Logo             | @Natoli74        |
 
 ---
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Youtube, Linkedin, Send, Facebook } from "lucide-react";
+import { Linkedin, Send } from "lucide-react";
 import { Container } from "@/components/shared/container";
+import { contactInfo } from "@/lib/mock-data";
 
 const footerLinks = {
   company: [
@@ -19,10 +20,8 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { href: "https://youtube.com", icon: Youtube, label: "YouTube" },
-  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
-  { href: "https://t.me", icon: Send, label: "Telegram" },
-  { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
+  { href: contactInfo.linkedin, icon: Linkedin, label: "LinkedIn" },
+  { href: `https://t.me/${contactInfo.telegram.replace("@", "")}`, icon: Send, label: "Telegram" },
 ];
 
 export function Footer() {
@@ -40,7 +39,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/70">
-              Driving growth and transformation for Ethiopian enterprises since 2011. 
+              Driving growth and transformation for Ethiopian enterprises since 2012.
               Your trusted partner for advisory, training, and research services.
             </p>
             {/* Social Links */}
@@ -104,16 +103,18 @@ export function Footer() {
               Contact
             </h3>
             <address className="mt-4 space-y-3 text-sm not-italic text-white/70">
-              <p>Bole Sub City, Woreda 03</p>
+              <p>Gurd Shola, near Century Mall</p>
+              <p>Abenezer Building, 3rd Floor</p>
               <p>Addis Ababa, Ethiopia</p>
+              <p>P.O. Box {contactInfo.poBox}</p>
               <p className="pt-2">
-                <a href="tel:+251911234567" className="hover:text-gold-500 transition-colors">
-                  +251 911 234 567
+                <a href={`tel:${contactInfo.phones[0]}`} className="hover:text-gold-500 transition-colors">
+                  {contactInfo.phones[0]}
                 </a>
               </p>
               <p>
-                <a href="mailto:info@ucsethiopia.com" className="hover:text-gold-500 transition-colors">
-                  info@ucsethiopia.com
+                <a href={`mailto:${contactInfo.emails[0]}`} className="hover:text-gold-500 transition-colors">
+                  {contactInfo.emails[0]}
                 </a>
               </p>
             </address>

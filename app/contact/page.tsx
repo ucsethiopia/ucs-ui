@@ -2,11 +2,12 @@
 
 import React from "react";
 import { useTheme } from "next-themes";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Mailbox } from "lucide-react";
 import { PageHero } from "@/components/shared/page-hero";
 import { ContactForm } from "@/components/contact/contact-form";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
+import { contactInfo } from "@/lib/mock-data";
 
 function ContactInfo({
   icon: Icon,
@@ -75,35 +76,33 @@ export default function ContactPage() {
 
                 <div className="space-y-6 mb-10">
                   <ContactInfo icon={MapPin} title="Office Address">
-                    <p>Bole Sub City, Woreda 03</p>
-                    <p>Near Bole Medhane Alem Church</p>
+                    <p>Gurd Shola, around Century Mall</p>
+                    <p>Abenezer Building, 3rd Floor</p>
                     <p>Addis Ababa, Ethiopia</p>
                   </ContactInfo>
 
                   <ContactInfo icon={Phone} title="Phone">
-                    <p>
-                      <a href="tel:+251911234567" className="hover:text-gold-600 transition-colors">
-                        +251 911 234 567
-                      </a>
-                    </p>
-                    <p>
-                      <a href="tel:+251116184567" className="hover:text-gold-600 transition-colors">
-                        +251 116 18 45 67
-                      </a>
-                    </p>
+                    {contactInfo.phones.map((phone) => (
+                      <p key={phone}>
+                        <a href={`tel:${phone}`} className="hover:text-gold-600 transition-colors">
+                          {phone}
+                        </a>
+                      </p>
+                    ))}
                   </ContactInfo>
 
                   <ContactInfo icon={Mail} title="Email">
-                    <p>
-                      <a href="mailto:info@ucsethiopia.com" className="hover:text-gold-600 transition-colors">
-                        info@ucsethiopia.com
-                      </a>
-                    </p>
-                    <p>
-                      <a href="mailto:training@ucsethiopia.com" className="hover:text-gold-600 transition-colors">
-                        training@ucsethiopia.com
-                      </a>
-                    </p>
+                    {contactInfo.emails.map((email) => (
+                      <p key={email}>
+                        <a href={`mailto:${email}`} className="hover:text-gold-600 transition-colors">
+                          {email}
+                        </a>
+                      </p>
+                    ))}
+                  </ContactInfo>
+
+                  <ContactInfo icon={Mailbox} title="P.O. Box">
+                    <p>{contactInfo.poBox}, Addis Ababa, Ethiopia</p>
                   </ContactInfo>
 
                   <ContactInfo icon={Clock} title="Business Hours">
@@ -117,7 +116,7 @@ export default function ContactPage() {
                 <div className="aspect-video rounded-lg overflow-hidden border border-border">
                   <iframe
                     title="Map of UCS Ethiopia office in Bole, Addis Ababa"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=38.740%2C8.995%2C38.780%2C9.025&layer=mapnik&marker=9.009%2C38.758"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=38.770%2C9.010%2C38.805%2C9.035&layer=mapnik&marker=9.0227%2C38.7873"
                     width="100%"
                     height="100%"
                     className={cn(

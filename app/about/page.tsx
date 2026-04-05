@@ -305,9 +305,10 @@ export default function AboutPage() {
                     Our Mission
                   </h3>
                   <p className="text-muted-foreground leading-relaxed text-justify">
-                    To conduct research, deliver trainings, advise and support
-                    organizations in the attainment of their corporate strategic
-                    goals and objectives both in the short and long term.
+                    To inspire and benefit organizations by applying the latest
+                    knowledge, skills, and tools, supporting sustainable
+                    development and driving positive change for individuals and
+                    institutions.
                   </p>
                 </div>
 
@@ -338,8 +339,9 @@ export default function AboutPage() {
                     Our Vision
                   </h3>
                   <p className="text-muted-foreground leading-relaxed text-justify">
-                    To become a change and transformation catalyst within
-                    organizations in Ethiopia and beyond.
+                    To be the leading catalyst for organizational transformation
+                    and professional growth, enabling clients to excel in an
+                    evolving business landscape.
                   </p>
                 </div>
               </div>
