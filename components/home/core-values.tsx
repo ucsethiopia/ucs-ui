@@ -70,7 +70,7 @@ export function CoreValues() {
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed text-justify">
                   {value.description}
                 </p>
 

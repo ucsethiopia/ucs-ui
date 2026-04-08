@@ -40,17 +40,14 @@ function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest whitespace-nowrap flex-shrink-0">
-          {label}
-        </span>
-        <div className="w-px h-4 bg-border flex-shrink-0" />
-        <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
-          {value}
-        </span>
-      </div>
-      <span className="text-xs text-muted-foreground">{subLabel}</span>
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
+        {label}
+      </span>
+      <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+        {value}
+      </span>
+      <span className="text-xs text-muted-foreground whitespace-nowrap">{subLabel}</span>
     </div>
   );
 }
@@ -95,7 +92,7 @@ function StatCard({
     <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
       {/* Narrow text column — shrinks to content width */}
       <div className="flex-shrink-0 min-w-0">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5 whitespace-nowrap">
+        <p className="text-sm font-medium text-muted-foreground mb-0.5 whitespace-nowrap">
           {label}
         </p>
         <p className="text-xl font-bold text-foreground tabular-nums">{value}</p>

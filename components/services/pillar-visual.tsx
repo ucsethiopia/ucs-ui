@@ -61,10 +61,11 @@ function OrbitPattern({
 }) {
   const RADIUS = 85;
 
+  const ORBIT_DURATION = 20;
   const orbitConfigs = [
-    { startDeg: 0, duration: 18 },
-    { startDeg: 120, duration: 24 },
-    { startDeg: 240, duration: 30 },
+    { startDeg: 0,   duration: ORBIT_DURATION },
+    { startDeg: 120, duration: ORBIT_DURATION },
+    { startDeg: 240, duration: ORBIT_DURATION },
   ];
 
   function circleKeyframes(startDeg: number) {
