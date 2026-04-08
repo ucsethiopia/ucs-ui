@@ -22,6 +22,13 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   "Communication & Promotion": Megaphone,
 };
 
+const TITLE_TO_SLUG: Record<string, string> = {
+  Training: "training",
+  Advisory: "advisory",
+  "Research & Publication": "research",
+  "Communication & Promotion": "communication",
+};
+
 export function ServicesOverview() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({
     threshold: 0.1,
@@ -110,7 +117,7 @@ export function ServicesOverview() {
                 {/* Action Link */}
                 <div className="p-6 pt-4 border-t border-border/50">
                   <Link
-                    href="/services"
+                    href={`/services#${TITLE_TO_SLUG[pillar.title] ?? ""}`}
                     className="inline-flex items-center text-sm font-semibold text-foreground group-hover:text-gold-600 transition-all"
                   >
                     Learn More

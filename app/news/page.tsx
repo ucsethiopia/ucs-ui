@@ -49,9 +49,9 @@ function NewsCard({
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.images?.[0] ?? item.main_image) ? (
+        {(item.extra_images?.[0] ?? item.main_image) ? (
           <SafeImage
-            src={item.images?.[0] ?? item.main_image ?? ""}
+            src={item.extra_images?.[0] ?? item.main_image ?? ""}
             alt={item.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -137,7 +137,7 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="sticky top-19 sm:top-29 z-10 bg-background">
+        <section className="sticky top-19 z-10 bg-background">
           <Container>
             <div className="py-6 border-b border-border">
             <div className="flex flex-wrap gap-2">

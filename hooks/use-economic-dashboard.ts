@@ -27,7 +27,6 @@ export interface FXRate {
   rate: number;
   trend: "up" | "down" | "unchanged";
   percentageChange?: number;
-  history?: TimeSeriesData[];
 }
 
 export interface Commodity {
@@ -80,39 +79,6 @@ function directionToTrend(d: string): "up" | "down" | "unchanged" {
   if (d === "increased" || d === "up") return "up";
   if (d === "decreased" || d === "down") return "down";
   return "unchanged";
-}
-
-/** Derive trend from the last two points in a time series */
-function trendFromHistory(history: TimeSeriesData[]): "up" | "down" | "unchanged" {
-  if (history.length < 2) return "unchanged";
-  const prev = history[history.length - 2].value;
-  const curr = history[history.length - 1].value;
-  if (curr > prev) return "up";
-  if (curr < prev) return "down";
-  return "unchanged";
-}
-
-/** Calculate percentage change from the last two raw data points */
-function calcPercentChange(values: number[]): number | undefined {
-  if (values.length < 2) return undefined;
-  const prev = values[values.length - 2];
-  const curr = values[values.length - 1];
-  if (prev === 0) return undefined;
-  return parseFloat((((curr - prev) / prev) * 100).toFixed(2));
-}
-
-/** Extract raw values from FX historical response for percentage calc */
-function fxRawValues(data: Record<string, unknown>[] | null, currency: string): number[] {
-  if (!data) return [];
-  return data
-    .filter((d) => d.rates && (d.rates as Record<string, number>)[currency] != null)
-    .map((d) => (d.rates as Record<string, number>)[currency]);
-}
-
-/** Extract raw values from commodity historical response for percentage calc */
-function commodityRawValues(data: Record<string, unknown>[] | null): number[] {
-  if (!data) return [];
-  return data.filter((d) => d.close != null).map((d) => d.close as number);
 }
 
 /** Returns YYYY-MM-DD strings for [today - months, today] */
@@ -175,15 +141,6 @@ function downsampleKeepingSpikes(
   return result;
 }
 
-/** Generic downsampler for FX endpoint */
-function processFXHistory(data: { date: string; rates: Record<string, number> }[], currency: string) {
-  const mapping = (data || []).filter(d => d.rates && d.rates[currency] != null).map(d => ({
-    date: d.date,
-    value: d.rates[currency]
-  }));
-  return downsampleKeepingSpikes(mapping);
-}
-
 /** Generic downsampler for Commodity endpoint */
 function processCommodityHistory(data: { date: string; close: number }[]) {
   const mapping = (data || []).map(d => ({
@@ -227,8 +184,8 @@ export const useEconomicDashboard = () => {
       setError(null);
 
       try {
-        const { from, to } = buildDateRange(12);
         // HF-5.2: Fetch 5 years of historical data for commodities
+        const { to } = buildDateRange(12);
         const { from: commodFrom } = buildDateRange(60);
 
         const cachedObj = historicalCache.get("commoditiesHist");
@@ -242,10 +199,6 @@ export const useEconomicDashboard = () => {
           fetch(`${BASE_URL}/commodities/latest`),
           fetch(`${BASE_URL}/interest`),
           fetch(`${BASE_URL}/gdp`),
-          // It's okay if these fail (we handle .ok checks down below), but catch network errors so it doesn't break Promise.all
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=USD`).catch(() => new Response(null, { status: 500 })),
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=EUR`).catch(() => new Response(null, { status: 500 })),
-          fetch(`${BASE_URL}/fx/historical?from_date=${from}&to_date=${to}&currency=CNY`).catch(() => new Response(null, { status: 500 })),
         ];
 
         if (fetchCommodities) {
@@ -270,21 +223,15 @@ export const useEconomicDashboard = () => {
           responses[3].json(),
         ]);
 
-        const [fxHistUsd, fxHistEur, fxHistCny] = await Promise.all([
-          responses[4].ok ? responses[4].json().catch(() => null) : null,
-          responses[5].ok ? responses[5].json().catch(() => null) : null,
-          responses[6].ok ? responses[6].json().catch(() => null) : null,
-        ]);
-
         let commodGold = null;
         let commodSilver = null;
         let commodCoffee = null;
 
         if (fetchCommodities) {
           const commodResData = await Promise.all([
-            responses[7]?.ok ? responses[7].json().catch(() => null) : null,
-            responses[8]?.ok ? responses[8].json().catch(() => null) : null,
-            responses[9]?.ok ? responses[9].json().catch(() => null) : null,
+            responses[4]?.ok ? responses[4].json().catch(() => null) : null,
+            responses[5]?.ok ? responses[5].json().catch(() => null) : null,
+            responses[6]?.ok ? responses[6].json().catch(() => null) : null,
           ]);
           commodGold = commodResData[0];
           commodSilver = commodResData[1];
@@ -296,22 +243,16 @@ export const useEconomicDashboard = () => {
         const rates = fx.rates ?? {};
         const commodities = commod.commodities ?? {};
 
-        // Percentage change: prefer API's change_percent field, fall back to client-side calc from history
-        // TODO: Remove mock fallbacks once API ships change_percent for all currencies
-        const usdPct = rates.USD?.change_percent ?? calcPercentChange(fxRawValues(fxHistUsd?.data, "USD"));
-        const eurPct = rates.EUR?.change_percent ?? calcPercentChange(fxRawValues(fxHistEur?.data, "EUR"));
-        const gbpPct = rates.GBP?.change_percent ?? 0.12;
-        const audPct = rates.AUD?.change_percent ?? -0.08;
-        const jpyPct = rates.JPY?.change_percent ?? 0.05;
-        const cnyPct = rates.CNY?.change_percent ?? calcPercentChange(fxRawValues(fxHistCny?.data, "CNY"));
-        const goldPct = commodities["XAU/USD"]?.change_percent ?? calcPercentChange(commodityRawValues(commodGold?.data));
-        const silverPct = commodities["XAG/USD"]?.change_percent ?? calcPercentChange(commodityRawValues(commodSilver?.data));
-        const coffeePct = commodities["KC1"]?.change_percent ?? calcPercentChange(commodityRawValues(commodCoffee?.data));
-
-        // HF-5.2: Fallback correctly to empty array for now since we do not cache FX historically yet
-        const usdHistory = fxHistUsd ? processFXHistory(fxHistUsd.data, "USD") : [];
-        const eurHistory = fxHistEur ? processFXHistory(fxHistEur.data, "EUR") : [];
-        const cnyHistory = fxHistCny ? processFXHistory(fxHistCny.data, "CNY") : [];
+        // Percentage change: use API-provided percentage_change; default to 0 if null
+        const usdPct = rates.USD?.percentage_change ?? 0;
+        const eurPct = rates.EUR?.percentage_change ?? 0;
+        const gbpPct = rates.GBP?.percentage_change ?? 0;
+        const audPct = rates.AUD?.percentage_change ?? 0;
+        const jpyPct = rates.JPY?.percentage_change ?? 0;
+        const cnyPct = rates.CNY?.percentage_change ?? 0;
+        const goldPct = commodities["XAU/USD"]?.percentage_change ?? 0;
+        const silverPct = commodities["XAG/USD"]?.percentage_change ?? 0;
+        const coffeePct = commodities["KC1"]?.percentage_change ?? 0;
 
         let goldHistory: TimeSeriesData[] = [];
         let silverHistory: TimeSeriesData[] = [];
@@ -344,13 +285,11 @@ export const useEconomicDashboard = () => {
               rate: rates.USD?.rate ?? 0,
               trend: directionToTrend(rates.USD?.direction ?? "unchanged"),
               percentageChange: usdPct,
-              history: usdHistory,
             },
             eur: {
               rate: rates.EUR?.rate ?? 0,
               trend: directionToTrend(rates.EUR?.direction ?? "unchanged"),
               percentageChange: eurPct,
-              history: eurHistory,
             },
             gbp: {
               rate: rates.GBP?.rate ?? 0,
@@ -371,7 +310,6 @@ export const useEconomicDashboard = () => {
               rate: rates.CNY?.rate ?? 0,
               trend: directionToTrend(rates.CNY?.direction ?? "unchanged"),
               percentageChange: cnyPct,
-              history: cnyHistory,
             },
           },
           commodities: {

@@ -5,7 +5,8 @@ import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
 
 export type { NewsItem };
 
-const BASE_URL = process.env.NEXT_PUBLIC_UCS_SERVICE_API_URL ?? "";
+const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
+const NEWS_PATH = "news/ultimate-consultancy-services";
 
 export const newsCategories = [
   "All",
@@ -31,7 +32,7 @@ export const useFirmNews = (_limit = 9) => {
     let cancelled = false;
     setLoading(true);
 
-    fetch(`${BASE_URL}/news/latest`)
+    fetch(`${BASE_URL}/${NEWS_PATH}/latest`)
       .then((res) => {
         if (!res.ok) throw new Error(`API error ${res.status}`);
         return res.json() as Promise<{ items: NewsItem[] }>;
@@ -71,27 +72,17 @@ export const useNews = (initialLimit = 9) => {
     let cancelled = false;
     setLoading(true);
 
-    fetch(`${BASE_URL}/news/latest`)
+    fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=1&page_size=${initialLimit}`)
       .then((res) => {
         if (!res.ok) throw new Error(`API error ${res.status}`);
-        return res.json() as Promise<{ items: NewsItem[] }>;
-      })
-      .then(({ items }) => {
-        if (!cancelled) {
-          setData(items);
-          setPage(1);
-          // Fetch total count to know if there are more pages
-          return fetch(`${BASE_URL}/news?page=1&per_page=${initialLimit}`);
-        }
-      })
-      .then((res) => {
-        if (!res || cancelled) return;
         return res.json() as Promise<PaginatedNewsResponse>;
       })
       .then((paginated) => {
-        if (!paginated || cancelled) return;
+        if (cancelled) return;
+        setData(paginated.items);
+        setPage(1);
         setTotal(paginated.total);
-        setHasMore(paginated.total > initialLimit);
+        setHasMore(paginated.items.length < paginated.total);
       })
       .catch((err) => {
         console.error("[useNews]", err);
@@ -111,7 +102,7 @@ export const useNews = (initialLimit = 9) => {
 
     try {
       const res = await fetch(
-        `${BASE_URL}/news?page=${nextPage}&per_page=${initialLimit}`
+        `${BASE_URL}/${NEWS_PATH}/feed?page=${nextPage}&page_size=${initialLimit}`
       );
       if (!res.ok) throw new Error(`API error ${res.status}`);
       const paginated: PaginatedNewsResponse = await res.json();

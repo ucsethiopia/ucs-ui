@@ -101,7 +101,19 @@ export default function RootLayout({
             </div>
             <Footer />
           </NavigationProvider>
-          <Toaster richColors position="top-right" />
+          <Toaster
+            richColors
+            position="top-right"
+            className="z-[9999]"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "!bg-white dark:!bg-navy-900 !border !border-border !shadow-2xl !shadow-black/30 !rounded-lg",
+                title: "!text-foreground !font-semibold",
+                description: "!text-muted-foreground",
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

@@ -26,7 +26,7 @@ export function Hero() {
       className="relative h-[90vh] min-h-[500px] sm:min-h-[580px] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
     >
       {/* Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 top-26 z-0">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/hero-background.jpg"
@@ -34,8 +34,7 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: "center 30%" }}
+            className="object-cover object-top"
           />
         </div>
         {/* Overlay */}

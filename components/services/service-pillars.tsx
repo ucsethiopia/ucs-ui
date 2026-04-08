@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Check,
   GraduationCap,
@@ -49,9 +49,23 @@ const iconMap: Record<
   "Communication & Promotion": Megaphone,
 };
 
+const TITLE_TO_SLUG: Record<string, string> = {
+  Training: "training",
+  Advisory: "advisory",
+  "Research & Publication": "research",
+  "Communication & Promotion": "communication",
+};
+
 export function ServicePillars({ services }: ServicePillarsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeService = services[activeIndex];
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const idx = services.findIndex((s) => TITLE_TO_SLUG[s.title] === hash);
+    if (idx !== -1) setActiveIndex(idx);
+  }, [services]);
   const ActiveIcon = iconMap[activeService.title] || GraduationCap;
   const hasTrainingCategories =
     activeService.title === "Training" && activeService.trainingCategories;
@@ -95,6 +109,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             return (
               <button
                 key={service.id}
+                id={TITLE_TO_SLUG[service.title]}
                 role="tab"
                 aria-selected={isActive}
                 aria-label={service.title}

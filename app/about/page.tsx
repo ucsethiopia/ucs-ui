@@ -42,9 +42,9 @@ function TeamMemberCard({
           <div className="grid grid-cols-1 lg:grid-cols-5 lg:min-h-[400px]">
             {/* Image - Takes 2 columns on lg */}
             <div className="relative lg:col-span-2 aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
-              {member.image ? (
+              {member.image?.[0] ? (
                 <SafeImage
-                  src={member.image}
+                  src={member.image[0]}
                   alt={member.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -110,9 +110,9 @@ function TeamMemberCard({
       >
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-muted">
-          {member.image ? (
+          {member.image?.[0] ? (
             <SafeImage
-              src={member.image}
+              src={member.image[0]}
               alt={member.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -9,16 +9,17 @@ export interface NewsItem {
   date: string; // "YYYY-MM-DD"
   tags: string[];
   team: string | null;
-  news: string; // full body text
+  body: string; // full body text
   main_image: string | null;
-  images: string[];
+  extra_images: string[];
+  published_at?: string;
 }
 
 export interface PaginatedNewsResponse {
   items: NewsItem[];
   total: number;
   page: number;
-  per_page: number;
+  page_size: number;
 }
 
 // ─── Team ─────────────────────────────────────────────────────────────────────
@@ -28,7 +29,7 @@ export interface TeamMember {
   titles: string[];
   role: string;
   years_of_experience: number;
-  image: string;
+  image: string[];
   summary: string;
 }
 
@@ -86,7 +87,7 @@ export interface TeamMemberDetail {
   titles: string[];
   role: string;
   years_of_experience: number;
-  image: string;
+  image: string[];
   contact: {
     email: string | null;
     phone: string | null;

@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const API_DOMAINS = [
   process.env.NEXT_PUBLIC_MARKET_DATA_API_URL,
   process.env.NEXT_PUBLIC_UCS_SERVICE_API_URL,
+  process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL,
 ].filter(Boolean);
 
 const isDev = process.env.NODE_ENV === "development";

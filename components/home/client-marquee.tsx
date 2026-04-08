@@ -17,9 +17,9 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
+    <div className="group relative flex flex-col items-center h-16 w-32 md:h-20 md:w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
-      <div className="relative w-full h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
+      <div className="relative w-full h-8 md:h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
         {logo && !imgError ? (
           <Image
             src={logo}
@@ -88,7 +88,7 @@ export function ClientMarquee() {
               aria-hidden="true"
             >
               {duplicatedClients.map((client, index) => (
-                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-2">
+                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-1 md:px-2">
                   <ClientLogo name={client.name} logo={client.logo} />
                 </div>
               ))}

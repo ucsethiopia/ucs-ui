@@ -84,6 +84,11 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
     .slice(0, 2)
     .toUpperCase();
 
+  // For members with multiple images, use a different shot for the hero background
+  const hasMultipleImages = member.image?.length > 1;
+  const heroImage = hasMultipleImages ? (member.image?.[1] ?? member.image?.[0]) : member.image?.[0];
+  const memberImage = hasMultipleImages ? (member.image?.[3] ?? member.image?.[0]) : member.image?.[0];
+
   const summaryParagraphs = member.summary.split("\n\n").filter(Boolean);
 
   // Related team members (exclude current)
@@ -98,9 +103,9 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
         <section className="relative bg-navy-950 pt-28 pb-20 overflow-hidden">
           {/* Background — member's own image, heavily overlaid */}
           <div className="absolute inset-0">
-            {member.image && (
+            {heroImage && (
               <SafeImage
-                src={member.image}
+                src={heroImage}
                 alt=""
                 fill
                 sizes="100vw"
@@ -209,9 +214,9 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                   className="relative"
                 >
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-muted shadow-xl">
-                    {member.image ? (
+                    {memberImage ? (
                       <SafeImage
-                        src={member.image}
+                        src={memberImage}
                         alt={member.name}
                         fill
                         sizes="(max-width: 1024px) 100vw, 33vw"
@@ -472,9 +477,9 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                     >
                       <div className="relative bg-card border border-border rounded-lg overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:border-gold-500/30">
                         <div className="relative aspect-square overflow-hidden bg-muted">
-                          {teamMember.image ? (
+                          {teamMember.image?.[0] ? (
                             <SafeImage
-                              src={teamMember.image}
+                              src={teamMember.image[0]}
                               alt={teamMember.name}
                               fill
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

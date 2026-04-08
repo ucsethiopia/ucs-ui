@@ -96,7 +96,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
   if (!news) return null;
 
-  const images = news.images?.length ? news.images : news.main_image ? [news.main_image] : [];
+  const images = news.extra_images?.length ? news.extra_images : news.main_image ? [news.main_image] : [];
   const isCarousel = images.length > 1;
 
   const formattedDate = new Date(news.date).toLocaleDateString("en-US", {
@@ -254,9 +254,9 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                 )}
 
                 {/* Full body text */}
-                {news.news && (
+                {news.body && (
                   <div className="prose prose-sm max-w-none pb-8 text-foreground/90">
-                    {news.news.split(/\n\n+/).filter(Boolean).map((paragraph, idx) => {
+                    {news.body.split(/\n\n+/).filter(Boolean).map((paragraph, idx) => {
                       const trimmed = paragraph.trim();
                       const isQuote = /^["“][\s\S]*["”]$/.test(trimmed);
 

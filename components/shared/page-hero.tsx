@@ -94,7 +94,7 @@ export function PageHero({
   return (
     <section
       className={`relative bg-navy-950 ${
-        condensed ? "min-h-[75vh] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
+        condensed ? "min-h-[65vh] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
       }`}
     >
       {/* Background Image */}

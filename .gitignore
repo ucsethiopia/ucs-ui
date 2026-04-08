@@ -50,6 +50,7 @@ assets/inspo
 assets/logos
 .1notes.md
 .claude/
+.claude/PLAN.md
 .agents
 skills-lock.json
 docs

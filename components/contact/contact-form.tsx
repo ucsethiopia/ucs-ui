@@ -9,10 +9,21 @@ import { Send, Loader2, Check } from "lucide-react";
 import { servicePillars } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
+const INJECTION_RE =
+  /(<script[\s>\/]|javascript\s*:|on\w+\s*=|--[\s;]|'\s*(OR|AND)\s+|;\s*(DROP|DELETE|INSERT|UPDATE|SELECT|TRUNCATE|EXEC)\s|UNION\s+SELECT)/i;
+
+const safe = (val?: string): boolean => !val || !INJECTION_RE.test(val);
+
 const contactSchema = z.object({
-  fullname: z.string().min(1, "Name is required"),
+  fullname: z
+    .string()
+    .min(1, "Name is required")
+    .refine(safe, "Name contains disallowed content"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-  subject: z.string().optional(),
+  subject: z
+    .string()
+    .optional()
+    .refine(safe, "Subject contains disallowed content"),
   phone: z
     .string()
     .optional()
@@ -20,12 +31,16 @@ const contactSchema = z.object({
       (val) => !val || /^\+?[\d\s\-()]{7,}$/.test(val),
       "Please enter a valid phone number",
     ),
-  company: z.string().optional(),
+  company: z
+    .string()
+    .optional()
+    .refine(safe, "Company name contains disallowed content"),
   service: z.string().optional(),
   message: z
     .string()
     .min(1, "Message is required")
-    .min(10, "Message must be at least 10 characters"),
+    .min(10, "Message must be at least 10 characters")
+    .refine(safe, "Message contains disallowed content"),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
