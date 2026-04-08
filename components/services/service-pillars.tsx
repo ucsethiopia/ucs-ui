@@ -61,10 +61,15 @@ export function ServicePillars({ services }: ServicePillarsProps) {
   const activeService = services[activeIndex];
 
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const idx = services.findIndex((s) => TITLE_TO_SLUG[s.title] === hash);
-    if (idx !== -1) setActiveIndex(idx);
+    const applyHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+      const idx = services.findIndex((s) => TITLE_TO_SLUG[s.title] === hash);
+      if (idx !== -1) setActiveIndex(idx);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
   }, [services]);
   const ActiveIcon = iconMap[activeService.title] || GraduationCap;
   const hasTrainingCategories =

@@ -36,8 +36,9 @@ export const metadata: Metadata = {
     "enterprise",
   ],
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "48x48 64x64" },
+    ],
   },
 };
 

@@ -98,13 +98,13 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 
 
 
-- [-] **17.17** News homepage section: ported editorial grid layout from `chore/plugin-fluff` into `feat/ux-overhaul`. Replaced horizontal carousel with 1 featured article (large, left) + 3 stacked articles (right). File: `components/home/firm-news.tsx`.
+- [x] **17.17** News homepage section: editorial grid layout — 1 featured (left) + 3 stacked (right). Grid `lg:grid-cols-2`, column tops aligned via `pt-0` on first right item, `justify-between` fills height on desktop, thumbnails `w-24 h-20 sm:w-32 sm:h-24`, generous bottom padding `clamp(6rem,10vw,10rem)`, fully responsive (single-col mobile, wrapping header). File: `components/home/firm-news.tsx`.
 
 - [ ] **17.18** Light/white mode theme: add a third theme option — light (white), base (navy), dark. Implement as a sliding pane or 3-way toggle. Default to base. Audit all components to ensure the white theme looks professional (not washed out). This touches `globals.css` and potentially every component's color tokens — do last.
 
 
 
-#### >> Next: **17.17**
+#### >> Next: **17.18**
 
 
 
@@ -159,10 +159,6 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 ### Phase 12 — News + About Improvements
 
 - [x] **12.3–12.6** NewsModal, filtering, tag unification
-
-- [ ] **12.2** _(Paused)_ Date-range filter
-
-- [ ] **12.7** _(Paused)_ Multi-tag display
 
 
 

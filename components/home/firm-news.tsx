@@ -24,8 +24,14 @@ const staggerItem = {
   },
 };
 
+// Resolve image url — API has used both `images` and `extra_images` across branches
+function resolveImage(item: NewsItem): string | null {
+  const images = (item as NewsItem & { images?: string[] }).images;
+  return images?.[0] ?? item.extra_images?.[0] ?? item.main_image ?? null;
+}
+
 export const FirmNews = () => {
-  const { data, loading } = useFirmNews(5);
+  const { data, loading } = useFirmNews(4);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,15 +41,20 @@ export const FirmNews = () => {
   };
 
   const featured = data[0] ?? null;
-  const rest = data.slice(1, 5);
+  const rest = data.slice(1, 4);
 
   return (
     <>
-      <section style={{ paddingBlock: "var(--space-section-normal)" }}>
+      <section
+        style={{
+          paddingTop: "var(--space-section-normal)",
+          paddingBottom: "clamp(3rem, 5vw, 5rem)",
+        }}
+      >
         <Container>
           {/* Header */}
           <motion.div
-            className="flex items-end justify-between mb-8"
+            className="flex flex-wrap items-end justify-between gap-y-3 mb-8 lg:mb-10"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
@@ -55,7 +66,7 @@ export const FirmNews = () => {
               </p>
               <h2
                 className="font-serif font-bold text-foreground"
-                style={{ fontSize: "var(--font-size-heading-1)" }}
+                style={{ fontSize: "clamp(2.5rem, 5vw, 3.3rem)" }}
               >
                 News &amp; Insights
               </h2>
@@ -70,17 +81,17 @@ export const FirmNews = () => {
           </motion.div>
 
           {loading ? (
-            <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
               <Skeleton className="aspect-[3/2] w-full rounded-lg" />
-              <div className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-20 w-full rounded-lg" />
+              <div className="flex flex-col gap-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-24 w-full rounded-lg flex-1" />
                 ))}
               </div>
             </div>
           ) : (
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10"
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
@@ -101,12 +112,12 @@ export const FirmNews = () => {
                   }}
                 >
                   <div className="relative aspect-[3/2] overflow-hidden rounded-lg bg-muted">
-                    {(featured.extra_images?.[0] ?? featured.main_image) ? (
+                    {resolveImage(featured) ? (
                       <SafeImage
-                        src={featured.extra_images?.[0] ?? featured.main_image ?? ""}
+                        src={resolveImage(featured)!}
                         alt={featured.title}
                         fill
-                        sizes="(max-width: 1024px) 100vw, 55vw"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         priority
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                         fallbackClassName="absolute inset-0"
@@ -115,7 +126,7 @@ export const FirmNews = () => {
                       <div className="absolute inset-0 bg-navy-900" />
                     )}
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-5">
                     <time className="text-xs text-muted-foreground">
                       {new Date(featured.date).toLocaleDateString("en-US", {
                         month: "long",
@@ -124,8 +135,8 @@ export const FirmNews = () => {
                       })}
                     </time>
                     <h3
-                      className="font-serif font-bold text-foreground mt-1 line-clamp-2 transition-opacity group-hover:opacity-70"
-                      style={{ fontSize: "var(--font-size-heading-2)" }}
+                      className="font-serif font-bold text-foreground mt-2 line-clamp-3 transition-opacity group-hover:opacity-70"
+                      style={{ fontSize: "clamp(1.8rem, 1vw, 2.5rem)" }}
                     >
                       {featured.title}
                     </h3>
@@ -139,7 +150,7 @@ export const FirmNews = () => {
                   <motion.article
                     key={news.id}
                     variants={staggerItem}
-                    className="group cursor-pointer py-4 first:pt-0 last:pb-0 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-sm"
+                    className={`group cursor-pointer py-5 first:pt-0 last:pb-0 outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded-sm`}
                     onClick={() => handleNewsClick(news)}
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -150,13 +161,13 @@ export const FirmNews = () => {
                     }}
                   >
                     <div className="flex gap-4">
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-24 flex-shrink-0 rounded-md overflow-hidden bg-muted">
-                        {(news.extra_images?.[0] ?? news.main_image) ? (
+                      <div className="relative w-24 h-20 sm:w-32 sm:h-24 flex-shrink-0 rounded-md overflow-hidden bg-muted">
+                        {resolveImage(news) ? (
                           <SafeImage
-                            src={news.extra_images?.[0] ?? news.main_image ?? ""}
+                            src={resolveImage(news)!}
                             alt={news.title}
                             fill
-                            sizes="112px"
+                            sizes="128px"
                             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                             fallbackClassName="absolute inset-0"
                           />
@@ -164,7 +175,7 @@ export const FirmNews = () => {
                           <div className="absolute inset-0 bg-navy-900" />
                         )}
                       </div>
-                      <div className="min-w-0 flex flex-col justify-center">
+                      <div className="min-w-0 flex flex-col justify-center gap-1">
                         <time className="text-xs text-muted-foreground">
                           {new Date(news.date).toLocaleDateString("en-US", {
                             month: "short",
@@ -172,7 +183,7 @@ export const FirmNews = () => {
                             year: "numeric",
                           })}
                         </time>
-                        <h3 className="font-serif font-semibold text-foreground mt-0.5 line-clamp-2 text-base transition-opacity group-hover:opacity-70">
+                        <h3 className="font-serif font-semibold text-foreground line-clamp-2 text-base leading-snug transition-opacity group-hover:opacity-70">
                           {news.title}
                         </h3>
                       </div>

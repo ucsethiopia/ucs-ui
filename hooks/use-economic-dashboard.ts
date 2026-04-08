@@ -150,6 +150,13 @@ function processCommodityHistory(data: { date: string; close: number }[]) {
   return downsampleKeepingSpikes(mapping);
 }
 
+/** Derive trend from the sign of a percentage change value */
+function pctToTrend(pct: number): "up" | "down" | "unchanged" {
+  if (pct > 0) return "up";
+  if (pct < 0) return "down";
+  return "unchanged";
+}
+
 /** Static GDP annual history — World Bank data, update manually each year */
 const GDP_HISTORY_VALUES: { value: number; year: string }[] = [
   { year: "2019", value: 96.1 },
@@ -243,13 +250,15 @@ export const useEconomicDashboard = () => {
         const rates = fx.rates ?? {};
         const commodities = commod.commodities ?? {};
 
-        // Percentage change: use API-provided percentage_change; default to 0 if null
+        // FX percentage change: API-provided from /fx/latest
         const usdPct = rates.USD?.percentage_change ?? 0;
         const eurPct = rates.EUR?.percentage_change ?? 0;
         const gbpPct = rates.GBP?.percentage_change ?? 0;
         const audPct = rates.AUD?.percentage_change ?? 0;
         const jpyPct = rates.JPY?.percentage_change ?? 0;
         const cnyPct = rates.CNY?.percentage_change ?? 0;
+
+        // Commodity percentage change: use API-provided value from /commodities/latest; default 0 if null
         const goldPct = commodities["XAU/USD"]?.percentage_change ?? 0;
         const silverPct = commodities["XAG/USD"]?.percentage_change ?? 0;
         const coffeePct = commodities["KC1"]?.percentage_change ?? 0;
@@ -267,7 +276,7 @@ export const useEconomicDashboard = () => {
           if (commodGold && commodSilver && commodCoffee) {
              historicalCache.set("commoditiesHist", {
                timestamp: Date.now(),
-               data: { gold: goldHistory, silver: silverHistory, coffee: coffeeHistory }
+               data: { gold: goldHistory, silver: silverHistory, coffee: coffeeHistory },
              });
           }
         } else if (cachedObj) {
@@ -317,21 +326,21 @@ export const useEconomicDashboard = () => {
               symbol: "XAU/USD",
               name: "Gold",
               price: commodities["XAU/USD"]?.price ?? 0,
-              trend: directionToTrend(commodities["XAU/USD"]?.direction ?? "unchanged"),
+              trend: pctToTrend(goldPct),
               percentageChange: goldPct,
             },
             silver: {
               symbol: "XAG/USD",
               name: "Silver",
               price: commodities["XAG/USD"]?.price ?? 0,
-              trend: directionToTrend(commodities["XAG/USD"]?.direction ?? "unchanged"),
+              trend: pctToTrend(silverPct),
               percentageChange: silverPct,
             },
             coffee: {
               symbol: "KC1",
               name: "Coffee",
               price: commodities["KC1"]?.price ?? 0,
-              trend: directionToTrend(commodities["KC1"]?.direction ?? "unchanged"),
+              trend: pctToTrend(coffeePct),
               percentageChange: coffeePct,
             },
           },

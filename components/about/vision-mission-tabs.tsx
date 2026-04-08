@@ -43,7 +43,7 @@ export function VisionMissionTabs() {
               className={cn(
                 "relative flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-md transition-colors outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isActive
-                  ? "text-navy-950"
+                  ? "text-gold-500"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >

@@ -34,7 +34,7 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-top"
+            className="object-cover object-right-top sm:object-top"
           />
         </div>
         {/* Overlay */}

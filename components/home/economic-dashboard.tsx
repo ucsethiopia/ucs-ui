@@ -136,16 +136,18 @@ function StatCard({
 
 function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
   if (pct != null) {
-    const sign = pct >= 0 ? "+" : "";
+    if (pct === 0) return "0.00%";
+    const sign = pct > 0 ? "+" : "";
     const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
-    return `${arrow} ${sign}${pct}%`.trim();
+    return `${arrow} ${sign}${pct.toFixed(2)}%`.trim();
   }
   if (trend === "up") return "▲ Rising";
   if (trend === "down") return "▼ Falling";
   return "Unchanged";
 }
 
-function trendVariant(trend: "up" | "down" | "unchanged"): "up" | "down" | "neutral" {
+function trendVariant(trend: "up" | "down" | "unchanged", pct?: number): "up" | "down" | "neutral" {
+  if (pct === 0) return "neutral";
   if (trend === "up") return "up";
   if (trend === "down") return "down";
   return "neutral";
@@ -250,7 +252,7 @@ export function EconomicDashboard() {
             label="Gold (XAU/USD)"
             value={loading ? "—" : `$${data?.commodities?.gold?.price?.toLocaleString()}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.gold?.trend ?? "unchanged", data?.commodities?.gold?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.gold?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.gold?.trend ?? "unchanged", data?.commodities?.gold?.percentageChange)}
             chartData={data?.commodityHistory?.gold}
             chartColor={COLORS.gold}
             valueFormatter={(v) => `$${v.toLocaleString()}`}
@@ -260,7 +262,7 @@ export function EconomicDashboard() {
             label="Silver (XAG/USD)"
             value={loading ? "—" : `$${data?.commodities?.silver?.price?.toFixed(2)}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.silver?.trend ?? "unchanged", data?.commodities?.silver?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.silver?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.silver?.trend ?? "unchanged", data?.commodities?.silver?.percentageChange)}
             chartData={data?.commodityHistory?.silver}
             chartColor={COLORS.silver}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
@@ -270,7 +272,7 @@ export function EconomicDashboard() {
             label="Coffee (KC1)"
             value={loading ? "—" : `$${data?.commodities?.coffee?.price?.toFixed(2)}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.coffee?.trend ?? "unchanged", data?.commodities?.coffee?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.coffee?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.coffee?.trend ?? "unchanged", data?.commodities?.coffee?.percentageChange)}
             chartData={data?.commodityHistory?.coffee}
             chartColor={COLORS.coffee}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
