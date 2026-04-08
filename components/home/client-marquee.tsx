@@ -76,9 +76,12 @@ export function ClientMarquee() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
+          {/* Edge overlays — gradient colour fade */}
+          <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />
+          {/* Edge overlays — backdrop blur with fading mask */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_right,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_right,black_30%,transparent)]" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_left,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_left,black_30%,transparent)]" />
 
           {/* Scrolling Track */}
           <div className="overflow-hidden">

@@ -30,25 +30,22 @@ interface TextStatCardProps {
 function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-3 w-20 flex-shrink-0" />
-          <div className="w-px h-4 bg-border flex-shrink-0" />
-          <Skeleton className="h-5 w-16 flex-shrink-0" />
-        </div>
-        <Skeleton className="h-3 w-28" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2">
+        <Skeleton className="h-3 w-16 flex-shrink-0" />
+        <Skeleton className="h-5 w-14 flex-shrink-0" />
+        <Skeleton className="h-3 w-24 flex-shrink-0" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-1 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <span className="text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
         {label}
       </span>
-      <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
         {value}
       </span>
-      <span className="text-xs text-muted-foreground whitespace-nowrap">
+      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight">
         {subLabel}
         {change !== undefined && (
           <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
