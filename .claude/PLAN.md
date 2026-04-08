@@ -98,13 +98,13 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 
 
 
-- [x] **17.17** News homepage section: ported editorial grid layout from `chore/plugin-fluff` into `feat/ux-overhaul`. Replaced horizontal carousel with 1 featured article (large, left) + 3 stacked articles (right). File: `components/home/firm-news.tsx`.
+- [-] **17.17** News homepage section: ported editorial grid layout from `chore/plugin-fluff` into `feat/ux-overhaul`. Replaced horizontal carousel with 1 featured article (large, left) + 3 stacked articles (right). File: `components/home/firm-news.tsx`.
 
 - [ ] **17.18** Light/white mode theme: add a third theme option — light (white), base (navy), dark. Implement as a sliding pane or 3-way toggle. Default to base. Audit all components to ensure the white theme looks professional (not washed out). This touches `globals.css` and potentially every component's color tokens — do last.
 
 
 
-#### >> Next: **17.18**
+#### >> Next: **17.17**
 
 
 
