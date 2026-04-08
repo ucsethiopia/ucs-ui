@@ -123,7 +123,7 @@ export const FirmNews = () => {
                         fallbackClassName="absolute inset-0"
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-navy-900" />
+                      <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
                     )}
                   </div>
                   <div className="mt-5">
@@ -172,7 +172,7 @@ export const FirmNews = () => {
                             fallbackClassName="absolute inset-0"
                           />
                         ) : (
-                          <div className="absolute inset-0 bg-navy-900" />
+                          <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
                         )}
                       </div>
                       <div className="min-w-0 flex flex-col justify-center gap-1">

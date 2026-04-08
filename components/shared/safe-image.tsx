@@ -26,7 +26,7 @@ export function SafeImage({
       <div
         role="img"
         aria-label={alt}
-        className={cn("bg-navy-900", fallbackClassName ?? className)}
+        className={cn("bg-muted dark:bg-navy-900", fallbackClassName ?? className)}
       />
     );
   }

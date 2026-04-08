@@ -59,7 +59,7 @@ function NewsCard({
             fallbackClassName="absolute inset-0"
           />
         ) : (
-          <div className="absolute inset-0 bg-navy-900" />
+          <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
       </div>
@@ -149,7 +149,7 @@ export default function NewsPage() {
                   className={cn(
                     "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
                     selectedCategory === category
-                      ? "bg-navy-900 text-white"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
                   )}
                 >

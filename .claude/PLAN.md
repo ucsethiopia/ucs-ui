@@ -92,6 +92,12 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 
 - [x] **17.16** Global Partners section mobile: reduce logo height from `h-12` to `h-8` below `md:`, reduce grid gap. Verify no horizontal overflow at 375px. File: `components/home/client-marquee.tsx`.
 
+- [x] **17.16a** Hero image mobile crop direction: changed `object-top` → `object-right-top sm:object-top` on home hero; `bg-top` → `bg-right-top sm:bg-top` on about/services PageHero. Crops from left on phones, preserving center-to-right subject. Files: `components/home/hero.tsx`, `app/about/page.tsx`, `app/services/page.tsx`.
+
+- [x] **17.16b** Client marquee edge blur: added `backdrop-blur-sm` with `mask-image` gradient overlays on top of the existing colour-fade overlays, creating a frosted-glass entrance/exit effect at both ends. File: `components/home/client-marquee.tsx`.
+
+- [x] **17.16c** Economic Dashboard TextStatCard mobile layout: changed `flex-col → flex-row` always, with `justify-between` and responsive font scaling (`text-xs sm:text-sm` / `text-sm sm:text-lg`). All three values stay on one line across all viewports. File: `components/home/economic-dashboard.tsx`.
+
 
 
 #### Batch 5 — New Features
@@ -100,11 +106,11 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 
 - [x] **17.17** News homepage section: editorial grid layout — 1 featured (left) + 3 stacked (right). Grid `lg:grid-cols-2`, column tops aligned via `pt-0` on first right item, `justify-between` fills height on desktop, thumbnails `w-24 h-20 sm:w-32 sm:h-24`, generous bottom padding `clamp(6rem,10vw,10rem)`, fully responsive (single-col mobile, wrapping header). File: `components/home/firm-news.tsx`.
 
-- [ ] **17.18** Light/white mode theme: add a third theme option — light (white), base (navy), dark. Implement as a sliding pane or 3-way toggle. Default to base. Audit all components to ensure the white theme looks professional (not washed out). This touches `globals.css` and potentially every component's color tokens — do last.
+- [x] **17.18** Light/white mode theme: added `.light` class to `globals.css` with `--accent: var(--gold-600)` for contrast; 3-way segmented toggle (Sun/Building2/Contrast) in `theme-toggle.tsx`; updated ThemeProvider to include `"light"` theme; fixed hardcoded `bg-navy-900`/`text-white` in 12 content components to use semantic tokens (`bg-card`, `bg-muted`, `text-card-foreground`, etc.) while keeping branded sections (navbar, footer, hero, ticker) always dark. Visual audit passed on all pages (home, about, services, news, contact) at desktop and mobile.
 
 
 
-#### >> Next: **17.18**
+#### >> All Phase 17 tasks complete.
 
 
 

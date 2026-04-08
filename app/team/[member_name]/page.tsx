@@ -224,8 +224,8 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                         fallbackClassName="absolute inset-0"
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-navy-900 flex items-center justify-center">
-                        <span className="font-serif text-6xl font-bold text-white/20">
+                      <div className="absolute inset-0 bg-muted dark:bg-navy-900 flex items-center justify-center">
+                        <span className="font-serif text-6xl font-bold text-foreground/20">
                           {initials}
                         </span>
                       </div>
@@ -487,7 +487,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                               fallbackClassName="absolute inset-0"
                             />
                           ) : (
-                            <div className="absolute inset-0 bg-navy-900" />
+                            <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
                         </div>

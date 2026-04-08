@@ -52,7 +52,7 @@ function TeamMemberCard({
                   fallbackClassName="absolute inset-0"
                 />
               ) : (
-                <div className="absolute inset-0 bg-navy-900" />
+                <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
             </div>
@@ -120,7 +120,7 @@ function TeamMemberCard({
               fallbackClassName="absolute inset-0"
             />
           ) : (
-            <div className="absolute inset-0 bg-navy-900" />
+            <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
         </div>

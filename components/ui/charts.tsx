@@ -115,9 +115,9 @@ export const SparklineChart = ({
             if (!active || !payload?.length) return null;
             const raw = payload[0].payload as unknown as { date: string; value: number };
             return (
-              <div className="rounded-md bg-navy-950 border border-white/10 px-2.5 py-1.5 text-[10px] shadow-xl">
-                <p className="text-white/50 mb-0.5">{raw.date}</p>
-                <p className="font-semibold text-white">
+              <div className="rounded-md bg-card border border-border px-2.5 py-1.5 text-[10px] shadow-xl">
+                <p className="text-muted-foreground mb-0.5">{raw.date}</p>
+                <p className="font-semibold text-card-foreground">
                   {valueFormatter ? valueFormatter(raw.value) : raw.value}
                 </p>
               </div>
