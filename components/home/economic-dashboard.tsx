@@ -23,10 +23,11 @@ interface TextStatCardProps {
   label: string;
   value: string;
   subLabel: string;
+  change?: number;
   loading: boolean;
 }
 
-function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
+function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardProps) {
   if (loading) {
     return (
       <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3">
@@ -47,7 +48,14 @@ function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
       <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
         {value}
       </span>
-      <span className="text-xs text-muted-foreground whitespace-nowrap">{subLabel}</span>
+      <span className="text-xs text-muted-foreground whitespace-nowrap">
+        {subLabel}
+        {change !== undefined && (
+          <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
+            · {change >= 0 ? "+" : ""}{change.toFixed(1)}% YoY
+          </span>
+        )}
+      </span>
     </div>
   );
 }
@@ -213,7 +221,8 @@ export function EconomicDashboard() {
           <TextStatCard
             label="Ethiopian GDP"
             value={loading ? "—" : `$${data?.gdp?.value}B`}
-            subLabel={loading ? "—" : `FY ${data?.gdp?.year} · +${data?.gdp?.growth?.toFixed(1)}% YoY`}
+            subLabel={loading ? "—" : `FY ${data?.gdp?.year}`}
+            change={loading ? undefined : data?.gdp?.growth}
             loading={loading}
           />
           <TextStatCard
