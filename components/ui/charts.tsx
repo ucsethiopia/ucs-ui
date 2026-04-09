@@ -55,14 +55,14 @@ export const MiniLineChart = ({
           <>
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 9, fill: "#94a3b8" }}
+              tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
               tickLine={false}
               axisLine={false}
               interval="preserveStartEnd"
             />
             <YAxis
               domain={["dataMin", "dataMax"]}
-              tick={{ fontSize: 9, fill: "#94a3b8" }}
+              tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
               tickLine={false}
               axisLine={false}
               width={36}
@@ -123,7 +123,7 @@ export const SparklineChart = ({
               </div>
             );
           }}
-          cursor={{ stroke: "rgba(148,163,184,0.15)", strokeWidth: 1 }}
+          cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }}
         />
         <Area
           type="monotone"

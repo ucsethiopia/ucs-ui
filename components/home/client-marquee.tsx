@@ -72,7 +72,7 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)] light:shadow-none"
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_var(--color-border),inset_0_-1px_8px_0_var(--color-border)] light:shadow-none"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -83,12 +83,18 @@ export function ClientMarquee() {
           <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_right,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_right,black_30%,transparent)]" />
           <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_left,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_left,black_30%,transparent)]" />
 
+          {/* Screen-reader-only client list */}
+          <ul className="sr-only">
+            {clientLogos.map((client) => (
+              <li key={client.id}>{client.name}</li>
+            ))}
+          </ul>
+
           {/* Scrolling Track */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden" aria-hidden="true">
             <div
               className="flex animate-client-marquee py-3"
               style={{ animationPlayState: paused ? "paused" : "running" }}
-              aria-hidden="true"
             >
               {duplicatedClients.map((client, index) => (
                 <div key={`${client.id}-${index}`} className="flex-shrink-0 px-1 md:px-2">

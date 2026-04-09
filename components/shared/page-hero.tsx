@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Container } from "@/components/shared/container";
 
 interface PageHeroProps {
@@ -37,9 +38,12 @@ export function PageHero({
     return (
       <section className="relative bg-navy-950 min-h-[70vh] py-16 lg:py-0">
         <div className="absolute inset-0 lg:hidden overflow-hidden">
-          <div
-            className={`absolute inset-0 bg-cover ${backgroundPositionClass}`}
-            style={{ backgroundImage: `url('${backgroundImage}')` }}
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            sizes="100vw"
+            className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />
           {/* Light mode: dissolve edges into white page */}
@@ -80,9 +84,12 @@ export function PageHero({
             {/* Image - Hidden on mobile, shown on lg+ */}
             <div className="hidden lg:block relative">
               <div className="relative aspect-[4/3] w-[50vw] max-w-[700px] -mr-[calc((50vw-min(50vw,700px))/2+2rem)] rounded-l-2xl overflow-hidden shadow-2xl">
-                <div
-                  className={`absolute inset-0 bg-cover ${backgroundPositionClass}`}
-                  style={{ backgroundImage: `url('${backgroundImage}')` }}
+                <Image
+                  src={backgroundImage}
+                  alt=""
+                  fill
+                  sizes="50vw"
+                  className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-navy-950/15 to-transparent" />
               </div>
@@ -104,11 +111,13 @@ export function PageHero({
       {/* Background Image */}
       {backgroundImage && (
         <div className="absolute inset-0 overflow-hidden">
-          <div
-            className={`absolute inset-0 bg-cover ${condensed ? "top-9 sm:top-19" : ""} ${backgroundPositionClass}`}
-            style={{
-              backgroundImage: `url('${backgroundImage}')`,
-            }}
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            className={`object-cover ${condensed ? "top-9 sm:top-19" : ""} ${backgroundPositionClass.replace("bg-", "object-")}`}
           />
           {/* Overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />

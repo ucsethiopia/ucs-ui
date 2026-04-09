@@ -194,13 +194,17 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                             key={i}
                             onClick={() => emblaApi?.scrollTo(i)}
                             aria-label={`Go to image ${i + 1}`}
-                            className={cn(
-                              "h-1.5 rounded-full transition-all duration-200",
-                              i === slideIndex
-                                ? "w-5 bg-white"
-                                : "w-1.5 bg-white/50 hover:bg-white/80",
-                            )}
-                          />
+                            className="relative flex items-center justify-center p-2"
+                          >
+                            <span
+                              className={cn(
+                                "block h-1.5 rounded-full transition-all duration-200",
+                                i === slideIndex
+                                  ? "w-5 bg-white"
+                                  : "w-1.5 bg-white/50 hover:bg-white/80",
+                              )}
+                            />
+                          </button>
                         ))}
                       </div>
                     </>

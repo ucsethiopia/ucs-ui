@@ -62,7 +62,8 @@ export function ThemeToggle({ className, inheritTextColor = false }: ThemeToggle
           aria-checked={theme === key}
           aria-label={`${label} theme`}
           className={cn(
-            "flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+            "relative flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+            "before:absolute before:inset-0 before:-m-2 before:rounded-full before:content-['']",
             theme === key
               ? "bg-gold-500 text-navy-950"
               : "text-current opacity-60 hover:opacity-100"

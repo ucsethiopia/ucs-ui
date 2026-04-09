@@ -146,8 +146,9 @@ export function Hero() {
       >
         <span className="text-xs uppercase tracking-widest">Scroll</span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          whileInView={{ y: [0, 6, 0] }}
+          viewport={{ once: false }}
+          transition={{ duration: 1.6, repeat: 3, ease: "easeInOut" }}
         >
           <ChevronDown className="h-4 w-4" />
         </motion.div>

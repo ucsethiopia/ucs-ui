@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useRef } from "react";
 import { useInView } from "framer-motion";
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { cn } from "@/lib/utils";
 
 const stats = [
@@ -10,69 +11,6 @@ const stats = [
   { value: 150, suffix: "+", label: "Clients Served" },
   { value: 5, suffix: "", label: "Countries Reached" },
 ];
-
-/** Deceleration curve — fast start, slow finish */
-function easeOutQuart(t: number): number {
-  return 1 - Math.pow(1 - t, 4);
-}
-
-function AnimatedCounter({
-  target,
-  suffix = "",
-  isVisible,
-}: {
-  target: number;
-  suffix?: string;
-  isVisible: boolean;
-}) {
-  const [count, setCount] = useState<number | null>(null);
-  const rafRef = useRef<number>(0);
-
-  const prefersReducedMotion = useCallback(() => {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    if (prefersReducedMotion()) {
-      setCount(target);
-      return;
-    }
-
-    const duration = 1800;
-    let start: number | null = null;
-
-    function tick(timestamp: number) {
-      if (start === null) start = timestamp;
-      const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutQuart(progress);
-
-      setCount(Math.floor(eased * target));
-
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setCount(target);
-      }
-    }
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [isVisible, target, prefersReducedMotion]);
-
-  if (count === null) {
-    return <span className="invisible">{target}{suffix}</span>;
-  }
-
-  return (
-    <span>
-      {count}
-      {suffix}
-    </span>
-  );
-}
 
 const DELAY_CLASSES = [
   "delay-0",

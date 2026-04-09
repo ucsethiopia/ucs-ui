@@ -36,16 +36,21 @@ function PartnerNode({
   return (
     <motion.div
       className={cn(
-        "relative -ml-9 -mt-9 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300",
+        "relative -ml-9 -mt-9 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
         isHovered
           ? "border-gold-500"
           : isGlobal
             ? "border-gold-500/50"
             : "border-border"
       )}
+      tabIndex={0}
+      role="button"
+      aria-label={`${name}${country ? `, ${country}` : ""}`}
       whileHover={{ scale: 1.15, zIndex: 10 }}
       onHoverStart={onHover}
       onHoverEnd={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
     >
       {logo && !imgError ? (
         <div className="relative h-full w-full">
@@ -124,7 +129,7 @@ export function OrbitalPartners() {
       </div>
 
       {/* Orbital visualization */}
-      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center">
+      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center scale-[0.6] sm:scale-75 md:scale-100 origin-center">
         {/* Orbit rings — SVG */}
         <svg
           className="absolute inset-0 h-full w-full"

@@ -139,12 +139,8 @@ export function Footer() {
               © {new Date().getFullYear()} Ultimate Consultancy Service Ethiopia. All rights reserved.
             </p>
             <div className="flex gap-6 text-xs text-white/50">
-              <Link href="/privacy" className="hover:text-gold-500 transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="hover:text-gold-500 transition-colors">
-                Terms of Service
-              </Link>
+              <span>Privacy Policy</span>
+              <span>Terms of Service</span>
             </div>
           </div>
         </div>

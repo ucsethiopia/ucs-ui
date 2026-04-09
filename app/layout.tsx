@@ -109,9 +109,9 @@ export default function RootLayout({
             toastOptions={{
               classNames: {
                 toast:
-                  "!bg-white dark:!bg-navy-900 !border !border-border !shadow-2xl !shadow-black/30 !rounded-lg",
-                title: "!text-foreground !font-semibold",
-                description: "!text-muted-foreground",
+                  "bg-card border border-border shadow-2xl shadow-black/30 rounded-lg",
+                title: "text-foreground font-semibold",
+                description: "text-muted-foreground",
               },
             }}
           />
