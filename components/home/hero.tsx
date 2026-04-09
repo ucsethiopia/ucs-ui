@@ -21,6 +21,7 @@ export function Hero() {
   const words = motto.split(" ");
 
   return (
+    <>
     <section
       ref={containerRef}
       className="relative h-[90vh] min-h-[500px] sm:min-h-[580px] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
@@ -37,8 +38,12 @@ export function Hero() {
             className="object-cover object-right-top sm:object-top"
           />
         </div>
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-950/80 via-navy-950/70 to-navy-950/90" />
+        {/* Base overlay: Lighter slate for light mode, deep navy for dark mode */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/40 to-transparent dark:from-navy-950/80 dark:via-navy-950/70 dark:to-navy-950/90" />
+        {/* Edge dissolves: Active in light mode, hidden in dark mode */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-0 bg-gradient-to-r from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-0 bg-gradient-to-l from-white to-transparent z-[1] block dark:hidden pointer-events-none" />{" "}
       </div>
 
       {/* Content */}
@@ -148,5 +153,10 @@ export function Hero() {
         </motion.div>
       </motion.div>
     </section>
+    {/* Full-viewport-width dashed separator — breaks out of the 1440px container */}
+    <div className="pointer-events-none relative h-0" aria-hidden="true">
+      <div className="absolute left-1/2 -translate-x-1/2 w-screen border-t-2 deco-h" />
+    </div>
+    </>
   );
 }

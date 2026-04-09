@@ -1,4 +1,5 @@
 import type { ResearchProject, SoftwareProject } from "@/lib/types";
+import { sanitizeUrl } from "@/lib/utils";
 import { FlaskConical, Code2, ExternalLink } from "lucide-react";
 
 interface ProjectsSectionProps {
@@ -96,7 +97,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                         {proj.links.map((link, i) => (
                           <a
                             key={i}
-                            href={link.url}
+                            href={sanitizeUrl(link.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-500 transition-colors rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-500"

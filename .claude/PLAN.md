@@ -113,90 +113,55 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 #### >> All Phase 17 tasks complete.
 
 
+### Phase 18 — Pre-Staging: Reverts, Polish & Responsiveness
 
----
+#### Reverts
 
+- [x] **18.1** News homepage section: revert to the original news section that existed before the `chore/plugin-fluff` cherry-pick. Remove the ported version entirely and restore what was there previously. Use `git log` or `git diff` to identify the original component if needed.
 
+- [x] **18.2** SPEED acronym values: revert the `text-justify` change on the SPEED values paragraphs under the home page. Return to the original text alignment.
 
-## Completed Phases (History)
+#### Visual Polish
 
+- [x] **18.3** Global Partners logos on About page: scale up logo sizes to be more visible. On the hover effect, add a `z-index` so the hovered logo renders above neighboring logos — only apply the z-index bump on hover, not at rest.
 
+- [x] **18.4** Currency ticker bar responsiveness: the ticker bar disappears entirely on mobile viewports. Fix so it remains visible on phone-sized screens. May need to adjust the layout, reduce item count, or allow horizontal scroll.
 
-<details>
+- [x] **18.5** Client marquee mobile speed: increase marquee scroll speed on smaller breakpoints. Speed should scale proportionally — fastest on phone, medium on tablet, current speed on desktop. Adjust the CSS animation duration or JS config at `sm:` and `md:` breakpoints.
 
-<summary>Phases 1–16 (click to expand)</summary>
+#### >> All Phase 18 tasks complete.
 
-
-
-### Hotfix Batch — Session 10 New Issues
-
-
-
-#### HF-1 — Color Scheme Migration
-
-- [x] **HF-1.1** Audit `globals.css` — verify default color scheme is ucs-brand navy/gold
-
-- [x] **HF-1.2** Audit dark mode — ensure browsers don't invert, default is always brand color
+#### Post-18 Corrections (2026-04-08)
+- **18.1 re-done**: News section restored from `238fd9a` (not `e3b6fa6`) — horizontal carousel layout with `NewsCarouselLayout`, `useFirmNews(9)`, prev/next controls, modal on click.
+- **18.3 refined**: Orbital partner node reverted from `h-22` to `h-20 w-20`; z-index propagated to outer `motion.div.absolute` wrappers (not just `PartnerNode` inner div) so tooltip clears all neighbors on hover.
 
 
+### Phase 19 — Light Mode Visual Refinement
 
-#### HF-2 — Client & Partner Logo Hover Effects
+- [ ] **19.1** __Paused__ Conduct a thorough visual audit of the entire site in light mode, comparing against the design mockups. Look for any inconsistencies in colors, spacing, typography, or component styling that may have been missed during development.
 
-- [x] **HF-2.1–2.5** Logo hover consistency, sizing, background cleanup
+#### >> Phase 20
 
+### Phase 20 — Demo Prep
 
+- [ ] **20.1–20.3, 20.5** UI review, cross-browser, mobile, demo script
 
-#### HF-3 — Background Images
+### License & Security
 
-- [x] **HF-3.1–3.4** Logo rendering, hero images for About/Services, integration
+- [ ] **20.6** Replace the MIT license in LICENSE file with a proprietary license. Use this template, polished for professionalism: "".  Update the `license` field in `package.json` from `"MIT"` to `"SEE LICENSE IN LICENSE"`. Apply the same license to any other repos in the project (backend, etc.) if accessible.
 
+- [ ] **20.7** Update source code files if any have header comments that mention the MIT License; you should either remove it or add a simple one-line header: // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved
 
-
-#### HF-5 — Data Visualization & Performance
-
-- [x] **5.1** Economic Dashboard aspect ratio refinement
-
-- [x] **5.2** LRU Cache (12-hour TTL, ~1000-point downsampling)
-
-- [x] **5.3** Skeleton loader resilience fix
+- [x] **20.8** Security audit: do a pass over the codebase for common frontend vulnerabilities — unescaped user input, exposed env vars in client bundles, open CORS issues, any hardcoded secrets. Flag and fix anything found.
 
 
 
-### Phase 12 — News + About Improvements
 
-- [x] **12.3–12.6** NewsModal, filtering, tag unification
+After writing the plan, run `npm run build` to confirm clean build, then report back.
 
+- [ ] **20.8** Deploy to staging
 
-
-### Phase 13 — API Tasks + Stakeholder Data
-
-- [x] **13.1–13.4** Image audit, trend API, team endpoints
-
-- [x] **13.9.1–13.9.11** All stakeholder data confirmed
-
-- [ ] **13.9.12** _(Blocked)_ B&M + Precise partner logos
-
-
-
-### Phase 14 — Component Sourcing & Polish
-
-- [x] **14.1–14.9** Stats animation, team profiles, services animations, partners, vision/mission tabs, UI review
-
-
-
-### Phase 15 — Security + Performance
-
-- [x] **15.1–15.5** Security audit, bundle size, image optimization, Core Web Vitals, build verification
-
-
-
-### Phase 16 — Demo Prep
-
-- [x] **16.1–16.3, 16.5** UI review, cross-browser, mobile, demo script
-
-- [ ] **16.4** Deploy to staging
-
-- [ ] **16.6** Final stakeholder sign-off
+- [ ] **20.10** Final stakeholder sign-off
 
 
 

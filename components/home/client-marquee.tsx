@@ -50,7 +50,7 @@ export function ClientMarquee() {
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50">
+    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50 light:border-0">
       {/* Clients Section */}
       <div>
         <Container className="mb-6">
@@ -72,7 +72,7 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]"
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)] light:shadow-none"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -86,7 +86,7 @@ export function ClientMarquee() {
           {/* Scrolling Track */}
           <div className="overflow-hidden">
             <div
-              className="flex animate-marquee py-3"
+              className="flex animate-client-marquee py-3"
               style={{ animationPlayState: paused ? "paused" : "running" }}
               aria-hidden="true"
             >

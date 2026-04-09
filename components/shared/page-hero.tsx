@@ -42,6 +42,10 @@ export function PageHero({
             style={{ backgroundImage: `url('${backgroundImage}')` }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />
+          {/* Light mode: dissolve edges into white page */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
           {/* Cross pattern overlay */}
           <div
             className="absolute inset-0 opacity-10 pointer-events-none"
@@ -108,6 +112,10 @@ export function PageHero({
           />
           {/* Overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />
+          {/* Light mode: dissolve edges into white page */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
         </div>
       )}
 
