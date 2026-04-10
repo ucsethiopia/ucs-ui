@@ -148,9 +148,9 @@ Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual po
 
 ### License & Security
 
-- [ ] **20.6** Replace the MIT license in LICENSE file with a proprietary license. Use this template, polished for professionalism: "".  Update the `license` field in `package.json` from `"MIT"` to `"SEE LICENSE IN LICENSE"`. Apply the same license to any other repos in the project (backend, etc.) if accessible.
+- [x] **20.6** Replace the MIT license in LICENSE file with a proprietary license. Use this template, polished for professionalism: "".  Update the `license` field in `package.json` from `"MIT"` to `"SEE LICENSE IN LICENSE"`. Apply the same license to any other repos in the project (backend, etc.) if accessible.
 
-- [ ] **20.7** Update source code files if any have header comments that mention the MIT License; you should either remove it or add a simple one-line header: // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved
+- [x] **20.7** Update source code files if any have header comments that mention the MIT License; you should either remove it or add a simple one-line header: // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved
 
 - [x] **20.8** Security audit: do a pass over the codebase for common frontend vulnerabilities — unescaped user input, exposed env vars in client bundles, open CORS issues, any hardcoded secrets. Flag and fix anything found.
 
