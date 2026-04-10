@@ -61,10 +61,11 @@ function OrbitPattern({
 }) {
   const RADIUS = 85;
 
+  const ORBIT_DURATION = 20;
   const orbitConfigs = [
-    { startDeg: 0, duration: 18 },
-    { startDeg: 120, duration: 24 },
-    { startDeg: 240, duration: 30 },
+    { startDeg: 0,   duration: ORBIT_DURATION },
+    { startDeg: 120, duration: ORBIT_DURATION },
+    { startDeg: 240, duration: ORBIT_DURATION },
   ];
 
   function circleKeyframes(startDeg: number) {
@@ -226,7 +227,7 @@ function FlowPattern({
           >
             <Icon className={cn("w-5 h-5", index !== 0 && "text-gold-600")} />
             <motion.div
-              className={cn("h-1 rounded-full", index === 0 ? "bg-navy-950/30" : "bg-gold-500/30")}
+              className={cn("h-1 rounded-full", index === 0 ? "bg-foreground/10" : "bg-gold-500/30")}
               initial={{ width: 0 }}
               animate={{ width: 40 + index * 10 }}
               transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}

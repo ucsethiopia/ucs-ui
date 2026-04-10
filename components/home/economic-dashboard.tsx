@@ -23,34 +23,36 @@ interface TextStatCardProps {
   label: string;
   value: string;
   subLabel: string;
+  change?: number;
   loading: boolean;
 }
 
-function TextStatCard({ label, value, subLabel, loading }: TextStatCardProps) {
+function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-3 w-20 flex-shrink-0" />
-          <div className="w-px h-4 bg-border flex-shrink-0" />
-          <Skeleton className="h-5 w-16 flex-shrink-0" />
-        </div>
-        <Skeleton className="h-3 w-28" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2">
+        <Skeleton className="h-3 w-16 flex-shrink-0" />
+        <Skeleton className="h-5 w-14 flex-shrink-0" />
+        <Skeleton className="h-3 w-24 flex-shrink-0" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest whitespace-nowrap flex-shrink-0">
-          {label}
-        </span>
-        <div className="w-px h-4 bg-border flex-shrink-0" />
-        <span className="text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
-          {value}
-        </span>
-      </div>
-      <span className="text-xs text-muted-foreground">{subLabel}</span>
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
+        {label}
+      </span>
+      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+        {value}
+      </span>
+      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight">
+        {subLabel}
+        {change !== undefined && (
+          <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
+            · {change >= 0 ? "+" : ""}{change.toFixed(1)}% YoY
+          </span>
+        )}
+      </span>
     </div>
   );
 }
@@ -95,7 +97,7 @@ function StatCard({
     <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-3 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
       {/* Narrow text column — shrinks to content width */}
       <div className="flex-shrink-0 min-w-0">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5 whitespace-nowrap">
+        <p className="text-sm font-medium text-muted-foreground mb-0.5 whitespace-nowrap">
           {label}
         </p>
         <p className="text-xl font-bold text-foreground tabular-nums">{value}</p>
@@ -131,16 +133,18 @@ function StatCard({
 
 function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
   if (pct != null) {
-    const sign = pct >= 0 ? "+" : "";
+    if (pct === 0) return "0.00%";
+    const sign = pct > 0 ? "+" : "";
     const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
-    return `${arrow} ${sign}${pct}%`.trim();
+    return `${arrow} ${sign}${pct.toFixed(2)}%`.trim();
   }
   if (trend === "up") return "▲ Rising";
   if (trend === "down") return "▼ Falling";
   return "Unchanged";
 }
 
-function trendVariant(trend: "up" | "down" | "unchanged"): "up" | "down" | "neutral" {
+function trendVariant(trend: "up" | "down" | "unchanged", pct?: number): "up" | "down" | "neutral" {
+  if (pct === 0) return "neutral";
   if (trend === "up") return "up";
   if (trend === "down") return "down";
   return "neutral";
@@ -216,7 +220,8 @@ export function EconomicDashboard() {
           <TextStatCard
             label="Ethiopian GDP"
             value={loading ? "—" : `$${data?.gdp?.value}B`}
-            subLabel={loading ? "—" : `FY ${data?.gdp?.year} · +${data?.gdp?.growth?.toFixed(1)}% YoY`}
+            subLabel={loading ? "—" : `FY ${data?.gdp?.year}`}
+            change={loading ? undefined : data?.gdp?.growth}
             loading={loading}
           />
           <TextStatCard
@@ -244,7 +249,7 @@ export function EconomicDashboard() {
             label="Gold (XAU/USD)"
             value={loading ? "—" : `$${data?.commodities?.gold?.price?.toLocaleString()}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.gold?.trend ?? "unchanged", data?.commodities?.gold?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.gold?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.gold?.trend ?? "unchanged", data?.commodities?.gold?.percentageChange)}
             chartData={data?.commodityHistory?.gold}
             chartColor={COLORS.gold}
             valueFormatter={(v) => `$${v.toLocaleString()}`}
@@ -254,7 +259,7 @@ export function EconomicDashboard() {
             label="Silver (XAG/USD)"
             value={loading ? "—" : `$${data?.commodities?.silver?.price?.toFixed(2)}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.silver?.trend ?? "unchanged", data?.commodities?.silver?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.silver?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.silver?.trend ?? "unchanged", data?.commodities?.silver?.percentageChange)}
             chartData={data?.commodityHistory?.silver}
             chartColor={COLORS.silver}
             valueFormatter={(v) => `$${v.toFixed(2)}`}
@@ -264,7 +269,7 @@ export function EconomicDashboard() {
             label="Coffee (KC1)"
             value={loading ? "—" : `$${data?.commodities?.coffee?.price?.toFixed(2)}`}
             badge={loading ? "—" : trendBadge(data?.commodities?.coffee?.trend ?? "unchanged", data?.commodities?.coffee?.percentageChange)}
-            badgeVariant={trendVariant(data?.commodities?.coffee?.trend ?? "unchanged")}
+            badgeVariant={trendVariant(data?.commodities?.coffee?.trend ?? "unchanged", data?.commodities?.coffee?.percentageChange)}
             chartData={data?.commodityHistory?.coffee}
             chartColor={COLORS.coffee}
             valueFormatter={(v) => `$${v.toFixed(2)}`}

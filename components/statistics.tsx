@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { cn } from "@/lib/utils";
 
 interface StatItem {
@@ -16,48 +16,6 @@ const stats: StatItem[] = [
   { value: 150, label: "Clients Served", suffix: "+" },
   { value: 5, label: "Countries Reached", suffix: "" },
 ];
-
-function AnimatedCounter({
-  target,
-  suffix = "",
-  isVisible,
-}: {
-  target: number;
-  suffix?: string;
-  isVisible: boolean;
-}) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!isVisible) {
-      setCount(0);
-      return;
-    }
-
-    const duration = 2000; // 2 seconds
-    const increment = target / (duration / 16);
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, 16);
-
-    return () => clearInterval(timer);
-  }, [isVisible, target]);
-
-  return (
-    <span>
-      {count}
-      {suffix}
-    </span>
-  );
-}
 
 export function Statistics() {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({

@@ -21,12 +21,13 @@ export function Hero() {
   const words = motto.split(" ");
 
   return (
+    <>
     <section
       ref={containerRef}
       className="relative h-[90vh] min-h-[500px] sm:min-h-[580px] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
     >
       {/* Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 top-26 z-0">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/hero-background.jpg"
@@ -34,12 +35,15 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: "center 30%" }}
+            className="object-cover object-right-top sm:object-top"
           />
         </div>
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-950/80 via-navy-950/70 to-navy-950/90" />
+        {/* Base overlay: Lighter slate for light mode, deep navy for dark mode */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/40 to-transparent dark:from-navy-950/80 dark:via-navy-950/70 dark:to-navy-950/90" />
+        {/* Edge dissolves: Active in light mode, hidden in dark mode */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-0 bg-gradient-to-r from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-0 bg-gradient-to-l from-white to-transparent z-[1] block dark:hidden pointer-events-none" />{" "}
       </div>
 
       {/* Content */}
@@ -135,19 +139,25 @@ export function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-white/30"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-navy-800 dark:text-gold-500"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}
       >
         <span className="text-xs uppercase tracking-widest">Scroll</span>
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          whileInView={{ y: [0, 6, 0] }}
+          viewport={{ once: false }}
+          transition={{ duration: 1.6, repeat: 3, ease: "easeInOut" }}
         >
           <ChevronDown className="h-4 w-4" />
         </motion.div>
       </motion.div>
     </section>
+    {/* Full-viewport-width dashed separator — breaks out of the 1440px container */}
+    <div className="pointer-events-none relative h-0" aria-hidden="true">
+      <div className="absolute left-1/2 -translate-x-1/2 w-screen border-t-2 deco-h" />
+    </div>
+    </>
   );
 }

@@ -17,9 +17,9 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center h-20 w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
+    <div className="group relative flex flex-col items-center h-16 w-32 md:h-20 md:w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
-      <div className="relative w-full h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
+      <div className="relative w-full h-8 md:h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
         {logo && !imgError ? (
           <Image
             src={logo}
@@ -50,7 +50,7 @@ export function ClientMarquee() {
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50">
+    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50 light:border-0">
       {/* Clients Section */}
       <div>
         <Container className="mb-6">
@@ -72,23 +72,32 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_rgba(0,0,0,0.06),inset_0_-1px_8px_0_rgba(0,0,0,0.06)]"
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_var(--color-border),inset_0_-1px_8px_0_var(--color-border)] light:shadow-none"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary/30 via-secondary/15 to-transparent z-10 pointer-events-none" />
+          {/* Edge overlays — gradient colour fade */}
+          <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />
+          {/* Edge overlays — backdrop blur with fading mask */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_right,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_right,black_30%,transparent)]" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none backdrop-blur-sm [mask-image:linear-gradient(to_left,black_30%,transparent)] [-webkit-mask-image:linear-gradient(to_left,black_30%,transparent)]" />
+
+          {/* Screen-reader-only client list */}
+          <ul className="sr-only">
+            {clientLogos.map((client) => (
+              <li key={client.id}>{client.name}</li>
+            ))}
+          </ul>
 
           {/* Scrolling Track */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden" aria-hidden="true">
             <div
-              className="flex animate-marquee py-3"
+              className="flex animate-client-marquee py-3"
               style={{ animationPlayState: paused ? "paused" : "running" }}
-              aria-hidden="true"
             >
               {duplicatedClients.map((client, index) => (
-                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-2">
+                <div key={`${client.id}-${index}`} className="flex-shrink-0 px-1 md:px-2">
                   <ClientLogo name={client.name} logo={client.logo} />
                 </div>
               ))}

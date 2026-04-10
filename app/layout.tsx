@@ -36,8 +36,9 @@ export const metadata: Metadata = {
     "enterprise",
   ],
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "48x48 64x64" },
+    ],
   },
 };
 
@@ -60,7 +61,7 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="blue-black"
-          themes={["blue-black", "inverted"]}
+          themes={["light", "blue-black", "inverted"]}
           enableSystem={false}
           disableTransitionOnChange={false}
         >
@@ -75,24 +76,24 @@ export default function RootLayout({
               {/* Left edge — only visible when viewport > 1440px (gutters exist) */}
               <div className="pointer-events-none absolute inset-y-0 left-0 z-20 hidden min-[1441px]:block" aria-hidden="true">
                 {/* Full-height dashed line */}
-                <div className="absolute inset-y-0 left-0 border-l-2 border-dashed border-border/40" />
+                <div className="absolute inset-y-0 left-0 border-l-2 deco-v" />
                 {/* Top-left L-bracket */}
-                <div className="absolute left-0 top-0 h-10 border-l-2 border-dashed border-border/60" />
-                <div className="absolute left-0 top-0 w-10 border-t-2 border-dashed border-border/60" />
-                <div className="absolute -left-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 border-border/50 bg-background" />
+                <div className="absolute left-0 top-0 h-10 border-l-2 deco-v" />
+                <div className="absolute left-0 top-0 w-10 border-t-2 deco-h" />
+                <div className="absolute -left-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 deco-dot bg-background" />
                 {/* Bottom-left — vertical only, no horizontal close */}
-                <div className="absolute bottom-0 left-0 h-10 border-l-2 border-dashed border-border/40" />
+                <div className="absolute bottom-0 left-0 h-10 border-l-2 deco-v" />
               </div>
               {/* Right edge */}
               <div className="pointer-events-none absolute inset-y-0 right-0 z-20 hidden min-[1441px]:block" aria-hidden="true">
                 {/* Full-height dashed line */}
-                <div className="absolute inset-y-0 right-0 border-r-2 border-dashed border-border/40" />
+                <div className="absolute inset-y-0 right-0 border-r-2 deco-v" />
                 {/* Top-right L-bracket */}
-                <div className="absolute right-0 top-0 h-10 border-r-2 border-dashed border-border/60" />
-                <div className="absolute right-0 top-0 w-10 border-t-2 border-dashed border-border/60" />
-                <div className="absolute -right-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 border-border/50 bg-background" />
+                <div className="absolute right-0 top-0 h-10 border-r-2 deco-v" />
+                <div className="absolute right-0 top-0 w-10 border-t-2 deco-h" />
+                <div className="absolute -right-[4px] -top-[4px] h-2.5 w-2.5 rounded-full border-2 deco-dot bg-background" />
                 {/* Bottom-right — vertical only, no horizontal close */}
-                <div className="absolute bottom-0 right-0 h-10 border-r-2 border-dashed border-border/40" />
+                <div className="absolute bottom-0 right-0 h-10 border-r-2 deco-v" />
               </div>
               <Navbar />
               <PageRemountWrapper>
@@ -101,7 +102,19 @@ export default function RootLayout({
             </div>
             <Footer />
           </NavigationProvider>
-          <Toaster richColors position="top-right" />
+          <Toaster
+            richColors
+            position="top-right"
+            className="z-[9999]"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "bg-card border border-border shadow-2xl shadow-black/30 rounded-lg",
+                title: "text-foreground font-semibold",
+                description: "text-muted-foreground",
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

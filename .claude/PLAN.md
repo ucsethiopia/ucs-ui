@@ -1,156 +1,219 @@
 # PLAN.md — UCS Ethiopia Frontend Sprint
 
+
+
 > Active branch: `feat/ux-overhaul`
-> Last updated: 2026-04-05 (session 11)
+
+> Last updated: 2026-04-07
+
+
 
 ---
+
+
 
 ## Sprint Goal
 
-Bring the site to production-ready quality matching McKinsey/BCG-tier digital presence. Remaining work: hotfixes from session 10, live API hardening (LRU cache, skeleton fix), color system migration, logo/image asset integration, graph polish, and a full UI review pass before demo prep.
+
+
+Pre-deployment sprint — resolve all API breaking changes, bug fixes, visual polish, responsive issues, and new feature integration before staging deploy.
+
+
 
 ---
+
+
 
 ## Active Work
 
-### Hotfix Batch — Session 10 New Issues
 
-These are the immediate priority before resuming the phase queue.
 
-#### HF-1 — Color Scheme Migration _(no blockers)_
+### Phase 17 — Pre-Deployment: UI, Bug Fixes & API Alignment
 
-- [x] **HF-1.1** Audit current `globals.css` — verify the default color scheme is ucs-brand navy/gold color
-- [x] **HF-1.2** Audit current `globals.css` to make sure dark mode in broswers don't invert anything. Also make sure the default mode is alwasy the company brand color
 
-#### HF-2 — Client & Partner Logo Hover Effects _(no blockers)_
 
-- [x] **HF-2.1** Audit current marquee hover state for client logos (`brightness-95` default, `brightness-100 scale-110` hover) — increase brightness boost to match new spec (visibly brighter + scaled)
-- [x] **HF-2.2** Apply identical static display + hover treatment to partner logos section (currently partners may not have same hover behavior as clients)
-- [x] **HF-2.3** Confirm hover effect is consistent across both rows; test at multiple viewport widths
-- [x] **HF-2.4** Remove partner logo background treatments and scale all partner logos proportionally so they read consistently
-- [x] **HF-2.5** Refine partner logo sizing for a more balanced, visually appealing presentation across the row
+> Must resolve before staging deploy. Work in order — each batch assumes the previous batch is done.
 
-#### HF-3 — Background Images: About & Services _(BLOCKED: waiting on Natoli's image decision)_
 
-> **Dependency**: Natoli selects final images and copies to `public/images/`. Claude Code handles integration.
 
-- [x] **HF-3.1** Implement and Confirm UCS own logo renders correctly in navbar and footer at all breakpoints.
-- [x] **HF-3.2** _(Natoli)_ Choose hero/section background image for About page; copy to `public/images/about-bg.jpg` (or similar)
-- [x] **HF-3.3** _(Natoli)_ Choose background image for Services page; copy to `public/images/services-bg.jpg`
-- [x] **HF-3.4** Integrate images using `next/image` with `fill` layout, `object-cover`, correct `objectPosition`; add to `next.config` `remotePatterns` if external
-- [x] **HF-4.4** Verify no layout shift (CLS) introduced; confirm images render across dark/light modes
+#### Batch 1 — API & Data (Breaking Changes First)
 
-#### HF-5 — Data Visualization & Performance
 
-- [x] **5.1 Economic Dashboard Refinement**:
-  - Adjust 3-graph aspect ratio (reduce horizontal stretch, increase vertical presence).
-  - Add responsive padding to the container row to balance white space.
-- [x] **5.2 LRU Cache Implementation**:
-  - Implement indefinite TTL LRU cache for commodities historical data to minimize redundant API calls.
-  - Store data thinned (downsampled) from original ~6000 lines (5 years) to ~1000 points in cache overhead.
-  - Set cache to manually refresh through the API only once every 12 hours, using cached data as fallback.
-- [x] **5.3 Loader Resilience**: Fix bug where skeleton loaders fail to reset/disappear after API failure or subsequent successful fetch.
+
+- [x] **17.1** Team member image response: updated `image` to `string[]` in both interfaces; about page uses `image[0]`; detail page uses `image[1]` for hero bg and `image[3]` for profile photo (generic: any member with multiple images gets different hero vs profile shots).
+
+- [x] **17.2** News API endpoint swap. Added `NEXT_PUBLIC_SOCIAL_STREAM_URL` to `.env`; swapped to `/news/ultimate-consultancy-services/latest` and `/feed?page=X&page_size=9`; updated `NewsItem` type (`body`, `extra_images`, `published_at`), `PaginatedNewsResponse` (`page_size`), and all 3 render sites.
+
+- [x] **17.3** Integrated `percentage_change` from `/fx/latest` and `/commodities/latest`. Removed client-side calc helpers and hardcoded mocks. Null defaults to `0`.
+
+- [x] **17.4** Remove unused FX historical fetch. Delete `GET /fx/historical` calls from `hooks/use-economic-dashboard.ts` and any associated LRU cache keys in `lib/market-data-cache.ts`. Confirm commodity historical fetches still work.
+
+
+
+#### Batch 2 — Bug Fixes
+
+
+
+- [x] **17.5** Contact form success toast z-index + visibility: added `className="z-[9999]"` and `toastOptions` with solid white/navy background, border, and `shadow-2xl` drop shadow to `<Toaster>` in `app/layout.tsx`.
+
+- [x] **17.6** News filter bar sticky offset: changed to `top-19` in `app/news/page.tsx`.
+
+- [x] **17.7** Services Overview section links: updated "Learn More" hrefs to `/services#slug`; added `id` per tab button and hash-based tab activation in `service-pillars.tsx`.
+
+- [x] **17.8** Contact form phone auto-formatter: already implemented via `formatPhone()` — verified complete.
+
+- [x] **17.9** Contact form SQL injection filtering: added `INJECTION_RE` regex + `.refine(safe, ...)` to all text fields in Zod schema.
+
+
+
+#### Batch 3 — Visual Polish
+
+
+
+- [x] **17.10** Economic Dashboard symbol name sizing: increase symbol/icon name (e.g. XAU/USD, KC1) to at least `text-sm font-medium` with sufficient contrast. File: `components/home/economic-dashboard.tsx`.
+
+- [x] **17.11** Economic Dashboard symbol name justify + even spacing between the three words (e.g. Ethiopian GDP $149.74B FY 2024 · +8.7% YoY). File: `components/home/economic-dashboard.tsx`.
+
+- [x] **17.12** About page SPEED values: add `text-justify` to description paragraphs in the CoreValues / SPEED section. File: `components/home/core-values.tsx`.
+
+- [x] **17.13** Training pillar orbit animation: fix x/y keyframe animation so orbiting elements are separated by exactly 120° (for 3 items). Rotation should be mechanically uniform. File: `components/services/pillar-visual.tsx`.
+
+- [x] **17.13a** Economic Dashboard GDP YoY change: render `+X.X% YoY` in emerald (positive) or red (negative) via new `change` prop on `TextStatCard`. File: `components/home/economic-dashboard.tsx`.
+
+- [x] **17.14** Add a top padding to the home hero background image to prevent cropping of the building. Preferably same as the height of nav bar(top-19) or half of it so the image starts at the bottom of the nav bar. File: `components/home/hero.tsx`.
+
+
+
+#### Batch 4 — Responsive Fixes
+
+
+
+- [x] **17.15** Hero image mobile crop: on 375px–430px viewports, adjust `objectPosition` to keep the primary subject visible (e.g. `center 20%`). Test iPhone SE (375px) and iPhone 14 Pro (393px). File: `components/home/hero.tsx`.
+
+- [x] **17.16** Global Partners section mobile: reduce logo height from `h-12` to `h-8` below `md:`, reduce grid gap. Verify no horizontal overflow at 375px. File: `components/home/client-marquee.tsx`.
+
+- [x] **17.16a** Hero image mobile crop direction: changed `object-top` → `object-right-top sm:object-top` on home hero; `bg-top` → `bg-right-top sm:bg-top` on about/services PageHero. Crops from left on phones, preserving center-to-right subject. Files: `components/home/hero.tsx`, `app/about/page.tsx`, `app/services/page.tsx`.
+
+- [x] **17.16b** Client marquee edge blur: added `backdrop-blur-sm` with `mask-image` gradient overlays on top of the existing colour-fade overlays, creating a frosted-glass entrance/exit effect at both ends. File: `components/home/client-marquee.tsx`.
+
+- [x] **17.16c** Economic Dashboard TextStatCard mobile layout: changed `flex-col → flex-row` always, with `justify-between` and responsive font scaling (`text-xs sm:text-sm` / `text-sm sm:text-lg`). All three values stay on one line across all viewports. File: `components/home/economic-dashboard.tsx`.
+
+
+
+#### Batch 5 — New Features
+
+
+
+- [x] **17.17** News homepage section: editorial grid layout — 1 featured (left) + 3 stacked (right). Grid `lg:grid-cols-2`, column tops aligned via `pt-0` on first right item, `justify-between` fills height on desktop, thumbnails `w-24 h-20 sm:w-32 sm:h-24`, generous bottom padding `clamp(6rem,10vw,10rem)`, fully responsive (single-col mobile, wrapping header). File: `components/home/firm-news.tsx`.
+
+- [x] **17.18** Light/white mode theme: added `.light` class to `globals.css` with `--accent: var(--gold-600)` for contrast; 3-way segmented toggle (Sun/Building2/Contrast) in `theme-toggle.tsx`; updated ThemeProvider to include `"light"` theme; fixed hardcoded `bg-navy-900`/`text-white` in 12 content components to use semantic tokens (`bg-card`, `bg-muted`, `text-card-foreground`, etc.) while keeping branded sections (navbar, footer, hero, ticker) always dark. Visual audit passed on all pages (home, about, services, news, contact) at desktop and mobile.
+
+
+
+#### >> All Phase 17 tasks complete.
+
+
+### Phase 18 — Pre-Staging: Reverts, Polish & Responsiveness
+
+#### Reverts
+
+- [x] **18.1** News homepage section: revert to the original news section that existed before the `chore/plugin-fluff` cherry-pick. Remove the ported version entirely and restore what was there previously. Use `git log` or `git diff` to identify the original component if needed.
+
+- [x] **18.2** SPEED acronym values: revert the `text-justify` change on the SPEED values paragraphs under the home page. Return to the original text alignment.
+
+#### Visual Polish
+
+- [x] **18.3** Global Partners logos on About page: scale up logo sizes to be more visible. On the hover effect, add a `z-index` so the hovered logo renders above neighboring logos — only apply the z-index bump on hover, not at rest.
+
+- [x] **18.4** Currency ticker bar responsiveness: the ticker bar disappears entirely on mobile viewports. Fix so it remains visible on phone-sized screens. May need to adjust the layout, reduce item count, or allow horizontal scroll.
+
+- [x] **18.5** Client marquee mobile speed: increase marquee scroll speed on smaller breakpoints. Speed should scale proportionally — fastest on phone, medium on tablet, current speed on desktop. Adjust the CSS animation duration or JS config at `sm:` and `md:` breakpoints.
+
+#### >> All Phase 18 tasks complete.
+
+#### Post-18 Corrections (2026-04-08)
+- **18.1 re-done**: News section restored from `238fd9a` (not `e3b6fa6`) — horizontal carousel layout with `NewsCarouselLayout`, `useFirmNews(9)`, prev/next controls, modal on click.
+- **18.3 refined**: Orbital partner node reverted from `h-22` to `h-20 w-20`; z-index propagated to outer `motion.div.absolute` wrappers (not just `PartnerNode` inner div) so tooltip clears all neighbors on hover.
+
+
+### Phase 19 — Light Mode Visual Refinement
+
+- [ ] **19.1** __Paused__ Conduct a thorough visual audit of the entire site in light mode, comparing against the design mockups. Look for any inconsistencies in colors, spacing, typography, or component styling that may have been missed during development.
+
+#### >> Phase 20
+
+### Phase 20 — Demo Prep
+
+- [ ] **20.1–20.3, 20.5** UI review, cross-browser, mobile, demo script
+
+### License & Security
+
+- [x] **20.6** Replace the MIT license in LICENSE file with a proprietary license. Use this template, polished for professionalism: "".  Update the `license` field in `package.json` from `"MIT"` to `"SEE LICENSE IN LICENSE"`. Apply the same license to any other repos in the project (backend, etc.) if accessible.
+
+- [x] **20.7** Update source code files if any have header comments that mention the MIT License; you should either remove it or add a simple one-line header: // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved
+
+- [x] **20.8** Security audit: do a pass over the codebase for common frontend vulnerabilities — unescaped user input, exposed env vars in client bundles, open CORS issues, any hardcoded secrets. Flag and fix anything found.
+
+
+
+
+After writing the plan, run `npm run build` to confirm clean build, then report back.
+
+- [ ] **20.8** Deploy to staging
+
+- [ ] **20.10** Final stakeholder sign-off
+
+
+
+</details>
+
+
 
 ---
 
-## Remaining Phase Queue
 
-### Phase 12 — News + About Improvements
-
-- [ ] **12.2** _(Paused)_ Date-range filter for news archive (month/year picker against `publishedAt`)
-- [x] **12.3** Improve `NewsModal` — drop cap, pull quote typography, keyboard trap, smooth open/close
-- [x] **12.4** Fix the news filtering system so tag filtering works reliably again
-- [x] **12.5** Update the available news filter tags to match the real content tags, including leadership
-- [x] **12.6** Unify the news tag set between the home page and news page so both use the home-page tag list under the News section
-- [ ] **12.7** _(Paused)_ The news api returns multiple tags, but we only display one. Suggest a fix for that
-
-### Phase 13 — Remaining API Tasks
-
-- [x] **13.1** Image audit — enforce `aspect-square object-cover object-top` on team photos; `aspect-video object-cover` on news cards; `object-contain` in news modal carousel; migrate bare `<img>` tags to `next/image`
-- [x] **13.2** Use percentage based change key value pair from api for trend change. 
-- [x] **13.3** Use the team/team_member endpoint data appropriately
-- [x] **13.4** Commit + push, note phase 9 complete
-
-### Phase 13.9 — Stakeholder Data Confirmation Gate 
-
-- [x] **13.9.1** Vision & Mission — aligned to Document 1 site-wide (mock-data + about page)
-- [x] **13.9.2** SPEED core value titles confirmed ✅ (descriptions are expanded versions, titles match docs exactly)
-- [x] **13.9.3** Contact details — fixed address, phones, emails, P.O. Box, map coords in contact page + footer; refactored to use `contactInfo` from mock-data
-- [x] **13.9.4** Partner list — B&M and Precise Corporate Services confirmed as partners but commented out (no logo assets available); will uncomment when logos arrive
-- [x] **13.9.5** Client list — confirmed 15 clients match both documents ✅
-- [x] **13.9.6** Stats — fixed years 15+ → 14+ (founded 2012, now 2026)
-- [x] **13.9.7** Milestone years — user confirmed 2014, 2017, 2020 are accurate ✅
-- [x] **13.9.8** Publications — added 30th Anniversary Book
-- [x] **13.9.9** `internationalTrainingCountries` — Kenya, Thailand, Turkey confirmed ✅
-- [x] **13.9.10** Advisory offerings — aligned with Document 2; founding year fixed 2011→2012 everywhere; social links trimmed to LinkedIn + Telegram only
-- [x] **13.9.11** Team bios — backend task, not frontend. ✅
-- [ ] **13.9.12** _(Blocked)_ Partner logos for B&M Development Consultants and Precise Corporate Services — uncomment in mock-data when assets arrive
-
-### Phase 14 — Component Sourcing & Polish (21st.dev + manual)
-
-- [x] **14.1** Animated stats/metrics display — `HomeStatsStrip` polished: `requestAnimationFrame` counter with `easeOutQuart`, `prefers-reduced-motion` support, staggered entrance, editorial uppercase labels
-- [x] **14.2** Team member profile page overhaul:
-  - [x] Scroll-tracking Timeline component (`components/team/timeline.tsx`) with sticky year labels + gold gradient fill line
-  - [x] EducationSection refactored to use Timeline (degrees sorted by year desc)
-  - [x] ExperienceSection refactored to use Timeline (human-readable date formatting: "Jan 2012 – Present")
-  - [x] Awards section → dark navy gradient cards (2-col grid, gold icon circles, staggered entrance)
-  - [x] Skill pills → `whileInView` stagger animation (scale + fade)
-  - [x] Hero background → member's own blurred image instead of hardcoded stock photo
-  - [x] Removed hardcoded "Advisory" industry stat → data-driven "Roles Held" count
-  - [x] Added floating BackToTop button (`components/shared/back-to-top.tsx`) — navy/gold, gold ring, appears after 500px scroll
-  - [x] Widened content layout: `max-w-5xl` → `max-w-[1440px]` with `grid-cols-[280px_1fr]` for full-width content
-  - [x] Polish: removed dead code, `transition-all` → specific properties, consistent section spacing, capped stagger delays, timeline headings as `<p>` for a11y
-- [x] **14.3** Services animations
-- [x] **14.3b** Global Partners Section
-- [x] **14.4** Hero background element (subtle gradient or geometric SVG, no parallax)
-- [x] **14.7** Integrate sourced components, style to brand tokens
-- [x] **14.8** Vision and Mission tabs
-- [x] **14.9** UI review pass on all pages
-
-### Phase 15 — Security + Performance
-
-- [x] **15.1** Security audit — XSS vectors, no exposed secrets, CSP headers in `next.config`
-- [x] **15.2** Bundle size audit — `ANALYZE=true npm run build`, eliminate heavy deps
-- [x] **15.3** Image optimization — all `<img>` → `next/image`, explicit dimensions, WebP
-- [x] **15.4** Core Web Vitals — Lighthouse (LCP < 2.5s, CLS < 0.1, FID < 100ms)
-- [x] **15.5** Final build verification — clean `npm run build` with zero TS errors + ESLint warnings
-
-### Phase 16 — Demo Prep
-
-- [x] **16.1** Full-site UI review — all pages: home, about, services, news, contact, 404
-- [x] **16.2** Cross-browser — Chrome, Firefox, Safari (macOS + iOS)
-- [x] **16.3** Mobile viewports — iPhone SE (375px), iPhone 14 Pro (393px), iPad (768px)
-- [ ] **16.4** Deploy to staging — Vercel preview, share URL with stakeholders
-- [x] **16.5** Demo script — page-by-page walkthrough notes + talking points
-- [ ] **16.6** Final stakeholder sign-off on UI, content, and data
-
----
-
-## Current Task
-
-> > **14.3** — Services animations (next up)
----
 
 ## Blocked Items
 
-| Item                                  | Blocker                          | Owner            |
-| ------------------------------------- | -------------------------------- | ---------------- |
-| Home page section reorder             | Input from @jaft24               | @Natoli74        |
-| Date-range filter for news archive (month/year picker against `publishedAt`)             | Input from ucs-service-api              | @Natoli74        |
-| The news api returns multiple tags, but we only display one. Suggest a fix for that           | Input from ucs-service-api              | @Natoli74        |
-| Partner logos for B&M Development Consultants and Precise Corporate Services           | Missing Logo             | @Natoli74        |
+
+
+| Item | Blocker | Owner |
+
+|------|---------|-------|
+
+| Date-range filter for news archive | Input from ucs-service-api | @Natoli74 |
+
+| Multi-tag display in news | Input from ucs-service-api | @Natoli74 |
+
+| Partner logos (B&M, Precise) | Missing assets | @Natoli74 |
+
+| Deploy to staging | Awaiting revamp completion | @Natoli74 |
+
+
 
 ---
 
+
+
 ## Content Gaps
 
-| #   | Item                                        | Status                                                                                     |
-| --- | ------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 1   | Milestone timeline years (2014, 2017, 2020) | ⚠️ Unconfirmed                                                                             |
-| 2   | Hero sub-copy                               | ⚠️ Adapted, not sourced from firm                                                          |
-| 3   | SPEED core value descriptions               | ⚠️ Claude-written, needs stakeholder sign-off                                              |
-| 4   | Team member bios                            | ⚠️ Blocked on stakeholders                                                                 |
-| 5   | Partner logos (all 10)                      | ⚠️ Missing                                                                                 |
-| 6   | Client logos (6 of 19)                      | ⚠️ Siinqee Bank, CBE, VisionFund, United Insurance, IRC, National Alcohol & Liquor Factory |
-| 7   | Publications list completeness              | ⚠️ 2 confirmed; may be more                                                                |
-| 8   | Oda publication year                        | ⚠️ null — confirm with stakeholders                                                        |
+
+
+| # | Item | Status |
+
+|---|------|--------|
+
+| 1 | Hero sub-copy | ⚠️ Adapted, not sourced from firm |
+
+| 2 | SPEED core value descriptions | ⚠️ Claude-written, needs sign-off |
+
+| 3 | Team member bios | ⚠️ Blocked on stakeholders |
+
+| 4 | Partner logos (all 10) | ⚠️ Missing |
+
+| 5 | Client logos (6 of 19) | ⚠️ Siinqee, CBE, VisionFund, United Insurance, IRC, NALF |
+
+| 6 | Publications completeness | ⚠️ 2 confirmed; may be more |
+
+| 7 | Oda publication year | ⚠️ null — confirm with stakeholders |
+

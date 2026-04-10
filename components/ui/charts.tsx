@@ -55,14 +55,14 @@ export const MiniLineChart = ({
           <>
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 9, fill: "#94a3b8" }}
+              tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
               tickLine={false}
               axisLine={false}
               interval="preserveStartEnd"
             />
             <YAxis
               domain={["dataMin", "dataMax"]}
-              tick={{ fontSize: 9, fill: "#94a3b8" }}
+              tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
               tickLine={false}
               axisLine={false}
               width={36}
@@ -115,15 +115,15 @@ export const SparklineChart = ({
             if (!active || !payload?.length) return null;
             const raw = payload[0].payload as unknown as { date: string; value: number };
             return (
-              <div className="rounded-md bg-navy-950 border border-white/10 px-2.5 py-1.5 text-[10px] shadow-xl">
-                <p className="text-white/50 mb-0.5">{raw.date}</p>
-                <p className="font-semibold text-white">
+              <div className="rounded-md bg-card border border-border px-2.5 py-1.5 text-[10px] shadow-xl">
+                <p className="text-muted-foreground mb-0.5">{raw.date}</p>
+                <p className="font-semibold text-card-foreground">
                   {valueFormatter ? valueFormatter(raw.value) : raw.value}
                 </p>
               </div>
             );
           }}
-          cursor={{ stroke: "rgba(148,163,184,0.15)", strokeWidth: 1 }}
+          cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }}
         />
         <Area
           type="monotone"

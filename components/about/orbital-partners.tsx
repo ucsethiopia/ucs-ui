@@ -12,6 +12,7 @@ function PartnerNode({
   logo,
   country,
   isHovered,
+  isGlobal,
   onHover,
   onLeave,
 }: {
@@ -19,6 +20,7 @@ function PartnerNode({
   logo: string;
   country?: string;
   isHovered: boolean;
+  isGlobal?: boolean;
   onHover: () => void;
   onLeave: () => void;
 }) {
@@ -34,12 +36,21 @@ function PartnerNode({
   return (
     <motion.div
       className={cn(
-        "relative -ml-9 -mt-9 flex h-18 w-18 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300",
-        isHovered ? "border-gold-500" : "border-border"
+        "relative -ml-9 -mt-9 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+        isHovered
+          ? "border-gold-500"
+          : isGlobal
+            ? "border-gold-500/50"
+            : "border-border"
       )}
-      whileHover={{ scale: 1.15 }}
+      tabIndex={0}
+      role="button"
+      aria-label={`${name}${country ? `, ${country}` : ""}`}
+      whileHover={{ scale: 1.15, zIndex: 10 }}
       onHoverStart={onHover}
       onHoverEnd={onLeave}
+      onFocus={onHover}
+      onBlur={onLeave}
     >
       {logo && !imgError ? (
         <div className="relative h-full w-full">
@@ -49,7 +60,7 @@ function PartnerNode({
             fill
             className="object-contain"
             onError={() => setImgError(true)}
-            sizes="72px"
+            sizes="80px"
           />
         </div>
       ) : (
@@ -118,7 +129,7 @@ export function OrbitalPartners() {
       </div>
 
       {/* Orbital visualization */}
-      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center">
+      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center scale-[0.6] sm:scale-75 md:scale-100 origin-center">
         {/* Orbit rings — SVG */}
         <svg
           className="absolute inset-0 h-full w-full"
@@ -205,7 +216,7 @@ export function OrbitalPartners() {
             <motion.div
               key={`local-${partner.id}`}
               className="absolute"
-              style={{ left: "50%", top: "50%" }}
+              style={{ left: "50%", top: "50%", zIndex: hoveredPartner === partner.name ? 20 : 1 }}
               initial={{ x: 0, y: 0, opacity: 0 }}
               animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
               transition={{
@@ -226,7 +237,7 @@ export function OrbitalPartners() {
           );
         })}
 
-        {/* Outer ring — Overseas partners */}
+        {/* Outer ring — Overseas/Global partners */}
         {overseasPartners.map((partner, index) => {
           const pos = getOrbitPosition(
             index,
@@ -237,7 +248,7 @@ export function OrbitalPartners() {
             <motion.div
               key={`overseas-${partner.id}`}
               className="absolute"
-              style={{ left: "50%", top: "50%" }}
+              style={{ left: "50%", top: "50%", zIndex: hoveredPartner === partner.name ? 20 : 1 }}
               initial={{ x: 0, y: 0, opacity: 0 }}
               animate={inView ? { x: pos.x, y: pos.y, opacity: 1 } : { x: 0, y: 0, opacity: 0 }}
               transition={{
@@ -251,6 +262,7 @@ export function OrbitalPartners() {
                 logo={partner.logo}
                 country={partner.country}
                 isHovered={hoveredPartner === partner.name}
+                isGlobal
                 onHover={() => setHoveredPartner(partner.name)}
                 onLeave={() => setHoveredPartner(null)}
               />
@@ -262,11 +274,11 @@ export function OrbitalPartners() {
       {/* Legend */}
       <div className="mt-8 flex justify-center gap-8 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-gold-500/40 border border-gold-500/60" />
+          <div className="h-2.5 w-2.5 rounded-full bg-primary/30 border border-primary/50" />
           <span>Local Partners</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-primary/30 border border-primary/50" />
+          <div className="h-2.5 w-2.5 rounded-full bg-gold-500/40 border border-gold-500/60" />
           <span>Overseas Partners</span>
         </div>
       </div>

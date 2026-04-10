@@ -39,7 +39,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-navy-950/80 backdrop-blur-sm animate-in fade-in duration-200"
+        className="absolute inset-0 bg-black/60 dark:bg-navy-950/80 backdrop-blur-sm animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
