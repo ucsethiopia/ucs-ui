@@ -1,60 +1,40 @@
-   git clone <repository-url>
-   cd ucs-ui
-   ```
+# UCS Ethiopia — Frontend
 
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   pnpm install
-   ```
+Enterprise consultancy platform frontend for Ultimate Consultancy Service (UCS Ethiopia).
 
-### Development
+> **Private Repository** — This codebase is proprietary and confidential. Unauthorized use, distribution, or reproduction is prohibited.
 
-Run the development server:
+---
+
+## Prerequisites
+
+- Node.js 20+
+- npm
+
+---
+
+## Local Setup
 
 ```bash
+npm install
 npm run dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Build
+---
 
-Build the application for production:
+## Commands
 
-```bash
-npm run build
-# or
-pnpm build
-```
+| Command         | Description                        |
+| --------------- | ---------------------------------- |
+| `npm run dev`   | Start development server           |
+| `npm run build` | Production build                   |
+| `npm run lint`  | Run ESLint                         |
+| `npm run start` | Start production server            |
 
-### Run Production
+---
 
-Start the production server:
+## License
 
-```bash
-npm run start
-# or
-pnpm start
-```
-
-## Project Structure
-
-```
-ucs-ui/
-├── app/                  # Next.js application pages
-│   ├── page.tsx          # Home page
-│   ├── layout.tsx        # Root layout
-│   └── ...
-├── components/           # Reusable UI components
-│   ├── layout/           # Layout components (Navbar, Footer)
-│   ├── home/             # Home page specific components
-│   ├── ui/               # General UI primitives (Button, Card, etc.)
-│   └── ...
-├── hooks/                # Custom React hooks
-├── lib/                  # Utility functions and constants
-├── public/               # Static assets
-└── styles/               # Global styles and Tailwind config
+Copyright © 2025 Ultimate Consultancy Service (UCS Ethiopia). All rights reserved.
