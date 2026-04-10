@@ -110,14 +110,14 @@ export function PageHero({
     >
       {/* Background Image */}
       {backgroundImage && (
-        <div className="absolute inset-0 overflow-hidden">
+        <div className={`absolute inset-0 overflow-hidden ${condensed ? "top-9 sm:top-19" : ""}`}>
           <Image
             src={backgroundImage}
             alt=""
             fill
             sizes="100vw"
             priority
-            className={`object-cover ${condensed ? "top-9 sm:top-19" : ""} ${backgroundPositionClass.replace("bg-", "object-")}`}
+            className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
           />
           {/* Overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />

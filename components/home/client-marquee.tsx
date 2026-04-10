@@ -50,7 +50,7 @@ export function ClientMarquee() {
   const duplicatedClients = [...clientLogos, ...clientLogos];
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden border-y border-border/50 light:border-0">
+    <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden">
       {/* Clients Section */}
       <div>
         <Container className="mb-6">
@@ -72,7 +72,7 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent shadow-[inset_0_1px_8px_0_var(--color-border),inset_0_-1px_8px_0_var(--color-border)] light:shadow-none"
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >

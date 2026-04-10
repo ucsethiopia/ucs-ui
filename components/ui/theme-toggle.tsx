@@ -12,8 +12,8 @@ interface ThemeToggleProps {
 
 const themes = [
   { key: "light", icon: Sun, label: "Light" },
-  { key: "blue-black", icon: Building2, label: "Navy" },
   { key: "inverted", icon: Contrast, label: "Dark" },
+  { key: "blue-black", icon: Building2, label: "Navy" },
 ] as const
 
 export function ThemeToggle({ className, inheritTextColor = false }: ThemeToggleProps) {

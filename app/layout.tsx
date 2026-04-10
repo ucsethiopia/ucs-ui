@@ -60,7 +60,7 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="blue-black"
+          defaultTheme="inverted"
           themes={["light", "blue-black", "inverted"]}
           enableSystem={false}
           disableTransitionOnChange={false}
