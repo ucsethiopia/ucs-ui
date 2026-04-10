@@ -103,6 +103,7 @@ export function PageHero({
   }
 
   return (
+    <>
     <section
       className={`relative bg-navy-950 ${
         condensed ? "min-h-[65vh] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
@@ -122,9 +123,9 @@ export function PageHero({
           {/* Overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />
           {/* Light mode: dissolve edges into white page */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
-          <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-[1] opacity-0 light:opacity-100 pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-0 bg-gradient-to-r from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-0 bg-gradient-to-l from-white to-transparent z-[1] block dark:hidden pointer-events-none" />
         </div>
       )}
 
@@ -166,5 +167,9 @@ export function PageHero({
         </div>
       </Container>
     </section>
+    <div className="pointer-events-none relative h-0" aria-hidden="true">
+      <div className="absolute left-1/2 -translate-x-1/2 w-screen border-t-2 deco-h" />
+    </div>
+    </>
   );
 }
