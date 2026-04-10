@@ -8,8 +8,8 @@ Enterprise consultancy platform frontend for Ultimate Consultancy Service (UCS E
 
 ## Prerequisites
 
-- Node.js 20+
-- npm
+- Node.js 20+ 
+- npm 
 
 ---
 
