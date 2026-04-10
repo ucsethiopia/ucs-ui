@@ -52,6 +52,7 @@ assets/logos
 .agents
 skills-lock.json
 docs
-
+.claude
+api-docs
 news-section.md
 
