@@ -30,22 +30,22 @@ interface TextStatCardProps {
 function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2">
-        <Skeleton className="h-3 w-16 flex-shrink-0" />
-        <Skeleton className="h-5 w-14 flex-shrink-0" />
-        <Skeleton className="h-3 w-24 flex-shrink-0" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 grid grid-cols-[2fr_1.5fr_2fr] items-center gap-2">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-5 w-14 justify-self-center" />
+        <Skeleton className="h-3 w-24 justify-self-end" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <span className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 grid grid-cols-[2fr_1.5fr_2fr] items-center gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
         {label}
       </span>
-      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap text-center">
         {value}
       </span>
-      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight">
+      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight min-w-0">
         {subLabel}
         {change !== undefined && (
           <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
