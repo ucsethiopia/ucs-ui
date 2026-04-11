@@ -1,4 +1,6 @@
-# UCS Ethiopia — Frontend
+# UCS Ethiopia
+
+<img src="https://github.com/ucsethiopia/ucs-ui/blob/main/public/images/logos/ucs/logo-white.png" width="500" height="200">
 
 Enterprise consultancy platform frontend for Ultimate Consultancy Service (UCS Ethiopia).
 
