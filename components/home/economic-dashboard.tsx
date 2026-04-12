@@ -48,8 +48,13 @@ function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardP
       <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight min-w-0">
         {subLabel}
         {change !== undefined && (
-          <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
-            · {change >= 0 ? "+" : ""}{change.toFixed(1)}% YoY
+          <span className={cn(
+            "ml-1 font-medium",
+            Math.abs(change) < 0.01 ? "text-muted-foreground"
+              : change > 0 ? "text-emerald-500"
+              : "text-red-500"
+          )}>
+            · {Math.abs(change) < 0.01 ? "" : change > 0 ? "+" : ""}{Math.abs(change) < 0.01 ? "0.0" : change.toFixed(1)}% YoY
           </span>
         )}
       </span>
@@ -133,7 +138,7 @@ function StatCard({
 
 function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
   if (pct != null) {
-    if (pct === 0) return "0.00%";
+    if (Math.abs(pct) < 0.01) return "0.00%";
     const sign = pct > 0 ? "+" : "";
     const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
     return `${arrow} ${sign}${pct.toFixed(2)}%`.trim();
@@ -144,7 +149,7 @@ function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
 }
 
 function trendVariant(trend: "up" | "down" | "unchanged", pct?: number): "up" | "down" | "neutral" {
-  if (pct === 0) return "neutral";
+  if (pct != null && Math.abs(pct) < 0.01) return "neutral";
   if (trend === "up") return "up";
   if (trend === "down") return "down";
   return "neutral";

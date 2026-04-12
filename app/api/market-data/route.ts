@@ -1,30 +1,9 @@
 // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved.
 
 import { NextResponse } from "next/server";
-import { LRUCache } from "lru-cache";
 import type { EconomicDashboardData, TimeSeriesData } from "@/lib/market-data-types";
 
 const BASE_URL = process.env.MARKET_DATA_API_URL ?? "";
-
-// ─── Server-side Cache ────────────────────────────────────────────────────────
-// Module-level — persists between requests while the Vercel function is warm.
-// BetterStack should ping /api/market-data every 30s to keep it warm.
-// TTL is indefinite: updated on every successful fetch, served stale on failure.
-
-interface ServerCache {
-  data: EconomicDashboardData;
-  commodityHistoryCachedAt: number; // epoch ms — controls 12-hour re-fetch window
-}
-
-// globalThis pattern: survives Next.js HMR module reloads in dev,
-// and persists between warm invocations in production (Vercel serverless).
-const g = globalThis as typeof globalThis & {
-  _marketCache?: LRUCache<"market", ServerCache>;
-};
-if (!g._marketCache) {
-  g._marketCache = new LRUCache<"market", ServerCache>({ max: 1, ttl: 0 });
-}
-const cache = g._marketCache;
 
 // ─── Static GDP data ──────────────────────────────────────────────────────────
 
@@ -37,12 +16,12 @@ const GDP_HISTORY: { value: number; year: string }[] = [
   { year: "2024", value: 149.74 },
 ];
 
-function computeGdpGrowth(): number {
-  const len = GDP_HISTORY.length;
-  if (len < 2) return 0;
-  const prev = GDP_HISTORY[len - 2].value;
-  const curr = GDP_HISTORY[len - 1].value;
-  return parseFloat((((curr - prev) / prev) * 100).toFixed(1));
+// GDP_HISTORY is a lookup table of prior-year baselines.
+// Growth is computed against the live API value, not hardcoded current values.
+function computeGdpGrowth(liveValue: number, liveYear: string): number {
+  const prevEntry = GDP_HISTORY.find((h) => h.year === String(parseInt(liveYear) - 1));
+  if (!prevEntry || prevEntry.value === 0) return 0;
+  return parseFloat((((liveValue - prevEntry.value) / prevEntry.value) * 100).toFixed(1));
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -53,10 +32,12 @@ function directionToTrend(d: string): "up" | "down" | "unchanged" {
   return "unchanged";
 }
 
+const MEANINGFUL_CHANGE_THRESHOLD = 0.01;
+
 function pctToTrend(pct: number): "up" | "down" | "unchanged" {
+  if (Math.abs(pct) < MEANINGFUL_CHANGE_THRESHOLD) return "unchanged";
   if (pct > 0) return "up";
-  if (pct < 0) return "down";
-  return "unchanged";
+  return "down";
 }
 
 function buildDateRange(months: number): { from: string; to: string } {
@@ -115,51 +96,28 @@ function processCommodityHistory(data: { date: string; close: number }[]): TimeS
 }
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
+// Fetch caching is delegated to Vercel Data Cache via next: { revalidate }.
+// Current rates (FX, commodities, interest, GDP) revalidate every hour.
+// Commodity history revalidates every 12 hours.
+// Stale-while-revalidate is handled by the Data Cache across cold starts.
 
 export async function GET() {
-  const cached = cache.get("market");
-  const now = Date.now();
-  const twelveHours = 12 * 60 * 60 * 1000;
-
-  const needsHistoryRefetch =
-    !cached || now - cached.commodityHistoryCachedAt >= twelveHours;
-
   try {
     if (!BASE_URL) throw new Error("MARKET_DATA_API_URL not configured");
 
     const { to } = buildDateRange(12);
     const { from: commodFrom } = buildDateRange(60);
 
-    const basePromises: Promise<Response>[] = [
-      fetch(`${BASE_URL}/fx/latest`),
-      fetch(`${BASE_URL}/commodities/latest`),
-      fetch(`${BASE_URL}/interest`),
-      fetch(`${BASE_URL}/gdp`),
-    ];
-
-    if (needsHistoryRefetch) {
-      basePromises.push(
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`).catch(() => new Response(null, { status: 500 })),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`).catch(() => new Response(null, { status: 500 })),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`).catch(() => new Response(null, { status: 500 }))
-      );
-    }
-
-    const responses = await Promise.all(basePromises);
-
-    // Critical endpoints must succeed
-    for (let i = 0; i < 4; i++) {
-      if (!responses[i].ok) {
-        throw new Error(`API error: ${responses[i].status} on endpoint ${i}`);
-      }
-    }
-
-    const [fx, commod, interest, gdp] = await Promise.all([
-      responses[0].json(),
-      responses[1].json(),
-      responses[2].json(),
-      responses[3].json(),
-    ]);
+    const [fx, commod, interest, gdp, rawGold, rawSilver, rawCoffee] =
+      await Promise.all([
+        fetch(`${BASE_URL}/fx/latest`,          { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`fx/latest: ${r.status}`); return r.json(); }),
+        fetch(`${BASE_URL}/commodities/latest`, { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`commodities/latest: ${r.status}`); return r.json(); }),
+        fetch(`${BASE_URL}/interest`,           { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`interest: ${r.status}`); return r.json(); }),
+        fetch(`${BASE_URL}/gdp`,                { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`gdp: ${r.status}`); return r.json(); }),
+        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`, { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`, { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,        { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
+      ]);
 
     const rates = fx.rates ?? {};
     const commodities = commod.commodities ?? {};
@@ -175,30 +133,6 @@ export async function GET() {
     const silverPct = commodities["XAG/USD"]?.percentage_change ?? 0;
     const coffeePct = commodities["KC1"]?.percentage_change ?? 0;
 
-    // Commodity history: use fresh fetch if due, else reuse cached
-    let goldHistory: TimeSeriesData[] = cached?.data.commodityHistory.gold ?? [];
-    let silverHistory: TimeSeriesData[] = cached?.data.commodityHistory.silver ?? [];
-    let coffeeHistory: TimeSeriesData[] = cached?.data.commodityHistory.coffee ?? [];
-    let commodityHistoryCachedAt = cached?.commodityHistoryCachedAt ?? 0;
-
-    if (needsHistoryRefetch && responses.length >= 7) {
-      const [rawGold, rawSilver, rawCoffee] = await Promise.all([
-        responses[4]?.ok ? responses[4].json().catch(() => null) : Promise.resolve(null),
-        responses[5]?.ok ? responses[5].json().catch(() => null) : Promise.resolve(null),
-        responses[6]?.ok ? responses[6].json().catch(() => null) : Promise.resolve(null),
-      ]);
-
-      if (rawGold) goldHistory = processCommodityHistory(rawGold.data);
-      if (rawSilver) silverHistory = processCommodityHistory(rawSilver.data);
-      if (rawCoffee) coffeeHistory = processCommodityHistory(rawCoffee.data);
-
-      // Only advance the timestamp if all three succeeded
-      if (rawGold && rawSilver && rawCoffee) {
-        commodityHistoryCachedAt = now;
-      }
-    }
-
-    const gdpGrowth = computeGdpGrowth();
     const lastGdp = GDP_HISTORY[GDP_HISTORY.length - 1];
 
     const data: EconomicDashboardData = {
@@ -215,23 +149,22 @@ export async function GET() {
         silver: { symbol: "XAG/USD", name: "Silver", price: commodities["XAG/USD"]?.price ?? 0, trend: pctToTrend(silverPct), percentageChange: silverPct },
         coffee: { symbol: "KC1",     name: "Coffee", price: commodities["KC1"]?.price ?? 0,     trend: pctToTrend(coffeePct), percentageChange: coffeePct },
       },
-      commodityHistory: { gold: goldHistory, silver: silverHistory, coffee: coffeeHistory },
+      commodityHistory: {
+        gold:   rawGold   ? processCommodityHistory(rawGold.data)   : [],
+        silver: rawSilver ? processCommodityHistory(rawSilver.data) : [],
+        coffee: rawCoffee ? processCommodityHistory(rawCoffee.data) : [],
+      },
       interestRate: { policyRate: interest.policy_rate ?? 0, tbillYield: interest.tbill_yield ?? 0 },
-      gdp: { value: gdp.value ?? lastGdp.value, year: String(gdp.year ?? lastGdp.year), growth: gdpGrowth },
+      gdp: {
+        value: gdp.value ?? lastGdp.value,
+        year: String(gdp.year ?? lastGdp.year),
+        growth: computeGdpGrowth(gdp.value ?? lastGdp.value, String(gdp.year ?? lastGdp.year)),
+      },
       lastUpdated: new Date().toISOString(),
     };
 
-    cache.set("market", { data, commodityHistoryCachedAt });
-
     return NextResponse.json({ data, stale: false });
   } catch (err) {
-    // API failed — serve stale cache if available
-    if (cached) {
-      console.warn("[/api/market-data] API error, serving stale cache:", err);
-      return NextResponse.json({ data: cached.data, stale: true });
-    }
-
-    // No cache at all — nothing to serve
     console.error("[/api/market-data] API error, no cache available:", err);
     return NextResponse.json(
       { error: "Market data unavailable" },
