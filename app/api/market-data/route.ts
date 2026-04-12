@@ -1,9 +1,12 @@
 // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved.
 
 import { NextResponse } from "next/server";
-import type { EconomicDashboardData, TimeSeriesData } from "@/lib/market-data-types";
+import type {
+  EconomicDashboardData,
+  TimeSeriesData,
+} from "@/lib/market-data-types";
 
-const BASE_URL = process.env.MARKET_DATA_API_URL ?? "";
+const BASE_URL = "https://mock-error-endpoint.com";
 
 // ─── Static GDP data ──────────────────────────────────────────────────────────
 
@@ -19,9 +22,13 @@ const GDP_HISTORY: { value: number; year: string }[] = [
 // GDP_HISTORY is a lookup table of prior-year baselines.
 // Growth is computed against the live API value, not hardcoded current values.
 function computeGdpGrowth(liveValue: number, liveYear: string): number {
-  const prevEntry = GDP_HISTORY.find((h) => h.year === String(parseInt(liveYear) - 1));
+  const prevEntry = GDP_HISTORY.find(
+    (h) => h.year === String(parseInt(liveYear) - 1),
+  );
   if (!prevEntry || prevEntry.value === 0) return 0;
-  return parseFloat((((liveValue - prevEntry.value) / prevEntry.value) * 100).toFixed(1));
+  return parseFloat(
+    (((liveValue - prevEntry.value) / prevEntry.value) * 100).toFixed(1),
+  );
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -58,10 +65,13 @@ function parseDateForChart(dateStr: string): string {
 
 function downsampleKeepingSpikes(
   raw: { date: string; value: number }[],
-  targetPoints = 1000
+  targetPoints = 1000,
 ): TimeSeriesData[] {
   if (!raw || raw.length <= targetPoints) {
-    return (raw ?? []).map((r) => ({ date: parseDateForChart(r.date), value: r.value }));
+    return (raw ?? []).map((r) => ({
+      date: parseDateForChart(r.date),
+      value: r.value,
+    }));
   }
 
   const result: TimeSeriesData[] = [];
@@ -85,14 +95,21 @@ function downsampleKeepingSpikes(
       }
     }
 
-    result.push({ date: parseDateForChart(furthest.date), value: furthest.value });
+    result.push({
+      date: parseDateForChart(furthest.date),
+      value: furthest.value,
+    });
   }
 
   return result;
 }
 
-function processCommodityHistory(data: { date: string; close: number }[]): TimeSeriesData[] {
-  return downsampleKeepingSpikes((data ?? []).map((d) => ({ date: d.date, value: d.close })));
+function processCommodityHistory(
+  data: { date: string; close: number }[],
+): TimeSeriesData[] {
+  return downsampleKeepingSpikes(
+    (data ?? []).map((d) => ({ date: d.date, value: d.close })),
+  );
 }
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
@@ -110,13 +127,46 @@ export async function GET() {
 
     const [fx, commod, interest, gdp, rawGold, rawSilver, rawCoffee] =
       await Promise.all([
-        fetch(`${BASE_URL}/fx/latest`,          { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`fx/latest: ${r.status}`); return r.json(); }),
-        fetch(`${BASE_URL}/commodities/latest`, { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`commodities/latest: ${r.status}`); return r.json(); }),
-        fetch(`${BASE_URL}/interest`,           { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`interest: ${r.status}`); return r.json(); }),
-        fetch(`${BASE_URL}/gdp`,                { next: { revalidate: 3600 } }).then((r) => { if (!r.ok) throw new Error(`gdp: ${r.status}`); return r.json(); }),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`, { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`, { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,        { next: { revalidate: 43200 } }).then((r) => r.ok ? r.json() : null).catch(() => null),
+        fetch(`${BASE_URL}/fx/latest`, { next: { revalidate: 3600 } }).then(
+          (r) => {
+            if (!r.ok) throw new Error(`fx/latest: ${r.status}`);
+            return r.json();
+          },
+        ),
+        fetch(`${BASE_URL}/commodities/latest`, {
+          next: { revalidate: 3600 },
+        }).then((r) => {
+          if (!r.ok) throw new Error(`commodities/latest: ${r.status}`);
+          return r.json();
+        }),
+        fetch(`${BASE_URL}/interest`, { next: { revalidate: 3600 } }).then(
+          (r) => {
+            if (!r.ok) throw new Error(`interest: ${r.status}`);
+            return r.json();
+          },
+        ),
+        fetch(`${BASE_URL}/gdp`, { next: { revalidate: 3600 } }).then((r) => {
+          if (!r.ok) throw new Error(`gdp: ${r.status}`);
+          return r.json();
+        }),
+        fetch(
+          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`,
+          { next: { revalidate: 43200 } },
+        )
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
+        fetch(
+          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`,
+          { next: { revalidate: 43200 } },
+        )
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
+        fetch(
+          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,
+          { next: { revalidate: 43200 } },
+        )
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
       ]);
 
     const rates = fx.rates ?? {};
@@ -137,28 +187,76 @@ export async function GET() {
 
     const data: EconomicDashboardData = {
       fxRates: {
-        usd: { rate: rates.USD?.rate ?? 0, trend: directionToTrend(rates.USD?.direction ?? "unchanged"), percentageChange: usdPct },
-        eur: { rate: rates.EUR?.rate ?? 0, trend: directionToTrend(rates.EUR?.direction ?? "unchanged"), percentageChange: eurPct },
-        gbp: { rate: rates.GBP?.rate ?? 0, trend: directionToTrend(rates.GBP?.direction ?? "unchanged"), percentageChange: gbpPct },
-        aud: { rate: rates.AUD?.rate ?? 0, trend: directionToTrend(rates.AUD?.direction ?? "unchanged"), percentageChange: audPct },
-        jpy: { rate: rates.JPY?.rate ?? 0, trend: directionToTrend(rates.JPY?.direction ?? "unchanged"), percentageChange: jpyPct },
-        cny: { rate: rates.CNY?.rate ?? 0, trend: directionToTrend(rates.CNY?.direction ?? "unchanged"), percentageChange: cnyPct },
+        usd: {
+          rate: rates.USD?.rate ?? 0,
+          trend: directionToTrend(rates.USD?.direction ?? "unchanged"),
+          percentageChange: usdPct,
+        },
+        eur: {
+          rate: rates.EUR?.rate ?? 0,
+          trend: directionToTrend(rates.EUR?.direction ?? "unchanged"),
+          percentageChange: eurPct,
+        },
+        gbp: {
+          rate: rates.GBP?.rate ?? 0,
+          trend: directionToTrend(rates.GBP?.direction ?? "unchanged"),
+          percentageChange: gbpPct,
+        },
+        aud: {
+          rate: rates.AUD?.rate ?? 0,
+          trend: directionToTrend(rates.AUD?.direction ?? "unchanged"),
+          percentageChange: audPct,
+        },
+        jpy: {
+          rate: rates.JPY?.rate ?? 0,
+          trend: directionToTrend(rates.JPY?.direction ?? "unchanged"),
+          percentageChange: jpyPct,
+        },
+        cny: {
+          rate: rates.CNY?.rate ?? 0,
+          trend: directionToTrend(rates.CNY?.direction ?? "unchanged"),
+          percentageChange: cnyPct,
+        },
       },
       commodities: {
-        gold:   { symbol: "XAU/USD", name: "Gold",   price: commodities["XAU/USD"]?.price ?? 0, trend: pctToTrend(goldPct),   percentageChange: goldPct },
-        silver: { symbol: "XAG/USD", name: "Silver", price: commodities["XAG/USD"]?.price ?? 0, trend: pctToTrend(silverPct), percentageChange: silverPct },
-        coffee: { symbol: "KC1",     name: "Coffee", price: commodities["KC1"]?.price ?? 0,     trend: pctToTrend(coffeePct), percentageChange: coffeePct },
+        gold: {
+          symbol: "XAU/USD",
+          name: "Gold",
+          price: commodities["XAU/USD"]?.price ?? 0,
+          trend: pctToTrend(goldPct),
+          percentageChange: goldPct,
+        },
+        silver: {
+          symbol: "XAG/USD",
+          name: "Silver",
+          price: commodities["XAG/USD"]?.price ?? 0,
+          trend: pctToTrend(silverPct),
+          percentageChange: silverPct,
+        },
+        coffee: {
+          symbol: "KC1",
+          name: "Coffee",
+          price: commodities["KC1"]?.price ?? 0,
+          trend: pctToTrend(coffeePct),
+          percentageChange: coffeePct,
+        },
       },
       commodityHistory: {
-        gold:   rawGold   ? processCommodityHistory(rawGold.data)   : [],
+        gold: rawGold ? processCommodityHistory(rawGold.data) : [],
         silver: rawSilver ? processCommodityHistory(rawSilver.data) : [],
         coffee: rawCoffee ? processCommodityHistory(rawCoffee.data) : [],
       },
-      interestRate: { policyRate: interest.policy_rate ?? 0, tbillYield: interest.tbill_yield ?? 0 },
+      interestRate: {
+        policyRate: interest.policy_rate ?? 0,
+        tbillYield: interest.tbill_yield ?? 0,
+      },
       gdp: {
         value: gdp.value ?? lastGdp.value,
         year: String(gdp.year ?? lastGdp.year),
-        growth: computeGdpGrowth(gdp.value ?? lastGdp.value, String(gdp.year ?? lastGdp.year)),
+        growth: computeGdpGrowth(
+          gdp.value ?? lastGdp.value,
+          String(gdp.year ?? lastGdp.year),
+        ),
       },
       lastUpdated: new Date().toISOString(),
     };
@@ -168,7 +266,7 @@ export async function GET() {
     console.error("[/api/market-data] API error, no cache available:", err);
     return NextResponse.json(
       { error: "Market data unavailable" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }
