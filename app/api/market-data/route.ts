@@ -1,6 +1,7 @@
 // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved.
 
 import { NextResponse } from "next/server";
+import { unstable_cache } from "next/cache";
 import type {
   EconomicDashboardData,
   TimeSeriesData,
@@ -39,12 +40,10 @@ function directionToTrend(d: string): "up" | "down" | "unchanged" {
   return "unchanged";
 }
 
-const MEANINGFUL_CHANGE_THRESHOLD = 0.01;
-
 function pctToTrend(pct: number): "up" | "down" | "unchanged" {
-  if (Math.abs(pct) < MEANINGFUL_CHANGE_THRESHOLD) return "unchanged";
   if (pct > 0) return "up";
-  return "down";
+  if (pct < 0) return "down";
+  return "unchanged";
 }
 
 function buildDateRange(months: number): { from: string; to: string } {
@@ -95,10 +94,7 @@ function downsampleKeepingSpikes(
       }
     }
 
-    result.push({
-      date: parseDateForChart(furthest.date),
-      value: furthest.value,
-    });
+    result.push({ date: parseDateForChart(furthest.date), value: furthest.value });
   }
 
   return result;
@@ -112,69 +108,86 @@ function processCommodityHistory(
   );
 }
 
-// ─── Route Handler ────────────────────────────────────────────────────────────
-// Fetch caching is delegated to Vercel Data Cache via next: { revalidate }.
-// Current rates (FX, commodities, interest, GDP) revalidate every hour.
-// Commodity history revalidates every 12 hours.
-// Stale-while-revalidate is handled by the Data Cache across cold starts.
+// ─── Cached Fetchers ──────────────────────────────────────────────────────────
+// unstable_cache stores results in Vercel Data Cache (external, survives cold
+// starts). Individual fetch() calls here are plain — caching is at this layer,
+// not on the fetch options. On revalidation failure Vercel keeps serving the
+// last good cached value, providing the stale fallback.
 //
-// DEBUG: Set RATES_TTL=60 in env to shorten current-rates TTL to 60 s for
-// cache verification (observe the full SWR cycle in ~1 min).
-const RATES_TTL = process.env.RATES_TTL ? parseInt(process.env.RATES_TTL) : 3600;
+// DEBUG: Set RATES_TTL=60 in Vercel env (Preview only) to observe the full
+// SWR cycle in ~1 min instead of waiting 1 hour.
+
+// Must be shorter than the BetterStack ping interval (600s) so each ping
+// triggers a background revalidation and keeps the cache fresh.
+const RATES_TTL = process.env.RATES_TTL
+  ? parseInt(process.env.RATES_TTL)
+  : 300;
+
+const getCachedRates = unstable_cache(
+  async () => {
+    const [fx, commod, interest, gdp] = await Promise.all([
+      fetch(`${BASE_URL}/fx/latest`).then((r) => {
+        if (!r.ok) throw new Error(`fx/latest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${BASE_URL}/commodities/latest`).then((r) => {
+        if (!r.ok) throw new Error(`commodities/latest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${BASE_URL}/interest`).then((r) => {
+        if (!r.ok) throw new Error(`interest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${BASE_URL}/gdp`).then((r) => {
+        if (!r.ok) throw new Error(`gdp: ${r.status}`);
+        return r.json();
+      }),
+    ]);
+    return { fx, commod, interest, gdp };
+  },
+  ["market-rates"],
+  { revalidate: RATES_TTL },
+);
+
+const getCachedHistory = unstable_cache(
+  async () => {
+    // Dates are computed inside the cache so they're fixed for the 12h TTL
+    // window — being off by up to 12h on a 60-month range is negligible.
+    const { to } = buildDateRange(12);
+    const { from: commodFrom } = buildDateRange(60);
+    const [rawGold, rawSilver, rawCoffee] = await Promise.all([
+      fetch(
+        `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetch(
+        `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetch(
+        `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+    ]);
+    return { rawGold, rawSilver, rawCoffee };
+  },
+  ["market-history"],
+  { revalidate: 43200 },
+);
+
+// ─── Route Handler ────────────────────────────────────────────────────────────
 
 export async function GET() {
+  const fetchStart = performance.now();
+
   try {
     if (!BASE_URL) throw new Error("MARKET_DATA_API_URL not configured");
 
-    const { to } = buildDateRange(12);
-    const { from: commodFrom } = buildDateRange(60);
-
-    const fetchStart = performance.now();
-    const [fx, commod, interest, gdp, rawGold, rawSilver, rawCoffee] =
-      await Promise.all([
-        fetch(`${BASE_URL}/fx/latest`, { next: { revalidate: RATES_TTL } }).then(
-          (r) => {
-            if (!r.ok) throw new Error(`fx/latest: ${r.status}`);
-            return r.json();
-          },
-        ),
-        fetch(`${BASE_URL}/commodities/latest`, {
-          next: { revalidate: RATES_TTL },
-        }).then((r) => {
-          if (!r.ok) throw new Error(`commodities/latest: ${r.status}`);
-          return r.json();
-        }),
-        fetch(`${BASE_URL}/interest`, { next: { revalidate: RATES_TTL } }).then(
-          (r) => {
-            if (!r.ok) throw new Error(`interest: ${r.status}`);
-            return r.json();
-          },
-        ),
-        fetch(`${BASE_URL}/gdp`, { next: { revalidate: RATES_TTL } }).then(
-          (r) => {
-            if (!r.ok) throw new Error(`gdp: ${r.status}`);
-            return r.json();
-          },
-        ),
-        fetch(
-          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`,
-          { next: { revalidate: 43200 } },
-        )
-          .then((r) => (r.ok ? r.json() : null))
-          .catch(() => null),
-        fetch(
-          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`,
-          { next: { revalidate: 43200 } },
-        )
-          .then((r) => (r.ok ? r.json() : null))
-          .catch(() => null),
-        fetch(
-          `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,
-          { next: { revalidate: 43200 } },
-        )
-          .then((r) => (r.ok ? r.json() : null))
-          .catch(() => null),
-      ]);
+    const [{ fx, commod, interest, gdp }, { rawGold, rawSilver, rawCoffee }] =
+      await Promise.all([getCachedRates(), getCachedHistory()]);
 
     const rates = fx.rates ?? {};
     const commodities = commod.commodities ?? {};
@@ -191,6 +204,8 @@ export async function GET() {
     const coffeePct = commodities["KC1"]?.percentage_change ?? 0;
 
     const lastGdp = GDP_HISTORY[GDP_HISTORY.length - 1];
+    const gdpValue = gdp.value ?? lastGdp.value;
+    const gdpYear = String(gdp.year ?? lastGdp.year);
 
     const data: EconomicDashboardData = {
       fxRates: {
@@ -258,12 +273,9 @@ export async function GET() {
         tbillYield: interest.tbill_yield ?? 0,
       },
       gdp: {
-        value: gdp.value ?? lastGdp.value,
-        year: String(gdp.year ?? lastGdp.year),
-        growth: computeGdpGrowth(
-          gdp.value ?? lastGdp.value,
-          String(gdp.year ?? lastGdp.year),
-        ),
+        value: gdpValue,
+        year: gdpYear,
+        growth: computeGdpGrowth(gdpValue, gdpYear),
       },
       lastUpdated: new Date().toISOString(),
     };
