@@ -7,7 +7,7 @@ import type {
   TimeSeriesData,
 } from "@/lib/market-data-types";
 
-const BASE_URL = "https://mock-urlz.com";
+const BASE_URL = process.env.MARKET_DATA_API_URL ?? "";
 const RATES_TTL_SECONDS = process.env.RATES_TTL
   ? parseInt(process.env.RATES_TTL)
   : 300;
