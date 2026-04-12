@@ -1,30 +1,17 @@
 // Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved.
 
 import { NextResponse } from "next/server";
-import { LRUCache } from "lru-cache";
-import type { EconomicDashboardData, TimeSeriesData } from "@/lib/market-data-types";
+import { unstable_cache } from "next/cache";
+import type {
+  EconomicDashboardData,
+  TimeSeriesData,
+} from "@/lib/market-data-types";
 
 const BASE_URL = process.env.MARKET_DATA_API_URL ?? "";
-
-// ─── Server-side Cache ────────────────────────────────────────────────────────
-// Module-level — persists between requests while the Vercel function is warm.
-// BetterStack should ping /api/market-data every 30s to keep it warm.
-// TTL is indefinite: updated on every successful fetch, served stale on failure.
-
-interface ServerCache {
-  data: EconomicDashboardData;
-  commodityHistoryCachedAt: number; // epoch ms — controls 12-hour re-fetch window
-}
-
-// globalThis pattern: survives Next.js HMR module reloads in dev,
-// and persists between warm invocations in production (Vercel serverless).
-const g = globalThis as typeof globalThis & {
-  _marketCache?: LRUCache<"market", ServerCache>;
-};
-if (!g._marketCache) {
-  g._marketCache = new LRUCache<"market", ServerCache>({ max: 1, ttl: 0 });
-}
-const cache = g._marketCache;
+const RATES_TTL_SECONDS = process.env.RATES_TTL
+  ? parseInt(process.env.RATES_TTL)
+  : 300;
+const HISTORY_TTL_SECONDS = 43200;
 
 // ─── Static GDP data ──────────────────────────────────────────────────────────
 
@@ -37,12 +24,16 @@ const GDP_HISTORY: { value: number; year: string }[] = [
   { year: "2024", value: 149.74 },
 ];
 
-function computeGdpGrowth(): number {
-  const len = GDP_HISTORY.length;
-  if (len < 2) return 0;
-  const prev = GDP_HISTORY[len - 2].value;
-  const curr = GDP_HISTORY[len - 1].value;
-  return parseFloat((((curr - prev) / prev) * 100).toFixed(1));
+// GDP_HISTORY is a lookup table of prior-year baselines.
+// Growth is computed against the live API value, not hardcoded current values.
+function computeGdpGrowth(liveValue: number, liveYear: string): number {
+  const prevEntry = GDP_HISTORY.find(
+    (h) => h.year === String(parseInt(liveYear) - 1),
+  );
+  if (!prevEntry || prevEntry.value === 0) return 0;
+  return parseFloat(
+    (((liveValue - prevEntry.value) / prevEntry.value) * 100).toFixed(1),
+  );
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -77,10 +68,13 @@ function parseDateForChart(dateStr: string): string {
 
 function downsampleKeepingSpikes(
   raw: { date: string; value: number }[],
-  targetPoints = 1000
+  targetPoints = 1000,
 ): TimeSeriesData[] {
   if (!raw || raw.length <= targetPoints) {
-    return (raw ?? []).map((r) => ({ date: parseDateForChart(r.date), value: r.value }));
+    return (raw ?? []).map((r) => ({
+      date: parseDateForChart(r.date),
+      value: r.value,
+    }));
   }
 
   const result: TimeSeriesData[] = [];
@@ -104,138 +98,310 @@ function downsampleKeepingSpikes(
       }
     }
 
-    result.push({ date: parseDateForChart(furthest.date), value: furthest.value });
+    result.push({
+      date: parseDateForChart(furthest.date),
+      value: furthest.value,
+    });
   }
 
   return result;
 }
 
-function processCommodityHistory(data: { date: string; close: number }[]): TimeSeriesData[] {
-  return downsampleKeepingSpikes((data ?? []).map((d) => ({ date: d.date, value: d.close })));
+function processCommodityHistory(
+  data: { date: string; close: number }[],
+): TimeSeriesData[] {
+  return downsampleKeepingSpikes(
+    (data ?? []).map((d) => ({ date: d.date, value: d.close })),
+  );
 }
+
+function requireBaseUrl(): string {
+  if (!BASE_URL) throw new Error("MARKET_DATA_API_URL not configured");
+  return BASE_URL;
+}
+
+function getAgeSeconds(fetchedAt: string): number {
+  const fetchedMs = Date.parse(fetchedAt);
+  if (Number.isNaN(fetchedMs)) return Number.POSITIVE_INFINITY;
+  return (Date.now() - fetchedMs) / 1000;
+}
+
+function isCacheStale(fetchedAt: string, ttlSeconds: number): boolean {
+  return getAgeSeconds(fetchedAt) >= ttlSeconds;
+}
+
+type FxLatestResponse = {
+  rates: Partial<
+    Record<
+      "USD" | "EUR" | "AUD" | "GBP" | "JPY" | "CNY",
+      {
+        rate: number;
+        direction: "increased" | "decreased" | "unchanged";
+        percentage_change?: number;
+        updated_at: string;
+      }
+    >
+  >;
+  base: string;
+  message?: string;
+};
+
+type CommoditiesLatestResponse = {
+  commodities: Partial<
+    Record<
+      "XAU/USD" | "XAG/USD" | "KC1",
+      {
+        price: number;
+        direction: "increased" | "decreased" | "unchanged";
+        percentage_change?: number;
+        symbol: string;
+        updated_at: string;
+      }
+    >
+  >;
+  message?: string;
+};
+
+type InterestResponse = {
+  policy_rate: number;
+  tbill_yield: number;
+  updated_at?: string;
+  message?: string;
+};
+
+type GdpResponse = {
+  value: number;
+  year: string;
+  updated_at?: string;
+  message?: string;
+};
+
+type CommodityHistoryResponse = {
+  data: { date: string; close: number }[];
+  count: number;
+};
+
+type CachedRates = {
+  fx: FxLatestResponse;
+  commod: CommoditiesLatestResponse;
+  interest: InterestResponse;
+  gdp: GdpResponse;
+  fetchedAt: string;
+};
+
+type CachedHistory = {
+  rawGold: CommodityHistoryResponse | null;
+  rawSilver: CommodityHistoryResponse | null;
+  rawCoffee: CommodityHistoryResponse | null;
+  fetchedAt: string;
+};
+
+// ─── Cached Fetchers ──────────────────────────────────────────────────────────
+// unstable_cache stores results in Vercel Data Cache (external, survives cold
+// starts). Individual fetch() calls here are plain — caching is at this layer,
+// not on the fetch options. On revalidation failure Vercel keeps serving the
+// last good cached value, providing the stale fallback.
+//
+// DEBUG: Set RATES_TTL=60 in Vercel env (Preview only) to observe the full
+// SWR cycle in ~1 min instead of waiting 1 hour.
+
+// Must be shorter than the BetterStack ping interval (600s) so each ping
+// triggers a background revalidation and keeps the cache fresh.
+
+const getCachedRates = unstable_cache(
+  async () => {
+    const apiBaseUrl = requireBaseUrl();
+    const [fx, commod, interest, gdp] = await Promise.all([
+      fetch(`${apiBaseUrl}/fx/latest`).then((r) => {
+        if (!r.ok) throw new Error(`fx/latest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${apiBaseUrl}/commodities/latest`).then((r) => {
+        if (!r.ok) throw new Error(`commodities/latest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${apiBaseUrl}/interest`).then((r) => {
+        if (!r.ok) throw new Error(`interest: ${r.status}`);
+        return r.json();
+      }),
+      fetch(`${apiBaseUrl}/gdp`).then((r) => {
+        if (!r.ok) throw new Error(`gdp: ${r.status}`);
+        return r.json();
+      }),
+    ]);
+    return { fx, commod, interest, gdp, fetchedAt: new Date().toISOString() };
+  },
+  ["market-rates"],
+  { revalidate: RATES_TTL_SECONDS },
+);
+
+const getCachedHistory = unstable_cache(
+  async () => {
+    const apiBaseUrl = requireBaseUrl();
+    // Dates are computed inside the cache so they're fixed for the 12h TTL
+    // window — being off by up to 12h on a 60-month range is negligible.
+    const { to } = buildDateRange(12);
+    const { from: commodFrom } = buildDateRange(60);
+    const [rawGold, rawSilver, rawCoffee] = await Promise.all([
+      fetch(
+        `${apiBaseUrl}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetch(
+        `${apiBaseUrl}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetch(
+        `${apiBaseUrl}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`,
+      )
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+    ]);
+    return {
+      rawGold,
+      rawSilver,
+      rawCoffee,
+      fetchedAt: new Date().toISOString(),
+    };
+  },
+  ["market-history"],
+  { revalidate: HISTORY_TTL_SECONDS },
+);
 
 // ─── Route Handler ────────────────────────────────────────────────────────────
 
 export async function GET() {
-  const cached = cache.get("market");
-  const now = Date.now();
-  const twelveHours = 12 * 60 * 60 * 1000;
-
-  const needsHistoryRefetch =
-    !cached || now - cached.commodityHistoryCachedAt >= twelveHours;
+  const fetchStart = performance.now();
 
   try {
-    if (!BASE_URL) throw new Error("MARKET_DATA_API_URL not configured");
-
-    const { to } = buildDateRange(12);
-    const { from: commodFrom } = buildDateRange(60);
-
-    const basePromises: Promise<Response>[] = [
-      fetch(`${BASE_URL}/fx/latest`),
-      fetch(`${BASE_URL}/commodities/latest`),
-      fetch(`${BASE_URL}/interest`),
-      fetch(`${BASE_URL}/gdp`),
-    ];
-
-    if (needsHistoryRefetch) {
-      basePromises.push(
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`).catch(() => new Response(null, { status: 500 })),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAG%2FUSD`).catch(() => new Response(null, { status: 500 })),
-        fetch(`${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=KC1`).catch(() => new Response(null, { status: 500 }))
-      );
-    }
-
-    const responses = await Promise.all(basePromises);
-
-    // Critical endpoints must succeed
-    for (let i = 0; i < 4; i++) {
-      if (!responses[i].ok) {
-        throw new Error(`API error: ${responses[i].status} on endpoint ${i}`);
-      }
-    }
-
-    const [fx, commod, interest, gdp] = await Promise.all([
-      responses[0].json(),
-      responses[1].json(),
-      responses[2].json(),
-      responses[3].json(),
+    const [cachedRates, cachedHistory] = await Promise.all([
+      getCachedRates(),
+      getCachedHistory(),
     ]);
 
-    const rates = fx.rates ?? {};
+    const {
+      fx,
+      commod,
+      interest,
+      gdp,
+      fetchedAt: ratesFetchedAt,
+    } = cachedRates as CachedRates;
+    const {
+      rawGold,
+      rawSilver,
+      rawCoffee,
+      fetchedAt: historyFetchedAt,
+    } = cachedHistory as CachedHistory;
+
+    const fxRates = fx.rates ?? {};
     const commodities = commod.commodities ?? {};
 
-    const usdPct = rates.USD?.percentage_change ?? 0;
-    const eurPct = rates.EUR?.percentage_change ?? 0;
-    const gbpPct = rates.GBP?.percentage_change ?? 0;
-    const audPct = rates.AUD?.percentage_change ?? 0;
-    const jpyPct = rates.JPY?.percentage_change ?? 0;
-    const cnyPct = rates.CNY?.percentage_change ?? 0;
+    const usdPct = fxRates.USD?.percentage_change ?? 0;
+    const eurPct = fxRates.EUR?.percentage_change ?? 0;
+    const gbpPct = fxRates.GBP?.percentage_change ?? 0;
+    const audPct = fxRates.AUD?.percentage_change ?? 0;
+    const jpyPct = fxRates.JPY?.percentage_change ?? 0;
+    const cnyPct = fxRates.CNY?.percentage_change ?? 0;
 
     const goldPct = commodities["XAU/USD"]?.percentage_change ?? 0;
     const silverPct = commodities["XAG/USD"]?.percentage_change ?? 0;
     const coffeePct = commodities["KC1"]?.percentage_change ?? 0;
 
-    // Commodity history: use fresh fetch if due, else reuse cached
-    let goldHistory: TimeSeriesData[] = cached?.data.commodityHistory.gold ?? [];
-    let silverHistory: TimeSeriesData[] = cached?.data.commodityHistory.silver ?? [];
-    let coffeeHistory: TimeSeriesData[] = cached?.data.commodityHistory.coffee ?? [];
-    let commodityHistoryCachedAt = cached?.commodityHistoryCachedAt ?? 0;
-
-    if (needsHistoryRefetch && responses.length >= 7) {
-      const [rawGold, rawSilver, rawCoffee] = await Promise.all([
-        responses[4]?.ok ? responses[4].json().catch(() => null) : Promise.resolve(null),
-        responses[5]?.ok ? responses[5].json().catch(() => null) : Promise.resolve(null),
-        responses[6]?.ok ? responses[6].json().catch(() => null) : Promise.resolve(null),
-      ]);
-
-      if (rawGold) goldHistory = processCommodityHistory(rawGold.data);
-      if (rawSilver) silverHistory = processCommodityHistory(rawSilver.data);
-      if (rawCoffee) coffeeHistory = processCommodityHistory(rawCoffee.data);
-
-      // Only advance the timestamp if all three succeeded
-      if (rawGold && rawSilver && rawCoffee) {
-        commodityHistoryCachedAt = now;
-      }
-    }
-
-    const gdpGrowth = computeGdpGrowth();
     const lastGdp = GDP_HISTORY[GDP_HISTORY.length - 1];
+    const gdpValue = gdp.value ?? lastGdp.value;
+    const gdpYear = String(gdp.year ?? lastGdp.year);
+    const responseLastUpdated = new Date(
+      Math.min(Date.parse(ratesFetchedAt), Date.parse(historyFetchedAt)),
+    ).toISOString();
+    const stale =
+      isCacheStale(ratesFetchedAt, RATES_TTL_SECONDS) ||
+      isCacheStale(historyFetchedAt, HISTORY_TTL_SECONDS);
 
     const data: EconomicDashboardData = {
       fxRates: {
-        usd: { rate: rates.USD?.rate ?? 0, trend: directionToTrend(rates.USD?.direction ?? "unchanged"), percentageChange: usdPct },
-        eur: { rate: rates.EUR?.rate ?? 0, trend: directionToTrend(rates.EUR?.direction ?? "unchanged"), percentageChange: eurPct },
-        gbp: { rate: rates.GBP?.rate ?? 0, trend: directionToTrend(rates.GBP?.direction ?? "unchanged"), percentageChange: gbpPct },
-        aud: { rate: rates.AUD?.rate ?? 0, trend: directionToTrend(rates.AUD?.direction ?? "unchanged"), percentageChange: audPct },
-        jpy: { rate: rates.JPY?.rate ?? 0, trend: directionToTrend(rates.JPY?.direction ?? "unchanged"), percentageChange: jpyPct },
-        cny: { rate: rates.CNY?.rate ?? 0, trend: directionToTrend(rates.CNY?.direction ?? "unchanged"), percentageChange: cnyPct },
+        usd: {
+          rate: fxRates.USD?.rate ?? 0,
+          trend: directionToTrend(fxRates.USD?.direction ?? "unchanged"),
+          percentageChange: usdPct,
+        },
+        eur: {
+          rate: fxRates.EUR?.rate ?? 0,
+          trend: directionToTrend(fxRates.EUR?.direction ?? "unchanged"),
+          percentageChange: eurPct,
+        },
+        gbp: {
+          rate: fxRates.GBP?.rate ?? 0,
+          trend: directionToTrend(fxRates.GBP?.direction ?? "unchanged"),
+          percentageChange: gbpPct,
+        },
+        aud: {
+          rate: fxRates.AUD?.rate ?? 0,
+          trend: directionToTrend(fxRates.AUD?.direction ?? "unchanged"),
+          percentageChange: audPct,
+        },
+        jpy: {
+          rate: fxRates.JPY?.rate ?? 0,
+          trend: directionToTrend(fxRates.JPY?.direction ?? "unchanged"),
+          percentageChange: jpyPct,
+        },
+        cny: {
+          rate: fxRates.CNY?.rate ?? 0,
+          trend: directionToTrend(fxRates.CNY?.direction ?? "unchanged"),
+          percentageChange: cnyPct,
+        },
       },
       commodities: {
-        gold:   { symbol: "XAU/USD", name: "Gold",   price: commodities["XAU/USD"]?.price ?? 0, trend: pctToTrend(goldPct),   percentageChange: goldPct },
-        silver: { symbol: "XAG/USD", name: "Silver", price: commodities["XAG/USD"]?.price ?? 0, trend: pctToTrend(silverPct), percentageChange: silverPct },
-        coffee: { symbol: "KC1",     name: "Coffee", price: commodities["KC1"]?.price ?? 0,     trend: pctToTrend(coffeePct), percentageChange: coffeePct },
+        gold: {
+          symbol: "XAU/USD",
+          name: "Gold",
+          price: commodities["XAU/USD"]?.price ?? 0,
+          trend: pctToTrend(goldPct),
+          percentageChange: goldPct,
+        },
+        silver: {
+          symbol: "XAG/USD",
+          name: "Silver",
+          price: commodities["XAG/USD"]?.price ?? 0,
+          trend: pctToTrend(silverPct),
+          percentageChange: silverPct,
+        },
+        coffee: {
+          symbol: "KC1",
+          name: "Coffee",
+          price: commodities["KC1"]?.price ?? 0,
+          trend: pctToTrend(coffeePct),
+          percentageChange: coffeePct,
+        },
       },
-      commodityHistory: { gold: goldHistory, silver: silverHistory, coffee: coffeeHistory },
-      interestRate: { policyRate: interest.policy_rate ?? 0, tbillYield: interest.tbill_yield ?? 0 },
-      gdp: { value: gdp.value ?? lastGdp.value, year: String(gdp.year ?? lastGdp.year), growth: gdpGrowth },
-      lastUpdated: new Date().toISOString(),
+      commodityHistory: {
+        gold: rawGold ? processCommodityHistory(rawGold.data) : [],
+        silver: rawSilver ? processCommodityHistory(rawSilver.data) : [],
+        coffee: rawCoffee ? processCommodityHistory(rawCoffee.data) : [],
+      },
+      interestRate: {
+        policyRate: interest.policy_rate ?? 0,
+        tbillYield: interest.tbill_yield ?? 0,
+      },
+      gdp: {
+        value: gdpValue,
+        year: gdpYear,
+        growth: computeGdpGrowth(gdpValue, gdpYear),
+      },
+      lastUpdated: responseLastUpdated,
     };
 
-    cache.set("market", { data, commodityHistoryCachedAt });
-
-    return NextResponse.json({ data, stale: false });
+    const fetchMs = Math.round(performance.now() - fetchStart);
+    return NextResponse.json(
+      { data, stale },
+      { headers: { "x-market-fetch-ms": String(fetchMs) } },
+    );
   } catch (err) {
-    // API failed — serve stale cache if available
-    if (cached) {
-      console.warn("[/api/market-data] API error, serving stale cache:", err);
-      return NextResponse.json({ data: cached.data, stale: true });
-    }
-
-    // No cache at all — nothing to serve
     console.error("[/api/market-data] API error, no cache available:", err);
     return NextResponse.json(
       { error: "Market data unavailable" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }

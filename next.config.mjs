@@ -17,11 +17,11 @@ const isDev = process.env.NODE_ENV === "development";
 const cspHeader = [
   "default-src 'self'",
   // Add 'unsafe-eval' ONLY in development mode
-  `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: *.backblazeb2.com *.gstatic.com *.googleapis.com",
   "font-src 'self'",
-  `connect-src 'self' ${API_DOMAINS.join(" ")} *.googleapis.com`,
+  `connect-src 'self' ${API_DOMAINS.join(" ")} *.googleapis.com https://vitals.vercel-insights.com https://va.vercel-scripts.com`,
   "frame-src https://maps.google.com https://www.google.com",
   "object-src 'none'",
   "base-uri 'self'",

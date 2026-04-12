@@ -33,12 +33,12 @@ interface TickerItemProps {
 
 function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemProps) {
   const change = percentageChange ?? 0;
-  const colorClass =
-    change > 0
+  const isMeaningful = Math.abs(change) >= 0.01;
+  const colorClass = !isMeaningful
+    ? "text-white/50"
+    : change > 0
       ? "text-emerald-400"
-      : change < 0
-        ? "text-red-400"
-        : "text-white/50";
+      : "text-red-400";
 
   return (
     <div className="flex items-center gap-2 px-4 border-r border-white/15 whitespace-nowrap">
@@ -52,8 +52,8 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
       <span className={cn("text-xs font-medium tabular-nums", colorClass)}>
         {percentageChange != null ? (
           <>
-            {change > 0 ? "+" : ""}
-            {change === 0 ? "0.00%" : `${change.toFixed(2)}%`}
+            {isMeaningful && change > 0 ? "+" : ""}
+            {isMeaningful ? `${change.toFixed(2)}%` : "0.00%"}
           </>
         ) : (
           trend === "up" ? "▲" : trend === "down" ? "▼" : "—"

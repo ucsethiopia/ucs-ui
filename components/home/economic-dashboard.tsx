@@ -30,26 +30,31 @@ interface TextStatCardProps {
 function TextStatCard({ label, value, subLabel, change, loading }: TextStatCardProps) {
   if (loading) {
     return (
-      <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2">
-        <Skeleton className="h-3 w-16 flex-shrink-0" />
-        <Skeleton className="h-5 w-14 flex-shrink-0" />
-        <Skeleton className="h-3 w-24 flex-shrink-0" />
+      <div className="bg-card border border-border rounded-lg px-4 py-2.5 grid grid-cols-[2fr_1.5fr_2fr] items-center gap-2">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-5 w-14 justify-self-center" />
+        <Skeleton className="h-3 w-24 justify-self-end" />
       </div>
     );
   }
   return (
-    <div className="bg-card border border-border rounded-lg px-4 py-2.5 flex flex-row items-center justify-between gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
-      <span className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap flex-shrink-0">
+    <div className="bg-card border border-border rounded-lg px-4 py-2.5 grid grid-cols-[2fr_1.5fr_2fr] items-center gap-2 transition-all duration-200 hover:border-gold-500/20 hover:shadow-sm">
+      <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
         {label}
       </span>
-      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap flex-shrink-0">
+      <span className="text-sm sm:text-lg font-bold text-foreground tabular-nums whitespace-nowrap text-center">
         {value}
       </span>
-      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight">
+      <span className="text-[10px] sm:text-xs text-muted-foreground text-right leading-tight min-w-0">
         {subLabel}
         {change !== undefined && (
-          <span className={cn("ml-1 font-medium", change >= 0 ? "text-emerald-500" : "text-red-500")}>
-            · {change >= 0 ? "+" : ""}{change.toFixed(1)}% YoY
+          <span className={cn(
+            "ml-1 font-medium",
+            Math.abs(change) < 0.01 ? "text-muted-foreground"
+              : change > 0 ? "text-emerald-500"
+              : "text-red-500"
+          )}>
+            · {Math.abs(change) < 0.01 ? "" : change > 0 ? "+" : ""}{Math.abs(change) < 0.01 ? "0.0" : change.toFixed(1)}% YoY
           </span>
         )}
       </span>
@@ -133,7 +138,7 @@ function StatCard({
 
 function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
   if (pct != null) {
-    if (pct === 0) return "0.00%";
+    if (Math.abs(pct) < 0.01) return "0.00%";
     const sign = pct > 0 ? "+" : "";
     const arrow = trend === "up" ? "▲" : trend === "down" ? "▼" : "";
     return `${arrow} ${sign}${pct.toFixed(2)}%`.trim();
@@ -144,7 +149,7 @@ function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
 }
 
 function trendVariant(trend: "up" | "down" | "unchanged", pct?: number): "up" | "down" | "neutral" {
-  if (pct === 0) return "neutral";
+  if (pct != null && Math.abs(pct) < 0.01) return "neutral";
   if (trend === "up") return "up";
   if (trend === "down") return "down";
   return "neutral";
