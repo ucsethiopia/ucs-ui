@@ -6,7 +6,7 @@ import type {
   TimeSeriesData,
 } from "@/lib/market-data-types";
 
-const BASE_URL = "https://mock-error-endpoint.com";
+const BASE_URL = process.env.MARKET_DATA_API_URL ?? "";
 
 // ─── Static GDP data ──────────────────────────────────────────────────────────
 
@@ -117,6 +117,10 @@ function processCommodityHistory(
 // Current rates (FX, commodities, interest, GDP) revalidate every hour.
 // Commodity history revalidates every 12 hours.
 // Stale-while-revalidate is handled by the Data Cache across cold starts.
+//
+// DEBUG: Set RATES_TTL=60 in env to shorten current-rates TTL to 60 s for
+// cache verification (observe the full SWR cycle in ~1 min).
+const RATES_TTL = process.env.RATES_TTL ? parseInt(process.env.RATES_TTL) : 3600;
 
 export async function GET() {
   try {
@@ -125,30 +129,33 @@ export async function GET() {
     const { to } = buildDateRange(12);
     const { from: commodFrom } = buildDateRange(60);
 
+    const fetchStart = performance.now();
     const [fx, commod, interest, gdp, rawGold, rawSilver, rawCoffee] =
       await Promise.all([
-        fetch(`${BASE_URL}/fx/latest`, { next: { revalidate: 3600 } }).then(
+        fetch(`${BASE_URL}/fx/latest`, { next: { revalidate: RATES_TTL } }).then(
           (r) => {
             if (!r.ok) throw new Error(`fx/latest: ${r.status}`);
             return r.json();
           },
         ),
         fetch(`${BASE_URL}/commodities/latest`, {
-          next: { revalidate: 3600 },
+          next: { revalidate: RATES_TTL },
         }).then((r) => {
           if (!r.ok) throw new Error(`commodities/latest: ${r.status}`);
           return r.json();
         }),
-        fetch(`${BASE_URL}/interest`, { next: { revalidate: 3600 } }).then(
+        fetch(`${BASE_URL}/interest`, { next: { revalidate: RATES_TTL } }).then(
           (r) => {
             if (!r.ok) throw new Error(`interest: ${r.status}`);
             return r.json();
           },
         ),
-        fetch(`${BASE_URL}/gdp`, { next: { revalidate: 3600 } }).then((r) => {
-          if (!r.ok) throw new Error(`gdp: ${r.status}`);
-          return r.json();
-        }),
+        fetch(`${BASE_URL}/gdp`, { next: { revalidate: RATES_TTL } }).then(
+          (r) => {
+            if (!r.ok) throw new Error(`gdp: ${r.status}`);
+            return r.json();
+          },
+        ),
         fetch(
           `${BASE_URL}/commodities/historical?from_date=${commodFrom}&to_date=${to}&symbol=XAU%2FUSD`,
           { next: { revalidate: 43200 } },
@@ -261,7 +268,11 @@ export async function GET() {
       lastUpdated: new Date().toISOString(),
     };
 
-    return NextResponse.json({ data, stale: false });
+    const fetchMs = Math.round(performance.now() - fetchStart);
+    return NextResponse.json(
+      { data, stale: false },
+      { headers: { "x-market-fetch-ms": String(fetchMs) } },
+    );
   } catch (err) {
     console.error("[/api/market-data] API error, no cache available:", err);
     return NextResponse.json(
