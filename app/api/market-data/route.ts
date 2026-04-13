@@ -395,7 +395,12 @@ export async function GET() {
     const fetchMs = Math.round(performance.now() - fetchStart);
     return NextResponse.json(
       { data, stale },
-      { headers: { "x-market-fetch-ms": String(fetchMs) } },
+      {
+        headers: {
+          "x-market-fetch-ms": String(fetchMs),
+          "x-ucs-cache-status": stale ? "STALE" : "HIT", // Add this for your own debugging
+        },
+      },
     );
   } catch (err) {
     console.error("[/api/market-data] API error, no cache available:", err);
