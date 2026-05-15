@@ -56,7 +56,7 @@ export const vision =
   "To be the leading catalyst for organizational transformation and professional growth, enabling clients to excel in an evolving business landscape.";
 
 export const mission =
-  "To inspire and benefit organizations by applying the latest knowledge, skills, and tools, supporting sustainable development and driving positive change for individuals and institutions.";
+  "To inspire and empower individuals and organizations by delivering innovative consulting and training services, leveraging cutting-edge knowledge, skills, and tools to drive sustainable development and lasting impact.";
 
 // Contact information
 export const contactInfo = {
@@ -427,7 +427,7 @@ export const servicePillars: ServicePillar[] = [
   },
   {
     id: "2",
-    title: "Advisory",
+    title: "Consulting & Advisory",
     description:
       "UCS offers consultancy and advisory services to help organizations effectively design and implement strategic change and transformation initiatives.",
     offerings: [

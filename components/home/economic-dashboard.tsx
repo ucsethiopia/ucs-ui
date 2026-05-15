@@ -313,6 +313,22 @@ export function EconomicDashboard() {
           />
           */}
         </motion.div>
+
+        {/* Source attribution */}
+        <div className="mt-4 pt-3 border-t border-border/40 flex flex-wrap items-center gap-x-4 gap-y-1 lg:px-4 xl:px-8">
+          <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">Sources</span>
+          <a href="https://nbe.gov.et" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
+            GDP, T-Bill &amp; Interest Rates &mdash; nbe.gov.et
+          </a>
+          <span className="text-xs text-muted-foreground/40">&middot;</span>
+          <a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
+            Commodities &mdash; Yahoo Finance
+          </a>
+          <span className="text-xs text-muted-foreground/40">&middot;</span>
+          <a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
+            FX Rates &mdash; Yahoo Finance
+          </a>
+        </div>
       </div>
     </section>
   );

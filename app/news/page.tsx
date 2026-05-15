@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ArrowRight, Calendar, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
+import { OverseasSpotlight } from "./overseas-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
 import { SafeImage } from "@/components/shared/safe-image";
@@ -11,6 +12,13 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
 const INITIAL_ITEMS = 9;
+
+type LocationFilter = "All" | "Local" | "Overseas";
+
+function isLocal(item: NewsItem): boolean {
+  const loc = item.location;
+  return !loc || loc.toLowerCase() === "ethiopia";
+}
 
 function NewsCard({
   item,
@@ -109,18 +117,29 @@ export default function NewsPage() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState<LocationFilter>("All");
 
   const { ref, isVisible } = useScrollAnimation<HTMLElement>({
     threshold: 0.05,
     rootMargin: "0px 0px -50px 0px",
   });
 
+  const overseasItems = useMemo(
+    () => data.filter((item) => !isLocal(item)).slice(0, 6),
+    [data]
+  );
+
   const filteredNews = useMemo(() => {
-    if (selectedCategory === "All") return data;
-    return data.filter((item) =>
-      item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
-    );
-  }, [data, selectedCategory]);
+    let result = data;
+    if (selectedLocation === "Local") result = result.filter(isLocal);
+    else if (selectedLocation === "Overseas") result = result.filter((item) => !isLocal(item));
+    if (selectedCategory !== "All") {
+      result = result.filter((item) =>
+        item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
+      );
+    }
+    return result;
+  }, [data, selectedCategory, selectedLocation]);
 
   const handleReadMore = (item: NewsItem) => {
     setSelectedNews(item);
@@ -139,24 +158,43 @@ export default function NewsPage() {
         {/* Filter Section */}
         <section className="sticky top-19 z-10 bg-background">
           <Container>
-            <div className="py-6 border-b border-border">
-            <div className="flex flex-wrap gap-2">
-              {newsCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  aria-pressed={selectedCategory === category}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
-                  )}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+            <div className="py-6 border-b border-border space-y-3">
+              {/* Location tabs */}
+              <div className="flex gap-2">
+                {(["All", "Local", "Overseas"] as LocationFilter[]).map((loc) => (
+                  <button
+                    key={loc}
+                    onClick={() => { setSelectedLocation(loc); setSelectedCategory("All"); }}
+                    aria-pressed={selectedLocation === loc}
+                    className={cn(
+                      "px-4 py-1.5 text-sm font-semibold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                      selectedLocation === loc
+                        ? "bg-gold-500 text-navy-950"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+              {/* Category filter */}
+              <div className="flex flex-wrap gap-2">
+                {newsCategories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    aria-pressed={selectedCategory === category}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                      selectedCategory === category
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
             </div>
           </Container>
         </section>
@@ -164,6 +202,9 @@ export default function NewsPage() {
         {/* News Grid */}
         <section ref={ref} className="py-10 sm:py-16 lg:py-20 bg-background" role="region" aria-label="News articles">
           <Container>
+            {selectedLocation === "All" && selectedCategory === "All" && !loading && (
+              <OverseasSpotlight items={overseasItems} onReadMore={handleReadMore} />
+            )}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: INITIAL_ITEMS }).map((_, i) => (
@@ -210,7 +251,7 @@ export default function NewsPage() {
                 </div>
 
                 {/* Load More Button */}
-                {hasMore && selectedCategory === "All" && (
+                {hasMore && selectedCategory === "All" && selectedLocation !== "Overseas" && (
                   <div className="mt-12 text-center">
                     <button
                       onClick={loadMore}

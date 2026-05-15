@@ -109,7 +109,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.9 }}
           >
             Making a positive difference in organizations and individuals&apos;
-            life through the provision of value adding advisory and training
+            life through the provision of advisory, research, and training
             services.
           </motion.p>
 

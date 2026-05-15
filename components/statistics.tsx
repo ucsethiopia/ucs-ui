@@ -8,13 +8,15 @@ interface StatItem {
   value: number;
   label: string;
   suffix?: string;
+  format?: boolean;
 }
 
 const stats: StatItem[] = [
   { value: 14, label: "Years of Experience", suffix: "+" },
-  { value: 150, label: "Projects Completed", suffix: "+" },
-  { value: 150, label: "Clients Served", suffix: "+" },
-  { value: 5, label: "Countries Reached", suffix: "" },
+  { value: 250, label: "BODs & Executives Trained", suffix: "+" },
+  { value: 4000, label: "Managers Trained", suffix: "+", format: true },
+  { value: 5, label: "Countries Reached", suffix: "+" },
+  { value: 25, label: "Projects Completed", suffix: "+" },
 ];
 
 export function Statistics() {
@@ -43,7 +45,7 @@ export function Statistics() {
         {/* Statistics Grid */}
         <div
           ref={ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
         >
           {stats.map((stat, index) => (
             <div
@@ -65,6 +67,7 @@ export function Statistics() {
                     target={stat.value}
                     suffix={stat.suffix}
                     isVisible={isVisible}
+                    format={stat.format}
                   />
                 </div>
               </div>

@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { PillarVisual } from "./pillar-visual";
+import { PublicationCovers } from "./publication-covers";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Accordion,
@@ -44,14 +45,14 @@ const iconMap: Record<
   React.ComponentType<{ className?: string; size?: number }>
 > = {
   Training: GraduationCap,
-  Advisory: Compass,
+  "Consulting & Advisory": Compass,
   "Research & Publication": BookOpen,
   "Communication & Promotion": Megaphone,
 };
 
 const TITLE_TO_SLUG: Record<string, string> = {
   Training: "training",
-  Advisory: "advisory",
+  "Consulting & Advisory": "advisory",
   "Research & Publication": "research",
   "Communication & Promotion": "communication",
 };
@@ -251,9 +252,29 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                 </div>
               </div>
             )}
+
           </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Full-width publication gallery — shown only for Research & Publication pillar */}
+        <AnimatePresence>
+          {activeService.title === "Research & Publication" && (
+            <motion.div
+              key="publications"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-14 md:mt-20"
+            >
+              <p className="text-sm font-semibold uppercase tracking-widest text-foreground text-center mb-10">
+                Sample Publications
+              </p>
+              <PublicationCovers />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </section>
   );

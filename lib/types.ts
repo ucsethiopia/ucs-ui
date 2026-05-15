@@ -13,6 +13,7 @@ export interface NewsItem {
   main_image: string | null;
   extra_images: string[];
   published_at?: string;
+  location?: string | null;
 }
 
 export interface PaginatedNewsResponse {
