@@ -1,19 +1,17 @@
 "use client";
 
-import React from "react";
-
-import { Users2, BadgeCheck, Zap, Target, Scale } from "lucide-react";
+import Image from "next/image";
 import { coreValues } from "@/lib/mock-data";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Synergy:    Users2,
-  Provision:  BadgeCheck,
-  Enthusiasm: Zap,
-  Endurance:  Target,
-  Dedication: Scale,
+const ICON_PATHS: Record<string, string> = {
+  Synergy:    "/images/icons/synergy-icon.png",
+  Provision:  "/images/icons/provision-icon.png",
+  Enthusiasm: "/images/icons/enth-icon.png",
+  Endurance:  "/images/icons/endurance-icon.png",
+  Dedication: "/images/icons/dedication-icon.png",
 };
 
 export function CoreValues() {
@@ -45,7 +43,6 @@ export function CoreValues() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
         >
           {coreValues.map((value, index) => {
-            const Icon = iconMap[value.title] || Users2;
             return (
               <div
                 key={value.id}
@@ -60,8 +57,14 @@ export function CoreValues() {
                 }}
               >
                 {/* Icon */}
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-500/10 text-gold-500 ring-1 ring-gold-500/20 transition-colors group-hover:bg-gold-500/20">
-                  <Icon className="h-8 w-8" />
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold-500/10 ring-1 ring-gold-500/20 transition-colors group-hover:bg-gold-500/20">
+                  <Image
+                    src={ICON_PATHS[value.title] ?? ""}
+                    alt={value.title}
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
                 </div>
 
                 {/* Title */}
