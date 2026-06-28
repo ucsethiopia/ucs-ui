@@ -11,6 +11,7 @@ interface AnimatedCounterProps {
   suffix?: string;
   isVisible: boolean;
   duration?: number;
+  format?: boolean;
 }
 
 export function AnimatedCounter({
@@ -18,6 +19,7 @@ export function AnimatedCounter({
   suffix = "",
   isVisible,
   duration = 1800,
+  format = false,
 }: AnimatedCounterProps) {
   const [count, setCount] = useState<number | null>(null);
   const rafRef = useRef<number>(0);
@@ -58,7 +60,7 @@ export function AnimatedCounter({
   if (count === null) {
     return (
       <span className="invisible">
-        {target}
+        {format ? target.toLocaleString() : target}
         {suffix}
       </span>
     );
@@ -66,7 +68,7 @@ export function AnimatedCounter({
 
   return (
     <span>
-      {count}
+      {format ? count.toLocaleString() : count}
       {suffix}
     </span>
   );

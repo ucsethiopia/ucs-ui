@@ -17,7 +17,7 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
     .toUpperCase();
 
   return (
-    <div className="group relative flex flex-col items-center h-16 w-32 md:h-20 md:w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
+    <div className="group relative flex flex-col items-center justify-center h-16 w-32 md:h-20 md:w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
       <div className="relative w-full h-8 md:h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
         {logo && !imgError ? (
@@ -62,9 +62,9 @@ export function ClientMarquee() {
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
                 Our Valued Clients
               </h2>
-              <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
                 Serving Ethiopia&apos;s leading banks, insurance companies,
-                government institutions, and private enterprises
+                government institutions, and private companies
               </p>
             </div>
           </ScrollReveal>
@@ -93,7 +93,7 @@ export function ClientMarquee() {
           {/* Scrolling Track */}
           <div className="overflow-hidden" aria-hidden="true">
             <div
-              className="flex animate-client-marquee py-3"
+              className="flex w-max animate-client-marquee py-5"
               style={{ animationPlayState: paused ? "paused" : "running" }}
             >
               {duplicatedClients.map((client, index) => (

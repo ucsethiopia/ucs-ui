@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { PillarVisual } from "./pillar-visual";
+import { PublicationCovers } from "./publication-covers";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Accordion,
@@ -44,14 +45,14 @@ const iconMap: Record<
   React.ComponentType<{ className?: string; size?: number }>
 > = {
   Training: GraduationCap,
-  Advisory: Compass,
+  "Consulting & Advisory": Compass,
   "Research & Publication": BookOpen,
   "Communication & Promotion": Megaphone,
 };
 
 const TITLE_TO_SLUG: Record<string, string> = {
   Training: "training",
-  Advisory: "advisory",
+  "Consulting & Advisory": "advisory",
   "Research & Publication": "research",
   "Communication & Promotion": "communication",
 };
@@ -135,7 +136,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
         </div>
 
         {/* Active Service Content - Two Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Column: Icon Header + Animated Visual */}
           <div className="md:sticky md:top-24">
             {/* Icon + Title Header */}
@@ -170,7 +171,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             />
           </div>
 
-          {/* Right Column: Description + Offerings/Training Categories */}
+          {/* Right Column: Publications carousel (Research) or Description + Offerings */}
           <AnimatePresence mode="wait">
           <motion.div
             key={activeService.id}
@@ -179,14 +180,21 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            {/* Description paragraph */}
-            <p className="text-muted-foreground leading-[1.75] mb-6">
-              {activeService.description}
-            </p>
-
-            {/* Training Categories Accordion (for Training pillar only) */}
-            {hasTrainingCategories ? (
+            {activeService.title === "Research & Publication" ? (
+              /* Publications carousel in column */
               <div>
+                <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-8 text-center">
+                  Selected Publications
+                </p>
+                <PublicationCovers compact />
+              </div>
+            ) : hasTrainingCategories ? (
+              /* Training Categories Accordion */
+              <div>
+                {/* Description paragraph */}
+                <p className="text-muted-foreground leading-[1.75] mb-6">
+                  {activeService.description}
+                </p>
                 <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-4">
                   Training Programs
                 </p>
@@ -231,8 +239,11 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                 </Accordion>
               </div>
             ) : (
-              /* Regular Offerings List (for other pillars) */
+              /* Regular Description + Offerings List */
               <div>
+                <p className="text-muted-foreground leading-[1.75] mb-6">
+                  {activeService.description}
+                </p>
                 <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-3">
                   Offerings
                 </p>
@@ -251,9 +262,44 @@ export function ServicePillars({ services }: ServicePillarsProps) {
                 </div>
               </div>
             )}
+
           </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Description + Offerings below grid — shown only for Research & Publication pillar */}
+        <AnimatePresence>
+          {activeService.title === "Research & Publication" && (
+            <motion.div
+              key="research-details"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-10 md:mt-14 max-w-4xl mx-auto"
+            >
+              <p className="text-muted-foreground leading-[1.75] mb-6 text-center">
+                {activeService.description}
+              </p>
+              <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-3 text-center">
+                Offerings
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3">
+                {activeService.offerings.map((offering, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 text-foreground"
+                  >
+                    <div className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
+                      <Check className="h-3 w-3 text-gold-600" />
+                    </div>
+                    <span className="text-sm sm:text-base">{offering}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </section>
   );

@@ -36,7 +36,7 @@ const pillarConfig: Record<
     icons: [GraduationCap, Users, Lightbulb, Target],
     pattern: "orbit",
   },
-  Advisory: {
+  "Consulting & Advisory": {
     gradient: "from-navy-700/20 via-navy-700/5 to-transparent",
     icons: [Compass, TrendingUp, Target, Briefcase],
     pattern: "grid",

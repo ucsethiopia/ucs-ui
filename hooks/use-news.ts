@@ -8,6 +8,7 @@ export type { NewsItem };
 const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
 const NEWS_PATH = "news/ultimate-consultancy-services";
 
+
 export const newsCategories = [
   "All",
   "Leadership",

@@ -96,7 +96,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
 
   if (!news) return null;
 
-  const images = news.extra_images?.length ? news.extra_images : news.main_image ? [news.main_image] : [];
+  const images = [news.main_image, ...(news.extra_images ?? [])].filter((s): s is string => Boolean(s));
   const isCarousel = images.length > 1;
 
   const formattedDate = new Date(news.date).toLocaleDateString("en-US", {

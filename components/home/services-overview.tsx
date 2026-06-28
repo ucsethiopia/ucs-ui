@@ -17,14 +17,14 @@ import { Container } from "@/components/shared/container";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Training: GraduationCap,
-  Advisory: Lightbulb,
+  "Consulting & Advisory": Lightbulb,
   "Research & Publication": FileSearch,
   "Communication & Promotion": Megaphone,
 };
 
 const TITLE_TO_SLUG: Record<string, string> = {
   Training: "training",
-  Advisory: "advisory",
+  "Consulting & Advisory": "advisory",
   "Research & Publication": "research",
   "Communication & Promotion": "communication",
 };

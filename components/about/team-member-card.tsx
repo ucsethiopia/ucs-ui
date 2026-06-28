@@ -32,8 +32,8 @@ export function TeamMemberCard({
             transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
           }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-5 lg:min-h-[400px]">
-            <div className="relative lg:col-span-2 aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[400px]">
+            <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
               {member.image?.[0] ? (
                 <SafeImage
                   src={member.image[0]}
@@ -49,7 +49,7 @@ export function TeamMemberCard({
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
             </div>
 
-            <div className="lg:col-span-3 p-8 lg:p-10 flex flex-col justify-center">
+            <div className="p-6 lg:p-8 flex flex-col justify-center">
               <div className="inline-flex items-center gap-2 mb-4">
                 <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-gold-500/10 text-gold-600 rounded-full">
                   Founder & CEO

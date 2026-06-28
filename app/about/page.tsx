@@ -2,7 +2,7 @@
 
 import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
-import { Statistics } from "@/components/statistics";
+import { HomeStatsStrip } from "@/components/home/home-stats-strip";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTeamApi } from "@/hooks/use-team";
 import { Container } from "@/components/shared/container";
@@ -10,6 +10,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { VisionMissionTabs } from "@/components/about/vision-mission-tabs";
 import { OrbitalPartners } from "@/components/about/orbital-partners";
 import { TeamMemberCard } from "@/components/about/team-member-card";
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 
 export default function AboutPage() {
   const { team, isLoading } = useTeamApi();
@@ -19,9 +20,11 @@ export default function AboutPage() {
       rootMargin: "0px 0px -50px 0px",
     });
 
-  // First team member is shown as the featured "owner/CEO" card
-  const owner = team[0] ?? null;
-  const otherMembers = team.slice(1);
+  const sortedTeam = [...team].sort(
+    (a, b) => (a.org_order_index ?? 999) - (b.org_order_index ?? 999),
+  );
+  const owner = sortedTeam[0] ?? null;
+  const otherMembers = sortedTeam.slice(1);
 
   return (
     <>
@@ -116,8 +119,8 @@ export default function AboutPage() {
                     },
                     {
                       year: "2026",
-                      title: "150+ Organizations Served",
-                      desc: "Milestone: over 150 organizations served across banking, insurance, manufacturing, and government.",
+                      title: "50+ Organizations Served",
+                      desc: "Milestone: over 50 organizations served across banking, insurance, manufacturing, and government.",
                     },
                   ].map((item, i) => (
                     <div key={item.year} className="flex gap-5 flex-1">
@@ -172,7 +175,7 @@ export default function AboutPage() {
         </section>
 
         {/* Statistics Section - After Mission/Vision */}
-        <Statistics />
+        <HomeStatsStrip showHeader />
 
         {/* Core Values - Reintegrated */}
         <CoreValues />
@@ -221,25 +224,113 @@ export default function AboutPage() {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-16">
-                  {/* Owner/CEO - Featured */}
+                <div className="space-y-10">
+                  {/* Owner/CEO - Featured with Years of Service stat */}
                   {owner && (
-                    <TeamMemberCard
-                      member={owner}
-                      index={0}
-                      isVisible={teamVisible}
-                      isOwner
-                    />
-                  )}
+                    <div className="flex flex-col lg:flex-row gap-8 items-center">
+                      {/* Years of Service — dark navy stage with animated ring */}
+                      <div className="w-full lg:w-1/4 flex-shrink-0">
+                        <div className="relative flex flex-col items-center justify-center bg-navy-950 border border-navy-800 rounded-2xl px-6 py-8 shadow-xl overflow-hidden">
+                          {/* Corner accents */}
+                          <span className="absolute top-0 left-0 w-7 h-7 border-t-2 border-l-2 border-gold-500/40 rounded-tl-2xl pointer-events-none" />
+                          <span className="absolute bottom-0 right-0 w-7 h-7 border-b-2 border-r-2 border-gold-500/40 rounded-br-2xl pointer-events-none" />
+                          {/* Subtle radial glow behind ring */}
+                          <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span
+                              className="w-36 h-36 rounded-full bg-gold-500/5 blur-2xl"
+                              style={{
+                                opacity: teamVisible ? 1 : 0,
+                                transition: "opacity 1200ms ease",
+                              }}
+                            />
+                          </span>
 
-                  {/* Divider between CEO and Team */}
-                  <div className="flex items-center gap-4 my-4">
-                    <div className="flex-1 h-px bg-border" />
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                      Leadership Team
-                    </p>
-                    <div className="flex-1 h-px bg-border" />
-                  </div>
+                          {/* SVG progress ring */}
+                          <div className="relative mb-5">
+                            <svg
+                              className="-rotate-90 w-32 h-32"
+                              viewBox="0 0 120 120"
+                              aria-hidden="true"
+                            >
+                              {/* Track */}
+                              <circle
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                className="text-navy-800"
+                              />
+                              {/* Animated arc — fills to ~75% representing 14 of ~18 possible years */}
+                              <circle
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                className="text-gold-500"
+                                strokeDasharray="314.16"
+                                strokeDashoffset={
+                                  teamVisible ? 314.16 * 0.25 : 314.16
+                                }
+                                style={{
+                                  transition:
+                                    "stroke-dashoffset 1800ms cubic-bezier(0.16,1,0.3,1)",
+                                }}
+                              />
+                              {/* Trailing dot at arc end */}
+                              <circle
+                                cx="60"
+                                cy="10"
+                                r="3"
+                                fill="currentColor"
+                                className="text-gold-500"
+                                style={{
+                                  transformOrigin: "60px 60px",
+                                  transform: teamVisible
+                                    ? "rotate(270deg)"
+                                    : "rotate(0deg)",
+                                  transition:
+                                    "transform 1800ms cubic-bezier(0.16,1,0.3,1)",
+                                  opacity: teamVisible ? 1 : 0,
+                                }}
+                              />
+                            </svg>
+
+                            {/* Counter centered in ring */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <p className="font-serif font-bold tracking-tight text-gold-500 text-5xl leading-none">
+                                <AnimatedCounter
+                                  target={14}
+                                  suffix="+"
+                                  isVisible={teamVisible}
+                                />
+                              </p>
+                            </div>
+                          </div>
+
+                          <p className="text-xs sm:text-sm text-white/70 font-medium uppercase tracking-widest text-center">
+                            Years of Service
+                          </p>
+                          <p className="mt-1.5 text-xs text-white/30 uppercase tracking-[0.2em] text-center">
+                            Est. 2012
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="w-full lg:w-3/4">
+                        <TeamMemberCard
+                          member={owner}
+                          index={0}
+                          isVisible={teamVisible}
+                          isOwner
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {/* Other Team Members */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">

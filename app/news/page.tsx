@@ -1,16 +1,23 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ArrowRight, Calendar, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
+import { OverseasSpotlight } from "./overseas-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
 import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
-const INITIAL_ITEMS = 9;
+const INITIAL_ITEMS = 18;
+
+type LocationFilter = "All" | "Local" | "Overseas";
+
+function isLocal(item: NewsItem): boolean {
+  return !item.scope || item.scope === "local";
+}
 
 function NewsCard({
   item,
@@ -49,9 +56,9 @@ function NewsCard({
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.extra_images?.[0] ?? item.main_image) ? (
+        {(item.main_image ?? item.extra_images?.[0]) ? (
           <SafeImage
-            src={item.extra_images?.[0] ?? item.main_image ?? ""}
+            src={item.main_image ?? item.extra_images?.[0] ?? ""}
             alt={item.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -109,18 +116,44 @@ export default function NewsPage() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState<LocationFilter>("All");
 
   const { ref, isVisible } = useScrollAnimation<HTMLElement>({
     threshold: 0.05,
     rootMargin: "0px 0px -50px 0px",
   });
 
+  const overseasItems = useMemo(
+    () => data.filter((item) => !isLocal(item)).slice(0, 6),
+    [data]
+  );
+
   const filteredNews = useMemo(() => {
-    if (selectedCategory === "All") return data;
-    return data.filter((item) =>
-      item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
-    );
-  }, [data, selectedCategory]);
+    let result = data;
+    if (selectedLocation === "Local") {
+      result = result.filter(isLocal);
+    } else if (selectedLocation === "Overseas") {
+      result = result.filter((item) => !isLocal(item));
+    } else {
+      // "All" tab: local-only grid when no tag active (international shown in OverseasSpotlight).
+      // When a tag is active, include all items so international articles aren't excluded.
+      if (selectedCategory === "All") result = result.filter(isLocal);
+    }
+    if (selectedCategory !== "All") {
+      result = result.filter((item) =>
+        item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
+      );
+    }
+    return result;
+  }, [data, selectedCategory, selectedLocation]);
+
+  // On the default "All"+"All" view, cap to exactly 9 to guarantee a clean 3×3 grid.
+  const displayedItems = useMemo(() => {
+    if (selectedLocation === "All" && selectedCategory === "All") {
+      return filteredNews.slice(0, 9);
+    }
+    return filteredNews;
+  }, [filteredNews, selectedLocation, selectedCategory]);
 
   const handleReadMore = (item: NewsItem) => {
     setSelectedNews(item);
@@ -137,36 +170,62 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="sticky top-19 z-10 bg-background">
+        <section className="sticky top-19 z-30 bg-background">
           <Container>
-            <div className="py-6 border-b border-border">
-            <div className="flex flex-wrap gap-2">
-              {newsCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  aria-pressed={selectedCategory === category}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
-                  )}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+            <div className="flex items-center pt-4 pb-6 border-b border-border">
+              {/* Location pills */}
+              <div className="shrink-0 flex gap-2">
+                {(["All", "Local", "Overseas"] as LocationFilter[]).map((loc) => (
+                  <button
+                    key={loc}
+                    onClick={() => setSelectedLocation(loc)}
+                    aria-pressed={selectedLocation === loc}
+                    className={cn(
+                      "px-4 py-1.5 text-sm font-semibold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                      selectedLocation === loc
+                        ? "bg-gold-500 text-navy-950"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="h-5 w-px bg-border mx-4 shrink-0" />
+
+              {/* Category filters — editorial underline style */}
+              <div className="flex-1 min-w-0 flex items-center gap-5 overflow-x-auto scrollbar-hide">
+                {newsCategories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    aria-pressed={selectedCategory === category}
+                    className={cn(
+                      "shrink-0 px-1 pb-1 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                      selectedCategory === category
+                        ? "border-gold-500 text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
             </div>
           </Container>
         </section>
 
         {/* News Grid */}
-        <section ref={ref} className="py-10 sm:py-16 lg:py-20 bg-background" role="region" aria-label="News articles">
+        <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
           <Container>
+            {selectedLocation === "All" && selectedCategory === "All" && !loading && (
+              <OverseasSpotlight items={overseasItems} onReadMore={handleReadMore} />
+            )}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: INITIAL_ITEMS }).map((_, i) => (
+                {Array.from({ length: 9 }).map((_, i) => (
                   <div
                     key={i}
                     className="bg-card border border-border rounded-lg overflow-hidden"
@@ -181,7 +240,7 @@ export default function NewsPage() {
                   </div>
                 ))}
               </div>
-            ) : filteredNews.length === 0 ? (
+            ) : displayedItems.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-muted-foreground text-lg">
                   No news items found in this category.
@@ -198,7 +257,7 @@ export default function NewsPage() {
                 <div
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
-                  {filteredNews.map((item, index) => (
+                  {displayedItems.map((item, index) => (
                     <NewsCard
                       key={item.id}
                       item={item}
@@ -210,7 +269,7 @@ export default function NewsPage() {
                 </div>
 
                 {/* Load More Button */}
-                {hasMore && selectedCategory === "All" && (
+                {hasMore && selectedLocation === "Local" && (
                   <div className="mt-12 text-center">
                     <button
                       onClick={loadMore}

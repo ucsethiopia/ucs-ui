@@ -13,6 +13,8 @@ export interface NewsItem {
   main_image: string | null;
   extra_images: string[];
   published_at?: string;
+  scope?: "local" | "international";
+  location?: { country_code: string; city: string } | null;
 }
 
 export interface PaginatedNewsResponse {
@@ -31,6 +33,7 @@ export interface TeamMember {
   years_of_experience: number;
   image: string[];
   summary: string;
+  org_order_index?: number;
 }
 
 // ─── Team Detail ──────────────────────────────────────────────────────────────
