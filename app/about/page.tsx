@@ -2,7 +2,7 @@
 
 import { PageHero } from "@/components/shared/page-hero";
 import { CoreValues } from "@/components/home/core-values";
-import { Statistics } from "@/components/statistics";
+import { HomeStatsStrip } from "@/components/home/home-stats-strip";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTeamApi } from "@/hooks/use-team";
 import { Container } from "@/components/shared/container";
@@ -19,9 +19,11 @@ export default function AboutPage() {
       rootMargin: "0px 0px -50px 0px",
     });
 
-  // First team member is shown as the featured "owner/CEO" card
-  const owner = team[0] ?? null;
-  const otherMembers = team.slice(1);
+  const sortedTeam = [...team].sort(
+    (a, b) => (a.org_order_index ?? 999) - (b.org_order_index ?? 999),
+  );
+  const owner = sortedTeam[0] ?? null;
+  const otherMembers = sortedTeam.slice(1);
 
   return (
     <>
@@ -172,7 +174,7 @@ export default function AboutPage() {
         </section>
 
         {/* Statistics Section - After Mission/Vision */}
-        <Statistics />
+        <HomeStatsStrip showHeader />
 
         {/* Core Values - Reintegrated */}
         <CoreValues />

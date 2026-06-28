@@ -32,6 +32,7 @@ export interface TeamMember {
   years_of_experience: number;
   image: string[];
   summary: string;
+  org_order_index?: number;
 }
 
 // ─── Team Detail ──────────────────────────────────────────────────────────────
