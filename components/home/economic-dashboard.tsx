@@ -189,21 +189,26 @@ export function EconomicDashboard() {
     <section ref={ref} className="py-8 bg-muted/20 border-b border-border">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
         <motion.div
-          className="flex items-center justify-between mb-4"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div>
-            <h2 className="text-base lg:text-lg font-serif font-semibold text-foreground">
-              Ethiopian Economic Dashboard
-            </h2>
-            <p className="text-[10px] text-muted-foreground mt-0.5">
-              {loading
-                ? "Loading..."
-                : `Updated: ${new Date(data?.lastUpdated || "").toLocaleTimeString()}`}
-            </p>
-          </div>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-balance">
+            Ethiopian Economic Dashboard
+          </h2>
+        </motion.div>
+        <motion.div
+          className="flex items-center justify-between mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <p className="text-[10px] text-muted-foreground">
+            {loading
+              ? "Loading..."
+              : `Updated: ${new Date(data?.lastUpdated || "").toLocaleTimeString()}`}
+          </p>
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />

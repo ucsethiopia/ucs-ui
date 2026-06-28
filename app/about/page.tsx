@@ -116,8 +116,8 @@ export default function AboutPage() {
                     },
                     {
                       year: "2026",
-                      title: "150+ Organizations Served",
-                      desc: "Milestone: over 150 organizations served across banking, insurance, manufacturing, and government.",
+                      title: "50+ Organizations Served",
+                      desc: "Milestone: over 50 organizations served across banking, insurance, manufacturing, and government.",
                     },
                   ].map((item, i) => (
                     <div key={item.year} className="flex gap-5 flex-1">

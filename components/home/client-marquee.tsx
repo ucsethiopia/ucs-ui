@@ -62,9 +62,9 @@ export function ClientMarquee() {
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 text-balance">
                 Our Valued Clients
               </h2>
-              <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
                 Serving Ethiopia&apos;s leading banks, insurance companies,
-                government institutions, and private enterprises
+                government institutions, and private companies
               </p>
             </div>
           </ScrollReveal>

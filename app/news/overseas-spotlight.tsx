@@ -5,77 +5,131 @@ import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import type { NewsItem } from "@/lib/types";
 
-function SpotlightCard({
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function cardKeyHandler(
+  e: React.KeyboardEvent,
+  cb: () => void,
+) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    cb();
+  }
+}
+
+function FeaturedCard({
   item,
   onReadMore,
 }: {
   item: NewsItem;
   onReadMore: (item: NewsItem) => void;
 }) {
-  const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
+  const imageSrc = item.extra_images?.[0] ?? item.main_image;
   return (
     <article
-      className="group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+      className="group relative aspect-[16/9] overflow-hidden rounded-xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
       onClick={() => onReadMore(item)}
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onReadMore(item);
-        }
-      }}
+      onKeyDown={(e) => cardKeyHandler(e, () => onReadMore(item))}
     >
-      <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.extra_images?.[0] ?? item.main_image) ? (
-          <SafeImage
-            src={item.extra_images?.[0] ?? item.main_image ?? ""}
-            alt={item.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            fallbackClassName="absolute inset-0"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
+      {imageSrc ? (
+        <SafeImage
+          src={imageSrc}
+          alt={item.title}
+          fill
+          sizes="(max-width: 1024px) 100vw, 60vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          fallbackClassName="absolute inset-0"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-navy-900" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/30 to-transparent" />
+
+      <div className="absolute top-4 left-4 flex items-center gap-2">
         {item.location && (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 bg-navy-950/80 text-white text-xs font-medium rounded-full capitalize">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-navy-950/80 text-white text-xs font-medium rounded-full capitalize">
             <Globe className="h-3 w-3" />
             {item.location}
           </span>
         )}
+        {(item.tags ?? []).slice(0, 1).map((tag) => (
+          <span
+            key={tag}
+            className="px-2.5 py-1 bg-gold-500/90 text-navy-950 text-xs font-semibold rounded-full capitalize"
+          >
+            {tag}
+          </span>
+        ))}
       </div>
 
-      <div className="flex flex-col flex-1 p-5">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {(item.tags ?? ["News"]).slice(0, 2).map((tag) => (
-              <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                {tag}
-              </span>
-            ))}
-          </div>
-          <time className="text-xs text-muted-foreground shrink-0">{formattedDate}</time>
-        </div>
-
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-gold-600 transition-colors">
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <time className="text-xs text-white/60 mb-2 block">
+          {formatDate(item.date)}
+        </time>
+        <h3 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 line-clamp-3 group-hover:text-gold-300 transition-colors">
           {item.title}
         </h3>
-
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 flex-1">
-          {item.subtitle}
-        </p>
-
-        <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all group-hover:text-gold-600 group-hover:gap-3">
-          Read more
-          <ArrowRight className="h-4 w-4" />
+        <span className="inline-flex items-center gap-2 text-sm font-semibold text-gold-400 transition-all group-hover:gap-3">
+          Read more <ArrowRight className="h-4 w-4" />
         </span>
+      </div>
+    </article>
+  );
+}
+
+function SideCard({
+  item,
+  onReadMore,
+}: {
+  item: NewsItem;
+  onReadMore: (item: NewsItem) => void;
+}) {
+  const imageSrc = item.extra_images?.[0] ?? item.main_image;
+  return (
+    <article
+      className="group flex gap-4 py-4 border-b border-border last:border-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+      onClick={() => onReadMore(item)}
+      tabIndex={0}
+      onKeyDown={(e) => cardKeyHandler(e, () => onReadMore(item))}
+    >
+      <div className="relative w-24 h-20 shrink-0 rounded-md overflow-hidden bg-muted">
+        {imageSrc ? (
+          <SafeImage
+            src={imageSrc}
+            alt={item.title}
+            fill
+            sizes="96px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            fallbackClassName="absolute inset-0"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-navy-900/20" />
+        )}
+      </div>
+      <div className="flex flex-col justify-between min-w-0 flex-1">
+        <h3 className="font-serif text-sm font-semibold text-foreground line-clamp-2 group-hover:text-gold-600 transition-colors leading-snug">
+          {item.title}
+        </h3>
+        <div className="flex items-center justify-between mt-2">
+          <time className="text-xs text-muted-foreground">
+            {formatDate(item.date)}
+          </time>
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 text-xs font-semibold text-gold-600",
+              "opacity-0 group-hover:opacity-100 transition-opacity",
+            )}
+          >
+            Read <ArrowRight className="h-3 w-3" />
+          </span>
+        </div>
       </div>
     </article>
   );
@@ -90,22 +144,37 @@ export function OverseasSpotlight({
 }) {
   if (items.length === 0) return null;
 
+  const [featured, ...rest] = items;
+  const sideItems = rest.slice(0, 4);
+
   return (
-    <section className="py-10 border-b border-border">
-      <div className="flex items-center gap-3 mb-6">
-        <Globe className="h-5 w-5 text-gold-500 shrink-0" />
-        <h2 className="font-serif text-xl font-semibold text-foreground">International Coverage</h2>
-        <div className="h-px flex-1 bg-border" />
+    <section className="py-12 border-b border-border">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-2.5 shrink-0">
+          <Globe className="h-5 w-5 text-gold-500" />
+          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+            International Coverage
+          </h2>
+        </div>
+        <div className="h-px flex-1 bg-gold-500/20" />
       </div>
-      <div className={cn(
-        "grid gap-6",
-        items.length === 1 ? "grid-cols-1 max-w-sm" :
-        items.length === 2 ? "grid-cols-1 sm:grid-cols-2" :
-        "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-      )}>
-        {items.map((item) => (
-          <SpotlightCard key={item.id} item={item} onReadMore={onReadMore} />
-        ))}
+
+      <div
+        className={cn(
+          "grid gap-6",
+          sideItems.length > 0
+            ? "grid-cols-1 lg:grid-cols-[3fr_2fr]"
+            : "grid-cols-1",
+        )}
+      >
+        <FeaturedCard item={featured} onReadMore={onReadMore} />
+        {sideItems.length > 0 && (
+          <div className="flex flex-col">
+            {sideItems.map((item) => (
+              <SideCard key={item.id} item={item} onReadMore={onReadMore} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

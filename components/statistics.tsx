@@ -13,10 +13,12 @@ interface StatItem {
 
 const stats: StatItem[] = [
   { value: 14, label: "Years of Experience", suffix: "+" },
-  { value: 250, label: "BODs & Executives Trained", suffix: "+" },
+  { value: 250, label: "BoDs & Executives Trained", suffix: "+" },
   { value: 4000, label: "Managers Trained", suffix: "+", format: true },
+  { value: 5500, label: "Professionals Trained", suffix: "+", format: true },
+  { value: 1000, label: "IT Experts Trained", suffix: "+", format: true },
   { value: 5, label: "Countries Reached", suffix: "+" },
-  { value: 25, label: "Projects Completed", suffix: "+" },
+  { value: 25, label: "Consultancy Projects Completed", suffix: "+" },
 ];
 
 export function Statistics() {
@@ -45,7 +47,7 @@ export function Statistics() {
         {/* Statistics Grid */}
         <div
           ref={ref}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-8"
         >
           {stats.map((stat, index) => (
             <div
@@ -62,7 +64,7 @@ export function Statistics() {
             >
               {/* Counter Value */}
               <div className="mb-4">
-                <div className="font-serif text-5xl sm:text-6xl font-bold text-gold-500">
+                <div className="font-serif text-4xl sm:text-5xl font-bold text-gold-500">
                   <AnimatedCounter
                     target={stat.value}
                     suffix={stat.suffix}
