@@ -49,7 +49,7 @@ export function TeamMemberCard({
               <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy-950/10" />
             </div>
 
-            <div className="p-8 lg:p-10 flex flex-col justify-center">
+            <div className="p-6 lg:p-8 flex flex-col justify-center">
               <div className="inline-flex items-center gap-2 mb-4">
                 <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-gold-500/10 text-gold-600 rounded-full">
                   Founder & CEO

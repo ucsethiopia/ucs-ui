@@ -128,7 +128,7 @@ export default function ContactPage() {
                 <div className="aspect-video rounded-lg overflow-hidden border border-border">
                   <iframe
                     title="Map of UCS Ethiopia office in Gurd Shola, Addis Ababa"
-                    src="https://maps.google.com/maps?q=9.0227,38.7873&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    src="https://maps.google.com/maps?q=2R98%2BQ77+Abenezer+Building+Gurdshola+Addis+Ababa+Ethiopia&t=&z=17&ie=UTF8&iwloc=&output=embed"
                     width="100%"
                     height="100%"
                     className={cn(

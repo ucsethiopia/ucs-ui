@@ -224,26 +224,104 @@ export default function AboutPage() {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-16">
+                <div className="space-y-10">
                   {/* Owner/CEO - Featured with Years of Service stat */}
                   {owner && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                      <div className="flex flex-col items-center text-center">
-                        <p className="font-serif font-bold tracking-tight text-gold-500 text-8xl lg:text-9xl">
-                          <AnimatedCounter
-                            target={14}
-                            suffix="+"
-                            isVisible={teamVisible}
-                          />
-                        </p>
-                        <p className="mt-3 text-xs sm:text-sm text-muted-foreground font-medium uppercase tracking-widest">
-                          Years of Service
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground/60 uppercase tracking-widest">
-                          Est. 2012
-                        </p>
+                    <div className="flex flex-col lg:flex-row gap-8 items-center">
+                      {/* Years of Service — dark navy stage with animated ring */}
+                      <div className="w-full lg:w-1/4 flex-shrink-0">
+                        <div className="relative flex flex-col items-center justify-center bg-navy-950 border border-navy-800 rounded-2xl px-6 py-8 shadow-xl overflow-hidden">
+                          {/* Corner accents */}
+                          <span className="absolute top-0 left-0 w-7 h-7 border-t-2 border-l-2 border-gold-500/40 rounded-tl-2xl pointer-events-none" />
+                          <span className="absolute bottom-0 right-0 w-7 h-7 border-b-2 border-r-2 border-gold-500/40 rounded-br-2xl pointer-events-none" />
+                          {/* Subtle radial glow behind ring */}
+                          <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span
+                              className="w-36 h-36 rounded-full bg-gold-500/5 blur-2xl"
+                              style={{
+                                opacity: teamVisible ? 1 : 0,
+                                transition: "opacity 1200ms ease",
+                              }}
+                            />
+                          </span>
+
+                          {/* SVG progress ring */}
+                          <div className="relative mb-5">
+                            <svg
+                              className="-rotate-90 w-32 h-32"
+                              viewBox="0 0 120 120"
+                              aria-hidden="true"
+                            >
+                              {/* Track */}
+                              <circle
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                className="text-navy-800"
+                              />
+                              {/* Animated arc — fills to ~75% representing 14 of ~18 possible years */}
+                              <circle
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                className="text-gold-500"
+                                strokeDasharray="314.16"
+                                strokeDashoffset={
+                                  teamVisible ? 314.16 * 0.25 : 314.16
+                                }
+                                style={{
+                                  transition:
+                                    "stroke-dashoffset 1800ms cubic-bezier(0.16,1,0.3,1)",
+                                }}
+                              />
+                              {/* Trailing dot at arc end */}
+                              <circle
+                                cx="60"
+                                cy="10"
+                                r="3"
+                                fill="currentColor"
+                                className="text-gold-500"
+                                style={{
+                                  transformOrigin: "60px 60px",
+                                  transform: teamVisible
+                                    ? "rotate(270deg)"
+                                    : "rotate(0deg)",
+                                  transition:
+                                    "transform 1800ms cubic-bezier(0.16,1,0.3,1)",
+                                  opacity: teamVisible ? 1 : 0,
+                                }}
+                              />
+                            </svg>
+
+                            {/* Counter centered in ring */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <p className="font-serif font-bold tracking-tight text-gold-500 text-5xl leading-none">
+                                <AnimatedCounter
+                                  target={14}
+                                  suffix="+"
+                                  isVisible={teamVisible}
+                                />
+                              </p>
+                            </div>
+                          </div>
+
+                          <p className="text-xs sm:text-sm text-white/70 font-medium uppercase tracking-widest text-center">
+                            Years of Service
+                          </p>
+                          <p className="mt-1.5 text-xs text-white/30 uppercase tracking-[0.2em] text-center">
+                            Est. 2012
+                          </p>
+                        </div>
                       </div>
-                      <div className="lg:col-span-2">
+
+                      <div className="w-full lg:w-3/4">
                         <TeamMemberCard
                           member={owner}
                           index={0}

@@ -276,7 +276,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 md:mt-14 max-w-2xl mx-auto"
+              className="mt-10 md:mt-14 max-w-4xl mx-auto"
             >
               <p className="text-muted-foreground leading-[1.75] mb-6 text-center">
                 {activeService.description}
@@ -284,11 +284,11 @@ export function ServicePillars({ services }: ServicePillarsProps) {
               <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-3 text-center">
                 Offerings
               </p>
-              <div className="flex flex-col gap-1.5 items-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3">
                 {activeService.offerings.map((offering, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2.5 py-2 text-foreground"
+                    className="flex items-center gap-2 text-foreground"
                   >
                     <div className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
                       <Check className="h-3 w-3 text-gold-600" />
