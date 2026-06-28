@@ -158,9 +158,9 @@ export default function NewsPage() {
         {/* Filter Section */}
         <section className="sticky top-19 z-10 bg-background">
           <Container>
-            <div className="py-6 border-b border-border space-y-3">
-              {/* Location tabs */}
-              <div className="flex gap-2">
+            <div className="flex items-center pt-4 pb-6 border-b border-border">
+              {/* Location pills */}
+              <div className="shrink-0 flex gap-2">
                 {(["All", "Local", "Overseas"] as LocationFilter[]).map((loc) => (
                   <button
                     key={loc}
@@ -177,18 +177,22 @@ export default function NewsPage() {
                   </button>
                 ))}
               </div>
-              {/* Category filter */}
-              <div className="flex flex-wrap gap-2">
+
+              {/* Divider */}
+              <div className="h-5 w-px bg-border mx-4 shrink-0" />
+
+              {/* Category filters — editorial underline style */}
+              <div className="flex-1 min-w-0 flex items-center gap-5 overflow-x-auto scrollbar-hide">
                 {newsCategories.map((category) => (
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
                     aria-pressed={selectedCategory === category}
                     className={cn(
-                      "px-4 py-2 text-sm font-medium rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                      "shrink-0 px-1 pb-1 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
                       selectedCategory === category
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+                        ? "border-gold-500 text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground",
                     )}
                   >
                     {category}

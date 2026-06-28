@@ -1,6 +1,8 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import type { NewsItem } from "@/lib/types";
@@ -13,121 +15,6 @@ function formatDate(dateStr: string) {
   });
 }
 
-function cardKeyHandler(e: React.KeyboardEvent, cb: () => void) {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    cb();
-  }
-}
-
-function FeaturedCard({
-  item,
-  onReadMore,
-  landscape = false,
-}: {
-  item: NewsItem;
-  onReadMore: (item: NewsItem) => void;
-  landscape?: boolean;
-}) {
-  const imageSrc = item.main_image ?? item.extra_images?.[0];
-  return (
-    <article
-      className={cn(
-        "group relative overflow-hidden rounded-lg cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        landscape ? "aspect-[16/9]" : "aspect-[3/4]",
-      )}
-      onClick={() => onReadMore(item)}
-      tabIndex={0}
-      onKeyDown={(e) => cardKeyHandler(e, () => onReadMore(item))}
-    >
-      {imageSrc ? (
-        <SafeImage
-          src={imageSrc}
-          alt={item.title}
-          fill
-          sizes="(max-width: 1024px) 100vw, 45vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-          fallbackClassName="absolute inset-0"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-navy-900" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 via-navy-950/40 to-transparent" />
-
-      <div className="absolute top-4 left-4 flex items-center gap-2">
-        {item.location?.city && (
-          <span className="px-2.5 py-1 bg-navy-950/80 text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
-            {item.location.city}{item.location.country_code ? `, ${item.location.country_code}` : ""}
-          </span>
-        )}
-        {(item.tags ?? []).slice(0, 1).map((tag) => (
-          <span
-            key={tag}
-            className="px-2.5 py-1 bg-gold-500/90 text-navy-950 text-[10px] font-bold uppercase tracking-wider rounded-full capitalize"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 p-6">
-        <time className="text-[10px] text-white/50 mb-2 block uppercase tracking-wider">
-          {formatDate(item.date)}
-        </time>
-        <h3 className="font-serif text-xl sm:text-2xl font-bold text-white mb-4 line-clamp-4 group-hover:text-gold-300 transition-colors leading-snug">
-          {item.title}
-        </h3>
-        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gold-400 transition-all group-hover:gap-3">
-          Read more <ArrowRight className="h-3.5 w-3.5" />
-        </span>
-      </div>
-    </article>
-  );
-}
-
-function ArticleListItem({
-  item,
-  onReadMore,
-  expanded = false,
-}: {
-  item: NewsItem;
-  onReadMore: (item: NewsItem) => void;
-  expanded?: boolean;
-}) {
-  return (
-    <article
-      className={cn(
-        "group border-l-2 border-gold-500/30 pl-4 border-b border-border/50 last:border-b-0",
-        "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        "hover:border-l-gold-500 transition-colors",
-        expanded ? "py-6" : "py-4",
-      )}
-      onClick={() => onReadMore(item)}
-      tabIndex={0}
-      onKeyDown={(e) => cardKeyHandler(e, () => onReadMore(item))}
-    >
-      <div className="flex items-center gap-2 mb-1.5">
-        {item.location?.city && (
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gold-600">
-            {item.location.city}{item.location.country_code ? `, ${item.location.country_code}` : ""}
-          </span>
-        )}
-        <span className="text-[10px] text-muted-foreground">
-          · {formatDate(item.date)}
-        </span>
-      </div>
-      <h3 className="font-serif text-sm font-semibold text-foreground line-clamp-2 group-hover:text-gold-600 transition-colors leading-snug mb-1">
-        {item.title}
-      </h3>
-      {expanded && item.subtitle && (
-        <p className="text-xs text-muted-foreground line-clamp-2 mt-1.5 leading-relaxed">
-          {item.subtitle}
-        </p>
-      )}
-    </article>
-  );
-}
-
 export function OverseasSpotlight({
   items,
   onReadMore,
@@ -135,15 +22,41 @@ export function OverseasSpotlight({
   items: NewsItem[];
   onReadMore: (item: NewsItem) => void;
 }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const featured = items[currentIndex] ?? items[0];
+
+  // Collect this article's own images only
+  const articleImages = useMemo(() => {
+    const imgs: string[] = [];
+    if (featured?.main_image) imgs.push(featured.main_image);
+    for (const img of featured?.extra_images ?? []) {
+      if (img) imgs.push(img);
+    }
+    return imgs;
+  }, [featured]);
+
+  // Reset and restart image cycle whenever the article changes
+  useEffect(() => {
+    setImageIndex(0);
+    if (articleImages.length <= 1) return;
+    const id = setInterval(
+      () => setImageIndex((p) => (p + 1) % articleImages.length),
+      4000,
+    );
+    return () => clearInterval(id);
+  }, [currentIndex, articleImages.length]);
+
   if (items.length === 0) return null;
 
-  const [featured, ...rest] = items;
-  const listItems = rest.slice(0, 4);
-  // Sparse mode: ≤2 list items → landscape hero + expanded list items
-  const sparse = listItems.length <= 2;
+  const currentImage = articleImages[imageIndex];
+  const prev = () => setCurrentIndex((i) => (i - 1 + items.length) % items.length);
+  const next = () => setCurrentIndex((i) => (i + 1) % items.length);
 
   return (
     <section className="pb-10 mb-10 border-b border-border">
+      {/* Section header */}
       <div className="flex items-center gap-4 mb-6">
         <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold-600 shrink-0">
           International
@@ -151,23 +64,170 @@ export function OverseasSpotlight({
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <div
-        className={cn(
-          "grid gap-8",
-          listItems.length > 0
-            ? sparse
-              ? "grid-cols-1 lg:grid-cols-[3fr_2fr]"
-              : "grid-cols-1 lg:grid-cols-[5fr_4fr]"
-            : "grid-cols-1 max-w-2xl",
+      {/* Arrows flank the entire card */}
+      <div className="flex items-center gap-3 lg:gap-4">
+        {items.length > 1 && (
+          <button
+            onClick={prev}
+            aria-label="Previous article"
+            className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted hover:border-gold-500/50 transition-all text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
         )}
-      >
-        <FeaturedCard item={featured} onReadMore={onReadMore} landscape={sparse} />
-        {listItems.length > 0 && (
-          <div className="flex flex-col justify-center">
-            {listItems.map((item) => (
-              <ArticleListItem key={item.id} item={item} onReadMore={onReadMore} expanded={sparse} />
-            ))}
+
+        {/* Single article card: image left, text right */}
+        <article
+          className="flex-1 grid grid-cols-1 lg:grid-cols-2 rounded-lg overflow-hidden border border-border cursor-pointer group shadow-sm hover:shadow-lg transition-shadow"
+          onClick={() => onReadMore(featured)}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onReadMore(featured);
+            }
+          }}
+        >
+          {/* Image panel */}
+          <div className="relative min-h-[280px] lg:min-h-[400px] overflow-hidden">
+            <AnimatePresence>
+              <motion.div
+                key={currentImage ?? "placeholder"}
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              >
+                {currentImage ? (
+                  <SafeImage
+                    src={currentImage}
+                    alt={featured.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    fallbackClassName="absolute inset-0"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-navy-900" />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Subtle gradient to pop the badges */}
+            <div className="absolute inset-0 bg-gradient-to-b from-navy-950/50 via-transparent to-transparent pointer-events-none" />
+
+            {/* Location + tag badges */}
+            <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
+              {featured.location?.city && (
+                <span className="px-2.5 py-1 bg-navy-950/80 text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
+                  {featured.location.city}
+                  {featured.location.country_code ? `, ${featured.location.country_code}` : ""}
+                </span>
+              )}
+              {(featured.tags ?? []).slice(0, 1).map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2.5 py-1 bg-gold-500/90 text-navy-950 text-[10px] font-bold uppercase tracking-wider rounded-full capitalize"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Image cycle indicator dots */}
+            {articleImages.length > 1 && (
+              <div className="absolute bottom-4 left-4 flex gap-1 z-10">
+                {articleImages.map((_, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      "h-1 rounded-full transition-all duration-300",
+                      i === imageIndex ? "w-4 bg-white" : "w-1 bg-white/40",
+                    )}
+                  />
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Text panel — same article */}
+          <div className="bg-card p-7 lg:p-10 flex flex-col">
+            <div className="flex-1 space-y-4">
+              {/* Date + category tags */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <time className="text-xs text-muted-foreground uppercase tracking-wider">
+                  {formatDate(featured.date)}
+                </time>
+                {(featured.tags ?? []).slice(0, 2).map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2.5 py-0.5 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* Title */}
+              <h3 className="font-serif text-2xl lg:text-[1.65rem] font-bold text-foreground line-clamp-4 group-hover:text-gold-600 transition-colors leading-snug">
+                {featured.title}
+              </h3>
+
+              {/* Subtitle teaser */}
+              {featured.subtitle && (
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {featured.subtitle}
+                </p>
+              )}
+
+              {/* Body excerpt — strips leading whitespace, shown when body is available */}
+              {featured.body && (
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
+                  {featured.body.replace(/<[^>]*>/g, "").trim().slice(0, 400)}
+                </p>
+              )}
+            </div>
+
+            <div className="mt-auto pt-5 border-t border-border flex items-center justify-between">
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground group-hover:text-gold-600 transition-all group-hover:gap-3">
+                Read more
+                <ArrowRight className="h-4 w-4" />
+              </span>
+
+              {/* Slide position dots */}
+              {items.length > 1 && (
+                <div className="flex items-center gap-1.5">
+                  {items.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex(i);
+                      }}
+                      aria-label={`Article ${i + 1} of ${items.length}`}
+                      className={cn(
+                        "rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500",
+                        i === currentIndex
+                          ? "h-1.5 w-5 bg-gold-500"
+                          : "h-1.5 w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60",
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </article>
+
+        {items.length > 1 && (
+          <button
+            onClick={next}
+            aria-label="Next article"
+            className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted hover:border-gold-500/50 transition-all text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
         )}
       </div>
     </section>

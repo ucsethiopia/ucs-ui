@@ -10,6 +10,7 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { VisionMissionTabs } from "@/components/about/vision-mission-tabs";
 import { OrbitalPartners } from "@/components/about/orbital-partners";
 import { TeamMemberCard } from "@/components/about/team-member-card";
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 
 export default function AboutPage() {
   const { team, isLoading } = useTeamApi();
@@ -224,24 +225,34 @@ export default function AboutPage() {
                 </div>
               ) : (
                 <div className="space-y-16">
-                  {/* Owner/CEO - Featured */}
+                  {/* Owner/CEO - Featured with Years of Service stat */}
                   {owner && (
-                    <TeamMemberCard
-                      member={owner}
-                      index={0}
-                      isVisible={teamVisible}
-                      isOwner
-                    />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                      <div className="flex flex-col items-center text-center">
+                        <p className="font-serif font-bold tracking-tight text-gold-500 text-8xl lg:text-9xl">
+                          <AnimatedCounter
+                            target={14}
+                            suffix="+"
+                            isVisible={teamVisible}
+                          />
+                        </p>
+                        <p className="mt-3 text-xs sm:text-sm text-muted-foreground font-medium uppercase tracking-widest">
+                          Years of Service
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground/60 uppercase tracking-widest">
+                          Est. 2012
+                        </p>
+                      </div>
+                      <div className="lg:col-span-2">
+                        <TeamMemberCard
+                          member={owner}
+                          index={0}
+                          isVisible={teamVisible}
+                          isOwner
+                        />
+                      </div>
+                    </div>
                   )}
-
-                  {/* Divider between CEO and Team */}
-                  <div className="flex items-center gap-4 my-4">
-                    <div className="flex-1 h-px bg-border" />
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                      Leadership Team
-                    </p>
-                    <div className="flex-1 h-px bg-border" />
-                  </div>
 
                   {/* Other Team Members */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">

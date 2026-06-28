@@ -37,7 +37,17 @@ const slotOverlap: Record<Slot, string> = {
   right:  "-ml-6 sm:-ml-10 md:-ml-12",
 };
 
-export function PublicationCovers() {
+const slotOverlapCompact: Record<Slot, string> = {
+  left:   "-mr-4 sm:-mr-6 md:-mr-8",
+  center: "",
+  right:  "-ml-4 sm:-ml-6 md:-ml-8",
+};
+
+interface PublicationCoversProps {
+  compact?: boolean;
+}
+
+export function PublicationCovers({ compact = false }: PublicationCoversProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredPub, setHoveredPub] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -72,8 +82,11 @@ export function PublicationCovers() {
               whileHover={{ y: style.y - 10, scale: Math.max(style.scale, 1.04) }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
-                "group flex-shrink-0 w-[150px] sm:w-[190px] md:w-[220px] cursor-pointer",
-                slotOverlap[slot],
+                "group flex-shrink-0 cursor-pointer",
+                compact
+                  ? "w-[130px] sm:w-[160px] md:w-[195px]"
+                  : "w-[150px] sm:w-[190px] md:w-[220px]",
+                compact ? slotOverlapCompact[slot] : slotOverlap[slot],
               )}
               style={{ zIndex: isHovered ? 30 : slot === "center" ? 10 : 0 }}
               onHoverStart={() => { setHoveredPub(pub.src); setIsPaused(true); }}
@@ -91,7 +104,10 @@ export function PublicationCovers() {
                   alt={pub.title}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 150px, (max-width: 768px) 190px, 220px"
+                  sizes={compact
+                    ? "(max-width: 640px) 130px, (max-width: 768px) 160px, 195px"
+                    : "(max-width: 640px) 150px, (max-width: 768px) 190px, 220px"
+                  }
                 />
                 <div className="absolute inset-0 bg-navy-950/65 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <p className="text-xs font-semibold text-white leading-snug">{pub.subtitle}</p>
