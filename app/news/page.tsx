@@ -11,7 +11,7 @@ import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 
-const INITIAL_ITEMS = 9;
+const INITIAL_ITEMS = 18;
 
 type LocationFilter = "All" | "Local" | "Overseas";
 
@@ -130,9 +130,15 @@ export default function NewsPage() {
 
   const filteredNews = useMemo(() => {
     let result = data;
-    if (selectedLocation === "Local") result = result.filter(isLocal);
-    else if (selectedLocation === "Overseas") result = result.filter((item) => !isLocal(item));
-    else result = result.filter(isLocal); // "All": main grid = local only; overseas shown in Spotlight
+    if (selectedLocation === "Local") {
+      result = result.filter(isLocal);
+    } else if (selectedLocation === "Overseas") {
+      result = result.filter((item) => !isLocal(item));
+    } else {
+      // "All" tab: local-only grid when no tag active (international shown in OverseasSpotlight).
+      // When a tag is active, include all items so international articles aren't excluded.
+      if (selectedCategory === "All") result = result.filter(isLocal);
+    }
     if (selectedCategory !== "All") {
       result = result.filter((item) =>
         item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
@@ -140,6 +146,14 @@ export default function NewsPage() {
     }
     return result;
   }, [data, selectedCategory, selectedLocation]);
+
+  // On the default "All"+"All" view, cap to exactly 9 to guarantee a clean 3×3 grid.
+  const displayedItems = useMemo(() => {
+    if (selectedLocation === "All" && selectedCategory === "All") {
+      return filteredNews.slice(0, 9);
+    }
+    return filteredNews;
+  }, [filteredNews, selectedLocation, selectedCategory]);
 
   const handleReadMore = (item: NewsItem) => {
     setSelectedNews(item);
@@ -156,7 +170,7 @@ export default function NewsPage() {
         />
 
         {/* Filter Section */}
-        <section className="sticky top-19 z-10 bg-background">
+        <section className="sticky top-19 z-30 bg-background">
           <Container>
             <div className="flex items-center pt-4 pb-6 border-b border-border">
               {/* Location pills */}
@@ -164,7 +178,7 @@ export default function NewsPage() {
                 {(["All", "Local", "Overseas"] as LocationFilter[]).map((loc) => (
                   <button
                     key={loc}
-                    onClick={() => { setSelectedLocation(loc); setSelectedCategory("All"); }}
+                    onClick={() => setSelectedLocation(loc)}
                     aria-pressed={selectedLocation === loc}
                     className={cn(
                       "px-4 py-1.5 text-sm font-semibold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
@@ -204,14 +218,14 @@ export default function NewsPage() {
         </section>
 
         {/* News Grid */}
-        <section ref={ref} className="pt-8 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
+        <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
           <Container>
             {selectedLocation === "All" && selectedCategory === "All" && !loading && (
               <OverseasSpotlight items={overseasItems} onReadMore={handleReadMore} />
             )}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: INITIAL_ITEMS }).map((_, i) => (
+                {Array.from({ length: 9 }).map((_, i) => (
                   <div
                     key={i}
                     className="bg-card border border-border rounded-lg overflow-hidden"
@@ -226,7 +240,7 @@ export default function NewsPage() {
                   </div>
                 ))}
               </div>
-            ) : filteredNews.length === 0 ? (
+            ) : displayedItems.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-muted-foreground text-lg">
                   No news items found in this category.
@@ -243,7 +257,7 @@ export default function NewsPage() {
                 <div
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
-                  {filteredNews.map((item, index) => (
+                  {displayedItems.map((item, index) => (
                     <NewsCard
                       key={item.id}
                       item={item}
@@ -255,7 +269,7 @@ export default function NewsPage() {
                 </div>
 
                 {/* Load More Button */}
-                {hasMore && selectedCategory === "All" && selectedLocation !== "Overseas" && (
+                {hasMore && selectedLocation === "Local" && (
                   <div className="mt-12 text-center">
                     <button
                       onClick={loadMore}
