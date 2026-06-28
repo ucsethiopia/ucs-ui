@@ -124,9 +124,9 @@ export const FirmNews = () => {
                     >
                       {/* Image */}
                       <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
-                        {(news.extra_images?.[0] ?? news.main_image) ? (
+                        {(news.main_image ?? news.extra_images?.[0]) ? (
                           <SafeImage
-                            src={news.extra_images?.[0] ?? news.main_image ?? ""}
+                            src={news.main_image ?? news.extra_images?.[0] ?? ""}
                             alt={news.title}
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

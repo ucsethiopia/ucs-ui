@@ -13,7 +13,8 @@ export interface NewsItem {
   main_image: string | null;
   extra_images: string[];
   published_at?: string;
-  location?: string | null;
+  scope?: "local" | "international";
+  location?: { country_code: string; city: string } | null;
 }
 
 export interface PaginatedNewsResponse {

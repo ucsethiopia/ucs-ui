@@ -16,8 +16,7 @@ const INITIAL_ITEMS = 9;
 type LocationFilter = "All" | "Local" | "Overseas";
 
 function isLocal(item: NewsItem): boolean {
-  const loc = item.location;
-  return !loc || loc.toLowerCase() === "ethiopia";
+  return !item.scope || item.scope === "local";
 }
 
 function NewsCard({
@@ -57,9 +56,9 @@ function NewsCard({
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.extra_images?.[0] ?? item.main_image) ? (
+        {(item.main_image ?? item.extra_images?.[0]) ? (
           <SafeImage
-            src={item.extra_images?.[0] ?? item.main_image ?? ""}
+            src={item.main_image ?? item.extra_images?.[0] ?? ""}
             alt={item.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -201,7 +200,7 @@ export default function NewsPage() {
         </section>
 
         {/* News Grid */}
-        <section ref={ref} className="py-10 sm:py-16 lg:py-20 bg-background" role="region" aria-label="News articles">
+        <section ref={ref} className="pt-8 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
           <Container>
             {selectedLocation === "All" && selectedCategory === "All" && !loading && (
               <OverseasSpotlight items={overseasItems} onReadMore={handleReadMore} />
