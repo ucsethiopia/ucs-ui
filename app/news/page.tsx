@@ -133,6 +133,7 @@ export default function NewsPage() {
     let result = data;
     if (selectedLocation === "Local") result = result.filter(isLocal);
     else if (selectedLocation === "Overseas") result = result.filter((item) => !isLocal(item));
+    else result = result.filter(isLocal); // "All": main grid = local only; overseas shown in Spotlight
     if (selectedCategory !== "All") {
       result = result.filter((item) =>
         item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
