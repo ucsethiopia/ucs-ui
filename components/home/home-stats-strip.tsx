@@ -6,7 +6,6 @@ import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { cn } from "@/lib/utils";
 
 const stats = [
-  { value: 14, suffix: "+", label: "Years of Experience" },
   { value: 250, suffix: "+", label: "BoDs & Executives Trained" },
   { value: 4000, suffix: "+", label: "Managers Trained", format: true },
   { value: 5500, suffix: "+", label: "Professionals Trained", format: true },
@@ -22,7 +21,6 @@ const DELAY_CLASSES = [
   "delay-300",
   "delay-400",
   "delay-500",
-  "delay-[600ms]",
 ] as const;
 
 export function HomeStatsStrip() {
@@ -34,7 +32,7 @@ export function HomeStatsStrip() {
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 xl:px-14">
         <div
           ref={ref}
-          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-y-10 gap-x-4 sm:gap-x-6"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-10 gap-x-4 sm:gap-x-6"
         >
           {stats.map((stat, index) => (
             <div
@@ -47,7 +45,7 @@ export function HomeStatsStrip() {
                   : "opacity-0 translate-y-6",
               )}
             >
-              <p className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-gold-500">
+              <p className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-gold-500">
                 <AnimatedCounter
                   target={stat.value}
                   suffix={stat.suffix}
