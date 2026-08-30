@@ -50,8 +50,9 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/70">
-              Driving growth and transformation for Ethiopian enterprises since 2012.
-              Your trusted partner for advisory, training, and research services.
+              Driving growth and transformation for Ethiopian organizations since 2012.
+              Your trusted partner for advisory, consultancy, research and training
+              services.
             </p>
             {/* Social Links */}
             <div className="mt-6 flex gap-4">
@@ -136,7 +137,7 @@ export function Footer() {
         <div className="border-t border-white/10 py-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-xs text-white/50">
-              © {new Date().getFullYear()} Ultimate Consultancy Service Ethiopia. All rights reserved.
+              © {new Date().getFullYear()} Ultimate Consultancy Services Ethiopia. All rights reserved.
             </p>
             <div className="flex gap-6 text-xs text-white/50">
               <span>Privacy Policy</span>

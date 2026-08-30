@@ -16,7 +16,7 @@ export function Hero() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  const companyName = "Ultimate Consultancy Service";
+  const companyName = "Ultimate Consultancy Services";
   const motto = "Think Agile, Get Inspired for Change!";
   const words = motto.split(" ");
 

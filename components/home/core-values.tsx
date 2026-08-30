@@ -32,7 +32,7 @@ export function CoreValues() {
             The Values That Guide Us
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Our core values shape every engagement, every recommendation, and
+            Our core values shape every engagement, every communication, and
             every relationship we build with our clients.
           </p>
         </div>

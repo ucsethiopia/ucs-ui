@@ -25,9 +25,9 @@ const _playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "UCS Ethiopia | Ultimate Consultancy Service",
+  title: "UCS Ethiopia | Ultimate Consultancy Services",
   description:
-    "Driving growth and transformation for Ethiopian enterprises. Strategic advisory, training, research, and communications services based in Bole, Addis Ababa.",
+    "Driving growth and transformation for Ethiopian Organizations. Strategic advisory, training, research, and communications services based in Bole, Addis Ababa.",
 
   keywords: [
     "consultancy",

@@ -33,7 +33,7 @@ export default function AboutPage() {
         <PageHero
           eyebrow="About Us"
           title="Our Story"
-          description="Established in 2012 G.C. with a mission to make a positive difference in organizations and individuals' life through the provision of value adding advisory and training services."
+          description="Established in 2012 G.C. with a mission to make a positive difference in organizations and individuals' life through the provision of value adding advisory, consultancy, research, and training services."
           backgroundImage="/images/hero/about-hero-background.png"
           backgroundPositionClass="bg-right-top sm:bg-top"
           contentWrapperClassName="ml-4 lg:mr-30"
@@ -110,12 +110,12 @@ export default function AboutPage() {
                     {
                       year: "2017",
                       title: "Research & Publication",
-                      desc: "Established dedicated research practice producing landmark sector studies for Ethiopian industry.",
+                      desc: "Established dedicated research and publication unit producing landmark sector studies and anniversary publications for Ethiopian Financial Sector.",
                     },
                     {
                       year: "2020",
-                      title: "Regional Expansion",
-                      desc: "Extended operations to 5 East African countries through strategic partnerships.",
+                      title: "Regional Partnership",
+                      desc: "Partnered with established consulting firms and multidisciplinary experts from around the world.",
                     },
                     {
                       year: "2026",
