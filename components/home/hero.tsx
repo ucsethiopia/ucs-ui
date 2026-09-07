@@ -16,7 +16,7 @@ export function Hero() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  const companyName = "Ultimate Consultancy Service";
+  const companyName = "Ultimate Consultancy Services";
   const motto = "Think Agile, Get Inspired for Change!";
   const words = motto.split(" ");
 
@@ -139,7 +139,7 @@ export function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-navy-800 dark:text-gold-500"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-navy-800 dark:text-gold-500 [filter:drop-shadow(0_0_1px_rgba(2,6,23,1))_drop-shadow(0_0_3px_rgba(2,6,23,0.95))_drop-shadow(0_0_6px_rgba(2,6,23,0.85))_drop-shadow(0_1px_3px_rgba(2,6,23,0.85))]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}

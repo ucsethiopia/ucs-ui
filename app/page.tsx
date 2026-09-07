@@ -2,7 +2,6 @@ import { Hero } from "@/components/home/hero";
 import { TickerBar } from "@/components/home/ticker-bar";
 import { EconomicDashboard } from "@/components/home/economic-dashboard";
 import { EconomicDashboardProvider } from "@/components/home/economic-dashboard-provider";
-import { CoreValues } from "@/components/home/core-values";
 import { FirmNews } from "@/components/home/firm-news";
 import { ServicesOverview } from "@/components/home/services-overview";
 import { ClientMarquee } from "@/components/home/client-marquee";
@@ -18,7 +17,6 @@ export default function HomePage() {
         <EconomicDashboard />
         <ServicesOverview />
         <HomeStatsStrip />
-        <CoreValues />
         <FirmNews />
       </main>
     </EconomicDashboardProvider>

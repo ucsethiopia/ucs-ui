@@ -1,8 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Send } from "lucide-react";
+import { Linkedin, Send, Facebook, Instagram } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { contactInfo } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <span className={cn("relative block overflow-hidden rounded-full opacity-40", className)}>
+      <Image
+        src="/images/icons/tik-tok.png"
+        alt=""
+        fill
+        className="object-cover"
+        sizes="20px"
+      />
+    </span>
+  );
+}
 
 const footerLinks = {
   company: [
@@ -14,15 +29,24 @@ const footerLinks = {
   ],
   services: [
     { href: "/services#training", label: "Training" },
-    { href: "/services#advisory", label: "Advisory" },
-    { href: "/services#research", label: "Research" },
-    { href: "/services#communication", label: "Communication" },
+    { href: "/services#advisory", label: "Consulting & Advisory" },
+    { href: "/services#research", label: "Research & Publication" },
+    { href: "/services#communication", label: "Communication & Promotion" },
   ],
 };
 
 const socialLinks = [
   { href: contactInfo.linkedin, icon: Linkedin, label: "LinkedIn" },
   { href: `https://t.me/${contactInfo.telegram.replace("@", "")}`, icon: Send, label: "Telegram" },
+];
+
+// Accounts not live yet — render as non-interactive placeholders (no href, not
+// focusable) so we never ship dead "#" links. TODO: once each account exists,
+// move it into `socialLinks` above with its real URL.
+const placeholderSocials = [
+  { icon: TikTokIcon, label: "TikTok", iconClassName: "h-5 w-5" }, // TODO: add real TikTok URL
+  { icon: Facebook, label: "Facebook" }, // TODO: add real Facebook URL
+  { icon: Instagram, label: "Instagram" }, // TODO: add real Instagram URL
 ];
 
 export function Footer() {
@@ -50,24 +74,10 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/70">
-              Driving growth and transformation for Ethiopian enterprises since 2012.
-              Your trusted partner for advisory, training, and research services.
+              Driving growth and transformation for Ethiopian organizations since 2012.
+              Your trusted partner for advisory, consultancy, research and training
+              services.
             </p>
-            {/* Social Links */}
-            <div className="mt-6 flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-gold-500 hover:text-gold-500"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Company Links */}
@@ -132,11 +142,39 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Social Links — centered across the full footer width */}
+        <div className="flex justify-center gap-4 pb-10">
+          {socialLinks.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-gold-500 hover:text-gold-500"
+              aria-label={social.label}
+            >
+              <social.icon className="h-4 w-4" />
+            </a>
+          ))}
+          {placeholderSocials.map((social) => (
+            <span
+              key={social.label}
+              tabIndex={-1}
+              aria-disabled="true"
+              role="img"
+              aria-label={`${social.label} (coming soon)`}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/30 cursor-not-allowed"
+            >
+              <social.icon className={social.iconClassName ?? "h-4 w-4"} />
+            </span>
+          ))}
+        </div>
+
         {/* Bottom Bar */}
         <div className="border-t border-white/10 py-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-xs text-white/50">
-              © {new Date().getFullYear()} Ultimate Consultancy Service Ethiopia. All rights reserved.
+              © {new Date().getFullYear()} Ultimate Consultancy Services Ethiopia. All rights reserved.
             </p>
             <div className="flex gap-6 text-xs text-white/50">
               <span>Privacy Policy</span>

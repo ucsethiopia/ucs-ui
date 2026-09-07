@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Ultimate Consultancy Service PLC. All rights reserved.
+// Copyright (c) 2025 Ultimate Consultancy Services PLC. All rights reserved.
 
 export interface FXRate {
   rate: number;

@@ -171,7 +171,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             />
           </div>
 
-          {/* Right Column: Publications carousel (Research) or Description + Offerings */}
+          {/* Right Column: Description + Offerings/Training Categories */}
           <AnimatePresence mode="wait">
           <motion.div
             key={activeService.id}
@@ -180,15 +180,7 @@ export function ServicePillars({ services }: ServicePillarsProps) {
             exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            {activeService.title === "Research & Publication" ? (
-              /* Publications carousel in column */
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-8 text-center">
-                  Selected Publications
-                </p>
-                <PublicationCovers compact />
-              </div>
-            ) : hasTrainingCategories ? (
+            {hasTrainingCategories ? (
               /* Training Categories Accordion */
               <div>
                 {/* Description paragraph */}
@@ -267,36 +259,21 @@ export function ServicePillars({ services }: ServicePillarsProps) {
           </AnimatePresence>
         </div>
 
-        {/* Description + Offerings below grid — shown only for Research & Publication pillar */}
+        {/* Full-width publication gallery — shown only for Research & Publication pillar */}
         <AnimatePresence>
           {activeService.title === "Research & Publication" && (
             <motion.div
-              key="research-details"
+              key="publications"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 md:mt-14 max-w-4xl mx-auto"
+              className="mt-14 md:mt-20"
             >
-              <p className="text-muted-foreground leading-[1.75] mb-6 text-center">
-                {activeService.description}
+              <p className="text-sm font-semibold uppercase tracking-widest text-foreground text-center mb-10">
+                Selected Publications
               </p>
-              <p className="text-sm font-semibold uppercase tracking-widest text-foreground mb-3 text-center">
-                Offerings
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3">
-                {activeService.offerings.map((offering, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 text-foreground"
-                  >
-                    <div className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500/10">
-                      <Check className="h-3 w-3 text-gold-600" />
-                    </div>
-                    <span className="text-sm sm:text-base">{offering}</span>
-                  </div>
-                ))}
-              </div>
+              <PublicationCovers />
             </motion.div>
           )}
         </AnimatePresence>

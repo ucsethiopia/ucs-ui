@@ -1,7 +1,6 @@
 "use client";
 
 import { PageHero } from "@/components/shared/page-hero";
-import { CoreValues } from "@/components/home/core-values";
 import { HomeStatsStrip } from "@/components/home/home-stats-strip";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTeamApi } from "@/hooks/use-team";
@@ -33,7 +32,7 @@ export default function AboutPage() {
         <PageHero
           eyebrow="About Us"
           title="Our Story"
-          description="Established in 2012 G.C. with a mission to make a positive difference in organizations and individuals' life through the provision of value adding advisory and training services."
+          description="Established in 2012 G.C. with a mission to make a positive difference in organizations' and individuals' lives through the provision of value-adding advisory, consultancy, research, and training services."
           backgroundImage="/images/hero/about-hero-background.png"
           backgroundPositionClass="bg-right-top sm:bg-top"
           contentWrapperClassName="ml-4 lg:mr-30"
@@ -100,7 +99,7 @@ export default function AboutPage() {
                     {
                       year: "2012",
                       title: "Founded",
-                      desc: "Established in Addis Ababa with a mission to make a positive difference through value adding advisory and training services.",
+                      desc: "Established in Addis Ababa with a mission to make a positive difference through value-adding advisory, consultancy, research, and training services.",
                     },
                     {
                       year: "2014",
@@ -110,17 +109,17 @@ export default function AboutPage() {
                     {
                       year: "2017",
                       title: "Research & Publication",
-                      desc: "Established dedicated research practice producing landmark sector studies for Ethiopian industry.",
+                      desc: "Established dedicated research and publication unit producing landmark sector studies and anniversary publications for the Ethiopian Financial Sector.",
                     },
                     {
                       year: "2020",
-                      title: "Regional Expansion",
-                      desc: "Extended operations to 5 East African countries through strategic partnerships.",
+                      title: "Regional Expansion through Partnerships",
+                      desc: "Partnered with established consulting firms and multidisciplinary experts from around the world.",
                     },
                     {
-                      year: "2026",
+                      year: "2025",
                       title: "50+ Organizations Served",
-                      desc: "Milestone: over 50 organizations served across banking, insurance, manufacturing, and government.",
+                      desc: "Served over 50 organizations across banking, insurance, and private and government institutions.",
                     },
                   ].map((item, i) => (
                     <div key={item.year} className="flex gap-5 flex-1">
@@ -161,10 +160,10 @@ export default function AboutPage() {
             <ScrollReveal>
               <div className="text-center mb-2">
                 <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">
-                  Purpose & Direction
+                  What Guides Us
                 </p>
                 <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
-                  What Guides Us
+                  Purpose & Direction
                 </h2>
               </div>
             </ScrollReveal>
@@ -176,9 +175,6 @@ export default function AboutPage() {
 
         {/* Statistics Section - After Mission/Vision */}
         <HomeStatsStrip showHeader />
-
-        {/* Core Values - Reintegrated */}
-        <CoreValues />
 
         {/* Strategic Partners - Orbital Visualization */}
         <OrbitalPartners />

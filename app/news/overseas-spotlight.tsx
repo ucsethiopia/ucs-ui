@@ -55,7 +55,7 @@ export function OverseasSpotlight({
   return (
     <section className="pb-8 mb-6 border-b border-border">
       <div className="flex items-center gap-4 mb-6">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold-600 shrink-0">
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-gold-600 shrink-0">
           International
         </p>
         <div className="h-px flex-1 bg-border" />

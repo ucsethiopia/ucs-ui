@@ -53,7 +53,7 @@ export function ServicesOverview() {
           <p className="text-lg text-muted-foreground leading-relaxed">
             We provide integrated services across four key pillars to drive
             sustainable growth and organizational excellence for Ethiopian
-            enterprises.
+            Organizations.
           </p>
         </div>
 

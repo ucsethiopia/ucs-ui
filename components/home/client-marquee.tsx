@@ -1,12 +1,23 @@
 "use client";
 
 import { clientLogos } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import Image from "next/image";
 import { useState } from "react";
 
-function ClientLogo({ name, logo }: { name: string; logo: string }) {
+function ClientLogo({
+  name,
+  logo,
+  logoDark,
+  logoBoxClass,
+}: {
+  name: string;
+  logo: string;
+  logoDark?: string;
+  logoBoxClass?: string;
+}) {
   const [imgError, setImgError] = useState(false);
 
   const initials = name
@@ -19,16 +30,32 @@ function ClientLogo({ name, logo }: { name: string; logo: string }) {
   return (
     <div className="group relative flex flex-col items-center justify-center h-16 w-32 md:h-20 md:w-40 flex-shrink-0 px-3 cursor-pointer transition-transform duration-300 hover:scale-110">
       {/* Logo area */}
-      <div className="relative w-full h-8 md:h-12 brightness-95 group-hover:brightness-125 transition-[filter] duration-300">
+      <div
+        className={cn(
+          "relative w-full brightness-95 group-hover:brightness-125 transition-[filter] duration-300",
+          logoBoxClass ?? "h-8 md:h-12",
+        )}
+      >
         {logo && !imgError ? (
-          <Image
-            src={logo}
-            alt={name}
-            fill
-            className="object-contain"
-            onError={() => setImgError(true)}
-            sizes="160px"
-          />
+          <>
+            <Image
+              src={logo}
+              alt={name}
+              fill
+              className={cn("object-contain", logoDark && "dark:hidden")}
+              onError={() => setImgError(true)}
+              sizes="160px"
+            />
+            {logoDark && (
+              <Image
+                src={logoDark}
+                alt={name}
+                fill
+                className="object-contain hidden dark:block"
+                sizes="160px"
+              />
+            )}
+          </>
         ) : (
           <div className="flex h-full items-center justify-center">
             <span className="text-xs font-semibold text-muted-foreground tracking-wider">
@@ -98,7 +125,12 @@ export function ClientMarquee() {
             >
               {duplicatedClients.map((client, index) => (
                 <div key={`${client.id}-${index}`} className="flex-shrink-0 px-1 md:px-2">
-                  <ClientLogo name={client.name} logo={client.logo} />
+                  <ClientLogo
+                    name={client.name}
+                    logo={client.logo}
+                    logoDark={client.logoDark}
+                    logoBoxClass={client.logoBoxClass}
+                  />
                 </div>
               ))}
             </div>

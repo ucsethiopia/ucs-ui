@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
 
 export type { NewsItem };
@@ -8,18 +8,20 @@ export type { NewsItem };
 const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
 const NEWS_PATH = "news/ultimate-consultancy-services";
 
-
-export const newsCategories = [
-  "All",
-  "Leadership",
-  "Strategy",
-  "Partnership",
-  "Training",
-  "Research",
-  "Events",
-  "Advisory",
-  "Policy",
-];
+// Derives the category filter list from tags actually present on loaded
+// items, so the UI never offers a filter with zero matching articles.
+// Recomputes whenever `data` grows (e.g. after loadMore).
+function deriveCategories(items: NewsItem[]): string[] {
+  const seen = new Map<string, string>();
+  for (const item of items) {
+    for (const tag of item.tags ?? []) {
+      const key = tag.toLowerCase();
+      if (!seen.has(key)) seen.set(key, tag);
+    }
+  }
+  const sorted = Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  return ["All", ...sorted];
+}
 
 // ─── useFirmNews ──────────────────────────────────────────────────────────────
 // Fetches the latest 9 news items for the home page FirmNews carousel.
@@ -118,7 +120,9 @@ export const useNews = (initialLimit = 9) => {
     }
   };
 
-  return { data, loading, isLoadingMore, hasMore, loadMore, total };
+  const categories = useMemo(() => deriveCategories(data), [data]);
+
+  return { data, loading, isLoadingMore, hasMore, loadMore, total, categories };
 };
 
 // ─── useMarketNews (stub — no API endpoint) ───────────────────────────────────

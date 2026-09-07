@@ -136,6 +136,19 @@ function StatCard({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function formatLastUpdated(iso?: string): string {
+  if (!iso) return "\u2014";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "\u2014";
+  return date.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 function trendBadge(trend: "up" | "down" | "unchanged", pct?: number): string {
   if (pct != null) {
     if (Math.abs(pct) < 0.01) return "0.00%";
@@ -205,9 +218,7 @@ export function EconomicDashboard() {
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <p className="text-[10px] text-muted-foreground">
-            {loading
-              ? "Loading..."
-              : `Updated: ${new Date(data?.lastUpdated || "").toLocaleTimeString()}`}
+            {loading ? "Loading..." : `Updated: ${formatLastUpdated(data?.lastUpdated)}`}
           </p>
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
             <span className="relative flex h-2.5 w-2.5">

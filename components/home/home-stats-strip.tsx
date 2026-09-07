@@ -6,12 +6,12 @@ import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { cn } from "@/lib/utils";
 
 const stats = [
-  { value: 5500, suffix: "+", label: "Professionals Trained", format: true },
-  { value: 25, suffix: "+", label: "Consultancy Projects Completed" },
-  { value: 4000, suffix: "+", label: "Managers Trained", format: true },
   { value: 5, suffix: "+", label: "Countries Reached" },
-  { value: 1100, suffix: "+", label: "IT Experts Trained", format: true },
-  { value: 250, suffix: "+", label: "BoDs & Executives Trained" },
+  { value: 25, suffix: "+", label: "Consultancy Projects Completed" },
+  { value: 300, suffix: "+", label: "BoDs & Executives Trained" },
+  { value: 1500, suffix: "+", label: "IT Experts Trained", format: true },
+  { value: 5000, suffix: "+", label: "Managers Trained", format: true },
+  { value: 6000, suffix: "+", label: "Professionals Trained", format: true },
 ];
 
 const DELAY_CLASSES = [
