@@ -3,28 +3,38 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Zap, Eye } from "lucide-react";
+import { Zap, Eye, Heart } from "lucide-react";
 import { vision, mission } from "@/lib/mock-data";
+import { ValuesGrid } from "@/components/about/values-grid";
 
 const tabs = [
-  {
-    id: "mission",
-    label: "Our Mission",
-    icon: Zap,
-    content: mission,
-    accent: "Driving Change",
-  },
   {
     id: "vision",
     label: "Our Vision",
     icon: Eye,
     content: vision,
     accent: "Shaping the Future",
+    panel: "text",
+  },
+  {
+    id: "mission",
+    label: "Our Mission",
+    icon: Zap,
+    content: mission,
+    accent: "Driving Change",
+    panel: "text",
+  },
+  {
+    id: "values",
+    label: "Our Values",
+    icon: Heart,
+    accent: "Our Foundation",
+    panel: "grid",
   },
 ] as const;
 
 export function VisionMissionTabs() {
-  const [activeTab, setActiveTab] = useState<string>("mission");
+  const [activeTab, setActiveTab] = useState<string>("vision");
   const active = tabs.find((t) => t.id === activeTab) ?? tabs[0];
   const ActiveIcon = active.icon;
 
@@ -72,28 +82,49 @@ export function VisionMissionTabs() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start"
+            className={cn(
+              active.panel === "text"
+                ? "grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start"
+                : undefined,
+            )}
           >
-            {/* Icon block */}
-            <div className="hidden md:flex flex-col items-center gap-3 pt-1">
-              <div className="w-14 h-14 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center">
-                <ActiveIcon className="h-7 w-7 text-gold-500" />
-              </div>
-              <div className="w-px h-16 bg-gradient-to-b from-gold-500/30 to-transparent" />
-            </div>
+            {active.panel === "text" ? (
+              <>
+                {/* Icon block */}
+                <div className="hidden md:flex flex-col items-center gap-3 pt-1">
+                  <div className="w-14 h-14 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center">
+                    <ActiveIcon className="h-7 w-7 text-gold-500" />
+                  </div>
+                  <div className="w-px h-16 bg-gradient-to-b from-gold-500/30 to-transparent" />
+                </div>
 
-            {/* Text content */}
-            <div>
-              <p className="text-gold-500 text-xs font-semibold uppercase tracking-widest mb-2">
-                {active.accent}
-              </p>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
-                {active.label}
-              </h3>
-              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed max-w-2xl">
-                {active.content}
-              </p>
-            </div>
+                {/* Text content */}
+                <div>
+                  <p className="text-gold-500 text-xs font-semibold uppercase tracking-widest mb-2">
+                    {active.accent}
+                  </p>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-4">
+                    {active.label}
+                  </h3>
+                  <p className="text-muted-foreground text-base sm:text-lg leading-relaxed max-w-2xl">
+                    {active.content}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Grid content */}
+                <div className="text-center mb-8">
+                  <p className="text-gold-500 text-xs font-semibold uppercase tracking-widest mb-2">
+                    {active.accent}
+                  </p>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
+                    {active.label}
+                  </h3>
+                </div>
+                <ValuesGrid />
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

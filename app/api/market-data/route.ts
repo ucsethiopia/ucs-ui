@@ -120,6 +120,16 @@ function requireBaseUrl(): string {
   return BASE_URL;
 }
 
+// Upstream sends some timestamps with a `Z` (fx, commodities) and some naive
+// (interest, gdp). All are UTC, so add the designator before parsing — bare
+// Date.parse reads a naive date-time as local time.
+function parseApiTimestamp(value?: string): number | null {
+  if (!value) return null;
+  const hasZone = /(Z|[+-]\d{2}:?\d{2})$/.test(value);
+  const ms = Date.parse(hasZone ? value : `${value}Z`);
+  return Number.isNaN(ms) ? null : ms;
+}
+
 function getAgeSeconds(fetchedAt: string): number {
   const fetchedMs = Date.parse(fetchedAt);
   if (Number.isNaN(fetchedMs)) return Number.POSITIVE_INFINITY;
@@ -312,8 +322,17 @@ export async function GET() {
     const lastGdp = GDP_HISTORY[GDP_HISTORY.length - 1];
     const gdpValue = gdp.value ?? lastGdp.value;
     const gdpYear = String(gdp.year ?? lastGdp.year);
+    // Report when the data was last published upstream, not when we fetched it.
+    const dataTimestamps = [
+      ...Object.values(fxRates).map((r) => parseApiTimestamp(r?.updated_at)),
+      ...Object.values(commodities).map((c) => parseApiTimestamp(c?.updated_at)),
+      parseApiTimestamp(interest.updated_at),
+      parseApiTimestamp(gdp.updated_at),
+    ].filter((ms): ms is number => ms !== null);
     const responseLastUpdated = new Date(
-      Math.min(Date.parse(ratesFetchedAt), Date.parse(historyFetchedAt)),
+      dataTimestamps.length
+        ? Math.max(...dataTimestamps)
+        : Date.parse(ratesFetchedAt),
     ).toISOString();
     const stale =
       isCacheStale(ratesFetchedAt, RATES_TTL_SECONDS) ||

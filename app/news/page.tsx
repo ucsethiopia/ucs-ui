@@ -6,7 +6,7 @@ import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
 import { OverseasSpotlight } from "./overseas-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { useNews, newsCategories, type NewsItem } from "@/hooks/use-news";
+import { useNews, type NewsItem } from "@/hooks/use-news";
 import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
@@ -111,7 +111,7 @@ function NewsCard({
 }
 
 export default function NewsPage() {
-  const { data, loading, isLoadingMore, hasMore, loadMore } =
+  const { data, loading, isLoadingMore, hasMore, loadMore, categories } =
     useNews(INITIAL_ITEMS);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,21 +197,30 @@ export default function NewsPage() {
 
               {/* Category filters — editorial underline style */}
               <div className="flex-1 min-w-0 flex items-center gap-5 overflow-x-auto scrollbar-hide">
-                {newsCategories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    aria-pressed={selectedCategory === category}
-                    className={cn(
-                      "shrink-0 px-1 pb-1 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-                      selectedCategory === category
-                        ? "border-gold-500 text-foreground"
-                        : "border-transparent text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {category}
-                  </button>
-                ))}
+                {loading ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-4 w-16 shrink-0 rounded bg-muted animate-pulse"
+                    />
+                  ))
+                ) : (
+                  categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      aria-pressed={selectedCategory === category}
+                      className={cn(
+                        "shrink-0 px-1 pb-1 text-sm font-medium capitalize border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+                        selectedCategory === category
+                          ? "border-gold-500 text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {category}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           </Container>

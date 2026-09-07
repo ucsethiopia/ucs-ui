@@ -15,13 +15,23 @@ export interface ClientLogo {
   id: string;
   name: string;
   logo: string;
+  // Alternate asset for dark mode, for logos whose wordmark/ink is black or
+  // near-black on a transparent background and would be invisible on the
+  // navy dark-mode marquee background otherwise.
+  logoDark?: string;
   logoMissing?: boolean;
+  // Optical size override for the logo box. Square marks render far smaller
+  // than wordmarks inside the strip's default height box, so they get a
+  // taller one. Defaults to "h-8 md:h-12" when unset.
+  logoBoxClass?: string;
 }
 
 export interface Partner {
   id: string;
   name: string;
   logo: string;
+  // Alternate asset for dark mode — see ClientLogo.logoDark.
+  logoDark?: string;
   description?: string;
   country?: string;
   partnerType?: "local" | "overseas";
@@ -56,7 +66,7 @@ export const vision =
   "To be the leading catalyst for organizational transformation and professional growth, enabling clients to excel in an evolving business landscape.";
 
 export const mission =
-  "To inspire and empower individuals and organizations by delivering innovative consulting and training services, leveraging cutting-edge knowledge, skills, and tools to drive sustainable development and lasting impact.";
+  "To inspire and empower individuals and organizations by delivering innovative advisory, consultancy, research, and training services, leveraging cutting-edge knowledge, skills, and tools to drive sustainable development and lasting impact.";
 
 // Contact information
 export const contactInfo = {
@@ -244,12 +254,18 @@ export const coreValues: CoreValue[] = [
 // Logo paths resolve under public/images/logos/clients/
 export const clientLogos: ClientLogo[] = [
   // Financial institutions
-  { id: "1", name: "Awash Bank", logo: "/images/logos/clients/awash-bank.png" },
+  {
+    id: "1",
+    name: "Awash Bank",
+    logo: "/images/logos/clients/awash-bank.png",
+    logoBoxClass: "h-12 md:h-16",
+  },
   { id: "2", name: "Siinqee Bank", logo: "/images/logos/clients/siinqee.png" },
   {
     id: "3",
     name: "Commercial Bank of Ethiopia",
     logo: "/images/logos/clients/commercial-bank-of-ethiopia.png",
+    logoBoxClass: "h-12 md:h-16",
   },
   {
     id: "4",
@@ -275,6 +291,40 @@ export const clientLogos: ClientLogo[] = [
     id: "8",
     name: "United Insurance",
     logo: "/images/logos/clients/united-insurance.png",
+    logoBoxClass: "h-12 md:h-16",
+  },
+  {
+    id: "16",
+    name: "Oromia Insurance",
+    logo: "/images/logos/clients/oromia-insurance.png",
+  },
+  {
+    id: "17",
+    name: "Hibret Insurance",
+    logo: "/images/logos/clients/hibret-insurance.png",
+  },
+  {
+    id: "18",
+    name: "House of Peoples Representatives of the FDRE",
+    logo: "/images/logos/clients/hpr.png",
+  },
+  {
+    id: "19",
+    name: "Kenera International Trading PLC",
+    logo: "/images/logos/clients/kenera.png",
+  },
+  {
+    id: "20",
+    name: "Wegagen Bank",
+    logo: "/images/logos/clients/wegagen-bank.png",
+    logoBoxClass: "h-12 md:h-16",
+  },
+  {
+    id: "21",
+    name: "Kerchanshe Group",
+    logo: "/images/logos/clients/kerchanshe-group.png",
+    logoDark: "/images/logos/clients/kerchanshe-group-dark.png",
+    logoBoxClass: "h-12 md:h-16",
   },
 
   // Government and development agencies
@@ -350,7 +400,16 @@ export const strategicPartners: Partner[] = [
     id: "3",
     name: "Askiibez Consulting",
     logo: "/images/logos/partners/askiibez-consulting-removebg-preview.png",
+    logoDark: "/images/logos/partners/askiibez-consulting-dark.png",
     description: "Business consulting",
+    country: "Ethiopia",
+    partnerType: "local",
+  },
+  {
+    id: "9",
+    name: "Awash Capital S.C.",
+    logo: "/images/logos/partners/awash-capital.png",
+    description: "Capital and investment services",
     country: "Ethiopia",
     partnerType: "local",
   },
@@ -397,11 +456,19 @@ export const strategicPartners: Partner[] = [
   //   logoMissing: true,
   // },
   {
-    id: "8",
-    name: "Purchasing and Procurement Center",
-    logo: "/images/logos/partners/purchasing-and-procurement-center-removebg-preview.png",
-    description: "Procurement and supply chain consulting",
-    country: "USA",
+    id: "10",
+    name: "Key Masterclass",
+    logo: "/images/logos/partners/key-masterclass.png",
+    description: "Business process outsourcing",
+    country: "India",
+    partnerType: "overseas",
+  },
+  {
+    id: "11",
+    name: "Mentors Solutions Ltd",
+    logo: "/images/logos/partners/mentors-solutions-ltd.png",
+    description: "Advisory and mentorship solutions",
+    country: "Kenya",
     partnerType: "overseas",
   },
 ];

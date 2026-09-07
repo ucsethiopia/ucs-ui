@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 function PartnerNode({
   name,
   logo,
+  logoDark,
   country,
   isHovered,
   isGlobal,
@@ -18,6 +19,7 @@ function PartnerNode({
 }: {
   name: string;
   logo: string;
+  logoDark?: string;
   country?: string;
   isHovered: boolean;
   isGlobal?: boolean;
@@ -58,10 +60,19 @@ function PartnerNode({
             src={logo}
             alt={name}
             fill
-            className="object-contain"
+            className={cn("object-contain", logoDark && "dark:hidden")}
             onError={() => setImgError(true)}
             sizes="80px"
           />
+          {logoDark && (
+            <Image
+              src={logoDark}
+              alt={name}
+              fill
+              className="object-contain hidden dark:block"
+              sizes="80px"
+            />
+          )}
         </div>
       ) : (
         <span className="text-[10px] font-semibold text-muted-foreground tracking-wide">
@@ -228,6 +239,7 @@ export function OrbitalPartners() {
               <PartnerNode
                 name={partner.name}
                 logo={partner.logo}
+                logoDark={partner.logoDark}
                 country={partner.country}
                 isHovered={hoveredPartner === partner.name}
                 onHover={() => setHoveredPartner(partner.name)}
@@ -260,6 +272,7 @@ export function OrbitalPartners() {
               <PartnerNode
                 name={partner.name}
                 logo={partner.logo}
+                logoDark={partner.logoDark}
                 country={partner.country}
                 isHovered={hoveredPartner === partner.name}
                 isGlobal
