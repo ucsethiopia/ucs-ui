@@ -8,16 +8,33 @@ export type { NewsItem };
 const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
 const NEWS_PATH = "news/ultimate-consultancy-services";
 
-// Derives the category filter list from tags actually present on loaded
-// items, so the UI never offers a filter with zero matching articles.
+// Each item carries exactly one content tag at tags[0]; a second tag
+// ("highlight") may follow it to mark the item for the Highlights spotlight
+// rather than describing its content. See isHighlight/getMainTag below.
+
+// True when this item belongs in the Highlights spotlight — i.e. it has a
+// second tag beyond its main category tag. Works for local or international
+// items alike; scope no longer decides spotlight membership.
+export function isHighlight(item: NewsItem): boolean {
+  return (item.tags?.length ?? 0) > 1;
+}
+
+// The one real content tag for display (category pills, filters). Always
+// index 0 — never the "highlight" marker at index 1.
+export function getMainTag(item: NewsItem): string {
+  return item.tags?.[0] ?? "News";
+}
+
+// Derives the category filter list from each item's main tag (tags[0]) —
+// never the "highlight" marker — so the UI never offers a filter with zero
+// matching articles, and "Highlight" never shows up as a fake category.
 // Recomputes whenever `data` grows (e.g. after loadMore).
 function deriveCategories(items: NewsItem[]): string[] {
   const seen = new Map<string, string>();
   for (const item of items) {
-    for (const tag of item.tags ?? []) {
-      const key = tag.toLowerCase();
-      if (!seen.has(key)) seen.set(key, tag);
-    }
+    const tag = getMainTag(item);
+    const key = tag.toLowerCase();
+    if (!seen.has(key)) seen.set(key, tag);
   }
   const sorted = Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
   return ["All", ...sorted];

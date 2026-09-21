@@ -10,6 +10,11 @@ interface TeamMemberCardProps {
   index: number;
   isVisible: boolean;
   isOwner?: boolean;
+  // Actual number of lg-breakpoint grid columns this card renders in
+  // (varies — see pickBalancedColumns in app/about/page.tsx). Used to give
+  // next/image an accurate `sizes` hint instead of an assumed fixed column
+  // count.
+  gridCols?: number;
 }
 
 export function TeamMemberCard({
@@ -17,6 +22,7 @@ export function TeamMemberCard({
   index,
   isVisible,
   isOwner,
+  gridCols = 3,
 }: TeamMemberCardProps) {
   const memberSlug = member.name.toLowerCase().replace(/\s+/g, "-");
 
@@ -104,7 +110,7 @@ export function TeamMemberCard({
               src={member.image[0]}
               alt={member.name}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes={`(max-width: 640px) 100vw, (max-width: 1024px) 50vw, ${Math.round(100 / gridCols)}vw`}
               className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
               fallbackClassName="absolute inset-0"
             />

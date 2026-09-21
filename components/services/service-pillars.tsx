@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { PillarVisual } from "./pillar-visual";
 import { PublicationCovers } from "./publication-covers";
+import { researchPublications, selectedBrochures } from "@/lib/mock-data";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Accordion,
@@ -273,7 +274,26 @@ export function ServicePillars({ services }: ServicePillarsProps) {
               <p className="text-sm font-semibold uppercase tracking-widest text-foreground text-center mb-10">
                 Selected Publications
               </p>
-              <PublicationCovers />
+              <PublicationCovers items={researchPublications} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Full-width brochure gallery — shown only for Communication & Promotion pillar */}
+        <AnimatePresence>
+          {activeService.title === "Communication & Promotion" && (
+            <motion.div
+              key="brochures"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-14 md:mt-20"
+            >
+              <p className="text-sm font-semibold uppercase tracking-widest text-foreground text-center mb-10">
+                Selected Brochures
+              </p>
+              <PublicationCovers items={selectedBrochures} />
             </motion.div>
           )}
         </AnimatePresence>

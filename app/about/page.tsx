@@ -10,6 +10,22 @@ import { VisionMissionTabs } from "@/components/about/vision-mission-tabs";
 import { OrbitalPartners } from "@/components/about/orbital-partners";
 import { TeamMemberCard } from "@/components/about/team-member-card";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
+import { cn, pickBalancedColumns } from "@/lib/utils";
+
+// Literal Tailwind classes for each candidate column count, so the JIT
+// compiler can see them even though the choice is made at runtime.
+const LG_GRID_COLS: Record<number, string> = {
+  4: "lg:grid-cols-4",
+  3: "lg:grid-cols-3",
+};
+
+// Width for a card in the top "partial" row (see below) — sized to match
+// exactly what it would be as one cell of the full-width grid at each
+// breakpoint, so the shorter row's cards line up with the grid's below it.
+const PARTIAL_ROW_ITEM_WIDTH: Record<number, string> = {
+  4: "w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)]",
+  3: "w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-4rem)/3)]",
+};
 
 export default function AboutPage() {
   const { team, isLoading } = useTeamApi();
@@ -24,6 +40,15 @@ export default function AboutPage() {
   );
   const owner = sortedTeam[0] ?? null;
   const otherMembers = sortedTeam.slice(1);
+  const otherCols = pickBalancedColumns(otherMembers.length, [4, 3]);
+  // When the count doesn't divide evenly, the short row goes last, centered —
+  // e.g. 7 members at 4 columns → a full 4 on top, then 3 (centered) below.
+  // Members stay in their natural order (full rows first, remainder is
+  // simply whatever's left over), so this needs no reordering as the team
+  // grows — 8 is just two full rows of 4, 9 becomes three full rows of 3, etc.
+  const remainder = otherMembers.length % otherCols;
+  const fullRows = remainder === 0 ? otherMembers : otherMembers.slice(0, otherMembers.length - remainder);
+  const lastRow = remainder === 0 ? [] : otherMembers.slice(otherMembers.length - remainder);
 
   return (
     <>
@@ -32,7 +57,7 @@ export default function AboutPage() {
         <PageHero
           eyebrow="About Us"
           title="Our Story"
-          description="Established in 2012 G.C. with a mission to make a positive difference in organizations' and individuals' lives through the provision of value-adding advisory, consultancy, research, and training services."
+          description="Established in 2012 with a mission to make a positive difference in organizations' and individuals' lives through the provision of value-adding advisory, consultancy, research, and training services."
           backgroundImage="/images/hero/about-hero-background.png"
           backgroundPositionClass="bg-right-top sm:bg-top"
           contentWrapperClassName="ml-4 lg:mr-30"
@@ -328,17 +353,45 @@ export default function AboutPage() {
                     </div>
                   )}
 
-                  {/* Other Team Members */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    {otherMembers.map((member, index) => (
-                      <TeamMemberCard
-                        key={member.name}
-                        member={member}
-                        index={index + 1}
-                        isVisible={teamVisible}
-                      />
-                    ))}
-                  </div>
+                  {/* Other Team Members — column count auto-balances so the
+                      team roster never ends on a lonely single-item row
+                      (e.g. 7 members → 4+3, not 3+3+1). See
+                      pickBalancedColumns in lib/utils.ts. Full rows render
+                      first in the normal order; any remainder renders last,
+                      as its own centered row (not left-anchored). */}
+                  {fullRows.length > 0 && (
+                    <div
+                      className={cn(
+                        "grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8",
+                        lastRow.length > 0 && "mb-6 lg:mb-8",
+                        LG_GRID_COLS[otherCols],
+                      )}
+                    >
+                      {fullRows.map((member, index) => (
+                        <TeamMemberCard
+                          key={member.name}
+                          member={member}
+                          index={index + 1}
+                          isVisible={teamVisible}
+                          gridCols={otherCols}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {lastRow.length > 0 && (
+                    <div className="flex flex-wrap justify-center gap-6 lg:gap-8">
+                      {lastRow.map((member, index) => (
+                        <div key={member.name} className={PARTIAL_ROW_ITEM_WIDTH[otherCols]}>
+                          <TeamMemberCard
+                            member={member}
+                            index={fullRows.length + index + 1}
+                            isVisible={teamVisible}
+                            gridCols={otherCols}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

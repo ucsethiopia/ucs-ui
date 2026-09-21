@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { SafeImage } from "@/components/shared/safe-image";
-import { NewsItem } from "@/hooks/use-news";
+import { NewsItem, getMainTag } from "@/hooks/use-news";
 import { cn } from "@/lib/utils";
 
 interface NewsModalProps {
@@ -105,7 +105,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
     year: "numeric",
   });
 
-  const tags = news.tags ?? [];
+  const mainTag = getMainTag(news);
 
   return (
     <AnimatePresence>
@@ -228,11 +228,9 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
               <div className="p-6 md:p-8">
                 {/* Category & Meta */}
                 <div className="flex flex-wrap items-center gap-3 mb-4">
-                  {tags.map((tag) => (
-                    <span key={tag} className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
-                      {tag}
-                    </span>
-                  ))}
+                  <span className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent">
+                    {mainTag}
+                  </span>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>{formattedDate}</span>

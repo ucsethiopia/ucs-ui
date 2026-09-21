@@ -540,6 +540,40 @@ export const servicePillars: ServicePillar[] = [
   },
 ];
 
+export interface PublicationCover {
+  src: string;
+  title: string;
+  subtitle: string;
+}
+
+// Research & Publication tab — "Selected Publications" gallery
+export const researchPublications: PublicationCover[] = [
+  {
+    src: "/publications/awash-25th-anniversary.png",
+    title: "25th Anniversary Book",
+    subtitle: "Awash Bank & Insurance — 1994–2019",
+  },
+  {
+    src: "/publications/awash-30th-anniversary.png",
+    title: "30th Anniversary Book",
+    subtitle: "Awash Bank & Insurance — 1994–2024",
+  },
+];
+
+// Communication & Promotion tab — "Selected Brochures" gallery
+export const selectedBrochures: PublicationCover[] = [
+  {
+    src: "/brochures/oda.png",
+    title: "Oda Company Profile",
+    subtitle: "Oda Animal Feed Processing Factory",
+  },
+  {
+    src: "/brochures/ellily.png",
+    title: "Elilly Hotel",
+    subtitle: "Addis Ababa, Ethiopia",
+  },
+];
+
 // News categories
 export const newsCategories = [
   "All",
