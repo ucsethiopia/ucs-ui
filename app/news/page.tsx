@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/shared/page-hero";
 import { NewsModal } from "@/components/home/news-modal";
-import { OverseasSpotlight } from "./overseas-spotlight";
+import { HighlightsSpotlight } from "./highlights-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { useNews, type NewsItem } from "@/hooks/use-news";
+import { useNews, isHighlight, getMainTag, type NewsItem } from "@/hooks/use-news";
 import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
@@ -76,16 +76,9 @@ function NewsCard({
         {/* Category & Date */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {(item.tags ?? ["News"]).slice(0, 2).map((tag) => (
-              <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                {tag}
-              </span>
-            ))}
-            {(item.tags?.length ?? 0) > 2 && (
-              <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
-                +{(item.tags?.length ?? 0) - 2}
-              </span>
-            )}
+            <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+              {getMainTag(item)}
+            </span>
           </div>
           <time className="text-xs text-muted-foreground shrink-0">{formattedDate}</time>
         </div>
@@ -117,14 +110,22 @@ export default function NewsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState<LocationFilter>("All");
+  // Default "All"+"All" view starts capped to a clean 3×3 grid; "Load More"
+  // reveals more of what's already fetched before falling back to the real
+  // server-side loadMore(). Resets whenever the filters change so returning
+  // to the default view doesn't carry over a stale expanded count.
+  const [visibleCount, setVisibleCount] = useState(9);
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [selectedCategory, selectedLocation]);
 
   const { ref, isVisible } = useScrollAnimation<HTMLElement>({
     threshold: 0.05,
     rootMargin: "0px 0px -50px 0px",
   });
 
-  const overseasItems = useMemo(
-    () => data.filter((item) => !isLocal(item)).slice(0, 6),
+  const highlightedItems = useMemo(
+    () => data.filter(isHighlight).slice(0, 6),
     [data]
   );
 
@@ -135,25 +136,43 @@ export default function NewsPage() {
     } else if (selectedLocation === "Overseas") {
       result = result.filter((item) => !isLocal(item));
     } else {
-      // "All" tab: local-only grid when no tag active (international shown in OverseasSpotlight).
-      // When a tag is active, include all items so international articles aren't excluded.
-      if (selectedCategory === "All") result = result.filter(isLocal);
+      // "All" tab: hide highlighted items from the grid when no tag is
+      // active — they're already shown in HighlightsSpotlight above, and a
+      // highlight can now be local or international. When a tag is active,
+      // include everything so a highlighted article isn't hidden from its
+      // own category filter.
+      if (selectedCategory === "All") result = result.filter((item) => !isHighlight(item));
     }
     if (selectedCategory !== "All") {
-      result = result.filter((item) =>
-        item.tags?.some((t) => t.toLowerCase() === selectedCategory.toLowerCase())
+      result = result.filter(
+        (item) => getMainTag(item).toLowerCase() === selectedCategory.toLowerCase()
       );
     }
     return result;
   }, [data, selectedCategory, selectedLocation]);
 
-  // On the default "All"+"All" view, cap to exactly 9 to guarantee a clean 3×3 grid.
+  // On the default "All"+"All" view, start capped to a clean 3×3 grid —
+  // "Load More" raises visibleCount rather than hiding the rest permanently
+  // (previously a hard slice(0, 9) with no way to reach anything past it
+  // unless the total non-highlighted count happened to be ≤ 9).
   const displayedItems = useMemo(() => {
     if (selectedLocation === "All" && selectedCategory === "All") {
-      return filteredNews.slice(0, 9);
+      return filteredNews.slice(0, visibleCount);
     }
     return filteredNews;
-  }, [filteredNews, selectedLocation, selectedCategory]);
+  }, [filteredNews, selectedLocation, selectedCategory, visibleCount]);
+
+  // More to show from what's already fetched (client-side reveal), before
+  // falling back to the server-paginated loadMore().
+  const hasMoreLocallyStaged = displayedItems.length < filteredNews.length;
+
+  const handleLoadMore = () => {
+    if (hasMoreLocallyStaged) {
+      setVisibleCount((c) => c + 9);
+    } else {
+      loadMore();
+    }
+  };
 
   const handleReadMore = (item: NewsItem) => {
     setSelectedNews(item);
@@ -230,7 +249,7 @@ export default function NewsPage() {
         <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
           <Container>
             {selectedLocation === "All" && selectedCategory === "All" && !loading && (
-              <OverseasSpotlight items={overseasItems} onReadMore={handleReadMore} />
+              <HighlightsSpotlight items={highlightedItems} onReadMore={handleReadMore} />
             )}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -278,10 +297,10 @@ export default function NewsPage() {
                 </div>
 
                 {/* Load More Button */}
-                {hasMore && selectedLocation === "Local" && (
+                {(hasMoreLocallyStaged || (hasMore && selectedLocation === "Local")) && (
                   <div className="mt-12 text-center">
                     <button
-                      onClick={loadMore}
+                      onClick={handleLoadMore}
                       disabled={isLoadingMore}
                       className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
                     >

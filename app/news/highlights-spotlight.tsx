@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { SafeImage } from "@/components/shared/safe-image";
 import { cn } from "@/lib/utils";
+import { getMainTag } from "@/hooks/use-news";
 import type { NewsItem } from "@/lib/types";
 
 function formatDate(dateStr: string) {
@@ -15,7 +16,7 @@ function formatDate(dateStr: string) {
   });
 }
 
-export function OverseasSpotlight({
+export function HighlightsSpotlight({
   items,
   onReadMore,
 }: {
@@ -56,7 +57,7 @@ export function OverseasSpotlight({
     <section className="pb-8 mb-6 border-b border-border">
       <div className="flex items-center gap-4 mb-6">
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-gold-600 shrink-0">
-          International
+          Highlights
         </p>
         <div className="h-px flex-1 bg-border" />
       </div>
@@ -110,14 +111,9 @@ export function OverseasSpotlight({
                 {featured.location.country_code ? `, ${featured.location.country_code}` : ""}
               </span>
             )}
-            {(featured.tags ?? []).slice(0, 1).map((tag) => (
-              <span
-                key={tag}
-                className="px-2.5 py-1 bg-gold-500/90 text-navy-950 text-[10px] font-bold uppercase tracking-wider rounded-full capitalize"
-              >
-                {tag}
-              </span>
-            ))}
+            <span className="px-2.5 py-1 bg-gold-500/90 text-navy-950 text-[10px] font-bold uppercase tracking-wider rounded-full capitalize">
+              {getMainTag(featured)}
+            </span>
           </div>
 
           {/* Bottom overlay: date → title → read more → controls */}
@@ -181,14 +177,9 @@ export function OverseasSpotlight({
               <time className="text-xs text-muted-foreground uppercase tracking-wider">
                 {formatDate(featured.date)}
               </time>
-              {(featured.tags ?? []).slice(0, 2).map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-0.5 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize"
-                >
-                  {tag}
-                </span>
-              ))}
+              <span className="px-2.5 py-0.5 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                {getMainTag(featured)}
+              </span>
             </div>
 
             <h3 className="font-serif text-xl lg:text-2xl font-semibold text-foreground line-clamp-3 group-hover:text-gold-600 transition-colors leading-snug">

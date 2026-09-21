@@ -6,7 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFirmNews, type NewsItem } from "@/hooks/use-news";
+import { useFirmNews, getMainTag, type NewsItem } from "@/hooks/use-news";
 import { Container } from "@/components/shared/container";
 import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
 import { NewsModal } from "@/components/home/news-modal";
@@ -144,16 +144,9 @@ export const FirmNews = () => {
                       <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
                         <div className="flex items-center justify-between gap-2 mb-3">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            {(news.tags ?? ["News"]).slice(0, 2).map((tag) => (
-                              <span key={tag} className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                                {tag}
-                              </span>
-                            ))}
-                            {(news.tags?.length ?? 0) > 2 && (
-                              <span className="px-2 py-0.5 text-xs text-muted-foreground border border-border rounded-full">
-                                +{(news.tags?.length ?? 0) - 2}
-                              </span>
-                            )}
+                            <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                              {getMainTag(news)}
+                            </span>
                           </div>
                           <span className="text-xs text-muted-foreground shrink-0">
                             {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
