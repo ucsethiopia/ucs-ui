@@ -258,7 +258,7 @@ export const clientLogos: ClientLogo[] = [
     id: "1",
     name: "Awash Bank",
     logo: "/images/logos/clients/awash-bank.png",
-    logoBoxClass: "h-12 md:h-16",
+    logoBoxClass: "h-14 md:h-20",
   },
   { id: "2", name: "Siinqee Bank", logo: "/images/logos/clients/siinqee.png" },
   {
@@ -288,12 +288,6 @@ export const clientLogos: ClientLogo[] = [
     logo: "/images/logos/clients/awash-insurance.png",
   },
   {
-    id: "8",
-    name: "United Insurance",
-    logo: "/images/logos/clients/united-insurance.png",
-    logoBoxClass: "h-12 md:h-16",
-  },
-  {
     id: "16",
     name: "Oromia Insurance",
     logo: "/images/logos/clients/oromia-insurance.png",
@@ -302,11 +296,6 @@ export const clientLogos: ClientLogo[] = [
     id: "17",
     name: "Hibret Insurance",
     logo: "/images/logos/clients/hibret-insurance.png",
-  },
-  {
-    id: "18",
-    name: "House of Peoples Representatives of the FDRE",
-    logo: "/images/logos/clients/hpr.png",
   },
   {
     id: "19",
@@ -324,7 +313,7 @@ export const clientLogos: ClientLogo[] = [
     name: "Kerchanshe Group",
     logo: "/images/logos/clients/kerchanshe-group.png",
     logoDark: "/images/logos/clients/kerchanshe-group-dark.png",
-    logoBoxClass: "h-12 md:h-16",
+    logoBoxClass: "h-14 md:h-20",
   },
 
   // Government and development agencies
@@ -332,11 +321,13 @@ export const clientLogos: ClientLogo[] = [
     id: "9",
     name: "Ministry of Agriculture",
     logo: "/images/logos/clients/ministry-of-agriculture.png",
+    logoBoxClass: "h-12 md:h-16",
   },
   {
     id: "10",
     name: "Ethiopian Water Technology Institute",
     logo: "/images/logos/clients/ethiopian-water-technology-institute.png",
+    logoBoxClass: "h-12 md:h-16",
   },
   {
     id: "11",
@@ -349,6 +340,7 @@ export const clientLogos: ClientLogo[] = [
     id: "12",
     name: "National Alcohol and Liquor Factory",
     logo: "/images/logos/clients/nalf.png",
+    logoBoxClass: "h-12 md:h-16",
   },
   {
     id: "13",
@@ -359,6 +351,7 @@ export const clientLogos: ClientLogo[] = [
     id: "14",
     name: "DH GEDA Trade and Industry",
     logo: "/images/logos/clients/dh-geda.png",
+    logoBoxClass: "h-12 md:h-16",
   },
   {
     id: "15",
@@ -551,12 +544,12 @@ export const researchPublications: PublicationCover[] = [
   {
     src: "/publications/awash-25th-anniversary.png",
     title: "25th Anniversary Book",
-    subtitle: "Awash Bank & Insurance — 1994–2019",
+    subtitle: "Awash Bank & Insurance, 1994–2019",
   },
   {
     src: "/publications/awash-30th-anniversary.png",
     title: "30th Anniversary Book",
-    subtitle: "Awash Bank & Insurance — 1994–2024",
+    subtitle: "Awash Bank & Insurance, 1994–2024",
   },
 ];
 
@@ -568,9 +561,19 @@ export const selectedBrochures: PublicationCover[] = [
     subtitle: "Oda Animal Feed Processing Factory",
   },
   {
-    src: "/brochures/ellily.png",
-    title: "Elilly Hotel",
-    subtitle: "Addis Ababa, Ethiopia",
+    src: "/brochures/gebecon.png",
+    title: "Gebecon PLC: 3rd Annual Publication",
+    subtitle: "Gemshu Beyene Construction PLC",
+  },
+  {
+    src: "/brochures/gebecon-fourth.png",
+    title: "Gebecon PLC: 4th Annual Publication",
+    subtitle: "Gemshu Beyene Construction PLC",
+  },
+  {
+    src: "/brochures/gebecon-fifth.png",
+    title: "Gebecon PLC: 5th Annual Publication",
+    subtitle: "Gemshu Beyene Construction PLC",
   },
 ];
 

@@ -154,7 +154,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
                             <div key={i} className="relative flex-[0_0_100%] h-full">
                               <SafeImage
                                 src={src}
-                                alt={`${news.title} — ${i + 1} of ${images.length}`}
+                                alt={`${news.title} (image ${i + 1} of ${images.length})`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 640px"
                                 className="object-contain"

@@ -79,20 +79,30 @@ function PartnerNode({
           {initials}
         </span>
       )}
-      {isHovered && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute -bottom-14 left-1/2 z-50 w-28 -translate-x-1/2 rounded-md border border-gold-500/30 bg-card px-2.5 py-1.5 text-center shadow-xl"
+      {/* Name — always visible. Anchored by `top`, not `bottom`, so adding
+          the hover-only location line below it grows the block downward
+          instead of pushing the name upward into the icon. No box: a
+          text-shadow halo (matched to the page background) keeps it legible
+          over the orbit lines and any node it happens to sit close to. */}
+      <div className="absolute left-1/2 top-full z-20 mt-2 w-28 -translate-x-1/2 text-center">
+        <p
+          className="text-[11px] font-semibold text-foreground leading-tight"
+          style={{ textShadow: "0 0 5px var(--background), 0 0 5px var(--background), 0 0 5px var(--background)" }}
         >
-          <p className="text-[11px] font-semibold text-foreground leading-tight">
-            {name}
-          </p>
-          {country && (
-            <p className="text-[10px] text-gold-600">{country}</p>
-          )}
-        </motion.div>
-      )}
+          {name}
+        </p>
+        {/* Location — hover only */}
+        {isHovered && country && (
+          <motion.p
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[10px] text-gold-600"
+            style={{ textShadow: "0 0 5px var(--background), 0 0 5px var(--background), 0 0 5px var(--background)" }}
+          >
+            {country}
+          </motion.p>
+        )}
+      </div>
     </motion.div>
   );
 }
@@ -110,14 +120,21 @@ export function OrbitalPartners() {
   );
 
   const innerRadius = 150;
-  const outerRadius = 240;
+  // Gap to outer radius must clear the (now permanently-shown) name label
+  // below each node — otherwise inner/outer nodes landing at a similar
+  // angle (e.g. both rings' first item near the top) stack their labels.
+  const outerRadius = 260;
+  // Quarter-step offset so the outer ring's items never land at the same
+  // angle as an inner-ring item — belt-and-braces against label collisions.
+  const outerAngleOffset = Math.PI / 4;
 
   const getOrbitPosition = (
     index: number,
     total: number,
-    radius: number
+    radius: number,
+    angleOffset = 0
   ) => {
-    const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
+    const angle = (index / total) * 2 * Math.PI - Math.PI / 2 + angleOffset;
     return {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius,
@@ -140,7 +157,12 @@ export function OrbitalPartners() {
       </div>
 
       {/* Orbital visualization */}
-      <div className="relative mx-auto flex h-[520px] w-full max-w-[520px] items-center justify-center scale-[0.6] sm:scale-75 md:scale-100 origin-center">
+      {/* Sized to fully contain the outer ring's node + its label, so
+          nothing spills past this box into the legend below. */}
+      {/* Container height matches each breakpoint's `scale` so the layout
+          box shrinks along with the visual diagram — otherwise the
+          unscaled 640px box leaves large dead space above/below on mobile. */}
+      <div className="relative mx-auto flex h-[384px] w-full max-w-[640px] items-center justify-center scale-[0.6] sm:h-[480px] sm:scale-75 md:h-[640px] md:scale-100 origin-center">
         {/* Orbit rings — SVG */}
         <svg
           className="absolute inset-0 h-full w-full"
@@ -254,7 +276,8 @@ export function OrbitalPartners() {
           const pos = getOrbitPosition(
             index,
             overseasPartners.length,
-            outerRadius
+            outerRadius,
+            outerAngleOffset
           );
           return (
             <motion.div
