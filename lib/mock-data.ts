@@ -258,7 +258,7 @@ export const clientLogos: ClientLogo[] = [
     id: "1",
     name: "Awash Bank",
     logo: "/images/logos/clients/awash-bank.png",
-    logoBoxClass: "h-14 md:h-20",
+    logoBoxClass: "h-14 md:h-20 scale-[1.35]",
   },
   { id: "2", name: "Siinqee Bank", logo: "/images/logos/clients/siinqee.png" },
   {
@@ -313,7 +313,7 @@ export const clientLogos: ClientLogo[] = [
     name: "Kerchanshe Group",
     logo: "/images/logos/clients/kerchanshe-group.png",
     logoDark: "/images/logos/clients/kerchanshe-group-dark.png",
-    logoBoxClass: "h-14 md:h-20",
+    logoBoxClass: "h-14 md:h-20 scale-125",
   },
 
   // Government and development agencies
