@@ -16,7 +16,7 @@ export default function ServicesPage() {
         eyebrow="What We Do"
         title="Our Services"
         description="Comprehensive solutions to help your organization achieve its strategic objectives and build lasting capabilities."
-        backgroundImage="/images/hero/services-hero-background.jpg"
+        backgroundImage="/images/hero/services-hero-background-enhanced.jpg"
         backgroundPositionClass="bg-top"
         contentWrapperClassName="ml-4 lg:mr-30"
         condensed
