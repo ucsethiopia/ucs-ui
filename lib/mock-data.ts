@@ -464,6 +464,13 @@ export const strategicPartners: Partner[] = [
     country: "Kenya",
     partnerType: "overseas",
   },
+  {
+    id: "12",
+    name: "Aspire Insight & Consulting Ltd",
+    logo: "/images/logos/partners/aspire.png",
+    country: "London, UK",
+    partnerType: "overseas",
+  },
 ];
 
 // Service pillars mock data

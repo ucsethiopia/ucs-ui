@@ -270,11 +270,39 @@
   }
 }
 
+/* News highlights autoplay — the bar's animationend advances the article,
+   so this duration is the single source of truth for the autoplay interval. */
+@keyframes highlight-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-highlight-progress {
+  transform-origin: left;
+  animation: highlight-progress 8s linear forwards;
+}
+
+.highlight-autoplay:hover .animate-highlight-progress,
+.highlight-autoplay:focus-within .animate-highlight-progress,
+.animate-highlight-progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-client-marquee {
     animation: none;
+  }
+
+  /* No animation → no animationend → no autoplay; manual controls remain */
+  .animate-highlight-progress {
+    animation: none;
+    transform: scaleX(0);
   }
 
   html {
