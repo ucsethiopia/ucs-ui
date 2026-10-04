@@ -59,7 +59,7 @@ export default function AboutPage() {
           title="Our Story"
           description="Established in 2012 with a mission to make a positive difference in organizations' and individuals' lives through the provision of value-adding advisory, consultancy, research, and training services."
           backgroundImage="/images/hero/about-hero-background.png"
-          backgroundPositionClass="bg-right-top sm:bg-top"
+          imagePositionClass="object-[right_20%] sm:object-[center_20%]"
           contentWrapperClassName="ml-4 lg:mr-30"
           condensed
         />

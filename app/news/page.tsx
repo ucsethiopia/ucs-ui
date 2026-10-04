@@ -135,14 +135,9 @@ export default function NewsPage() {
       result = result.filter(isLocal);
     } else if (selectedLocation === "Overseas") {
       result = result.filter((item) => !isLocal(item));
-    } else {
-      // "All" tab: hide highlighted items from the grid when no tag is
-      // active — they're already shown in HighlightsSpotlight above, and a
-      // highlight can now be local or international. When a tag is active,
-      // include everything so a highlighted article isn't hidden from its
-      // own category filter.
-      if (selectedCategory === "All") result = result.filter((item) => !isHighlight(item));
     }
+    // Highlighted items stay in the grid too — the spotlight shows one at a
+    // time, so excluding them here would hide every highlight not on screen.
     if (selectedCategory !== "All") {
       result = result.filter(
         (item) => getMainTag(item).toLowerCase() === selectedCategory.toLowerCase()
@@ -249,7 +244,11 @@ export default function NewsPage() {
         <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
           <Container>
             {selectedLocation === "All" && selectedCategory === "All" && !loading && (
-              <HighlightsSpotlight items={highlightedItems} onReadMore={handleReadMore} />
+              <HighlightsSpotlight
+                items={highlightedItems}
+                onReadMore={handleReadMore}
+                paused={isModalOpen}
+              />
             )}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

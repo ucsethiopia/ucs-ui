@@ -20,11 +20,15 @@ export function Hero() {
   const motto = "Think Agile, Get Inspired for Change!";
   const words = motto.split(" ");
 
+  // Height: 90vh, but on sm+ never shorter than 56vw (capped at 810px — its height
+  // on a 1440×900 laptop). Short-but-wide screens keep the regular layout and
+  // scroll, instead of compressing the content up under the ticker. min-h (not h)
+  // so the content can never be clipped.
   return (
     <>
     <section
       ref={containerRef}
-      className="relative h-[90vh] min-h-[500px] sm:min-h-[580px] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
+      className="relative min-h-[max(90vh,500px)] sm:min-h-[max(90vh,580px,min(56vw,810px))] flex items-center pt-[76px] sm:pt-[116px] overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 top-26 z-0">
@@ -137,9 +141,11 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator — pinned to whichever comes first, the bottom of the screen or
+          the bottom of the hero, so it stays visible when the hero is taller than a short
+          screen. Sits at the right edge so it never lands on the centered text. */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2 text-navy-800 dark:text-gold-500 [filter:drop-shadow(0_0_1px_rgba(2,6,23,1))_drop-shadow(0_0_3px_rgba(2,6,23,0.95))_drop-shadow(0_0_6px_rgba(2,6,23,0.85))_drop-shadow(0_1px_3px_rgba(2,6,23,0.85))]"
+        className="absolute top-[min(calc(100svh_-_4.5rem),calc(100%_-_4.5rem))] right-6 lg:right-8 xl:right-14 z-10 hidden sm:flex flex-col items-center gap-2 text-navy-800 dark:text-gold-500 [filter:drop-shadow(0_0_1px_rgba(2,6,23,1))_drop-shadow(0_0_3px_rgba(2,6,23,0.95))_drop-shadow(0_0_6px_rgba(2,6,23,0.85))_drop-shadow(0_1px_3px_rgba(2,6,23,0.85))]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}

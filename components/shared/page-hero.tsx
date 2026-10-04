@@ -9,7 +9,8 @@ interface PageHeroProps {
   title: string;
   description?: string;
   backgroundImage?: string;
-  backgroundPositionClass?: string;
+  /** object-position classes for the image (written out in full so Tailwind generates them) */
+  imagePositionClass?: string;
   contentWrapperClassName?: string;
   descriptionClassName?: string;
   condensed?: boolean;
@@ -27,7 +28,7 @@ export function PageHero({
   title,
   description,
   backgroundImage,
-  backgroundPositionClass = "bg-center",
+  imagePositionClass = "object-center",
   contentWrapperClassName,
   descriptionClassName,
   condensed,
@@ -43,7 +44,7 @@ export function PageHero({
             alt=""
             fill
             sizes="100vw"
-            className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
+            className={`object-cover ${imagePositionClass}`}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />
           {/* Light mode: dissolve edges into white page */}
@@ -89,7 +90,7 @@ export function PageHero({
                   alt=""
                   fill
                   sizes="50vw"
-                  className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
+                  className={`object-cover ${imagePositionClass}`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-navy-950/15 to-transparent" />
               </div>
@@ -102,11 +103,16 @@ export function PageHero({
     );
   }
 
+  // Condensed height: 65vh on phones (cropping there is unavoidable). From sm up it
+  // follows the width only — 42vw, clamped 420–585px (585 = its height on a 1440×900
+  // laptop) — so the image box keeps roughly the same ~2.2–2.9:1 shape on every
+  // tablet and computer instead of squashing on short screens or over-zooming on
+  // tall ones. Short screens keep the layout and scroll.
   return (
     <>
     <section
       className={`relative bg-navy-950 ${
-        condensed ? "min-h-[65vh] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
+        condensed ? "min-h-[65vh] sm:min-h-[clamp(420px,42vw,585px)] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
       }`}
     >
       {/* Background Image */}
@@ -118,7 +124,7 @@ export function PageHero({
             fill
             sizes="100vw"
             priority
-            className={`object-cover ${backgroundPositionClass.replace("bg-", "object-")}`}
+            className={`object-cover ${imagePositionClass}`}
           />
           {/* Overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/30 via-navy-950/40 to-navy-950/60" />

@@ -6,6 +6,13 @@ import { Globe } from "lucide-react";
 import Image from "next/image";
 import { strategicPartners } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import {
+  INNER_RADIUS,
+  OUTER_RADIUS,
+  innerRingOffset,
+  outerRingOffset,
+  orbitPosition,
+} from "./orbit-layout";
 
 function PartnerNode({
   name,
@@ -38,7 +45,7 @@ function PartnerNode({
   return (
     <motion.div
       className={cn(
-        "relative -ml-9 -mt-9 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
+        "relative -ml-10 -mt-10 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
         isHovered
           ? "border-gold-500"
           : isGlobal
@@ -119,27 +126,8 @@ export function OrbitalPartners() {
     (p) => p.partnerType === "overseas"
   );
 
-  const innerRadius = 150;
-  // Gap to outer radius must clear the (now permanently-shown) name label
-  // below each node — otherwise inner/outer nodes landing at a similar
-  // angle (e.g. both rings' first item near the top) stack their labels.
-  const outerRadius = 260;
-  // Quarter-step offset so the outer ring's items never land at the same
-  // angle as an inner-ring item — belt-and-braces against label collisions.
-  const outerAngleOffset = Math.PI / 4;
-
-  const getOrbitPosition = (
-    index: number,
-    total: number,
-    radius: number,
-    angleOffset = 0
-  ) => {
-    const angle = (index / total) * 2 * Math.PI - Math.PI / 2 + angleOffset;
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-    };
-  };
+  const innerOffset = innerRingOffset(localPartners.length);
+  const outerOffset = outerRingOffset(localPartners.length, overseasPartners.length);
 
   return (
     <section ref={sectionRef} className="py-16 md:py-24 bg-secondary/30 overflow-hidden">
@@ -156,17 +144,18 @@ export function OrbitalPartners() {
         </p>
       </div>
 
-      {/* Orbital visualization */}
-      {/* Sized to fully contain the outer ring's node + its label, so
-          nothing spills past this box into the legend below. */}
-      {/* Container height matches each breakpoint's `scale` so the layout
-          box shrinks along with the visual diagram — otherwise the
-          unscaled 640px box leaves large dead space above/below on mobile. */}
-      <div className="relative mx-auto flex h-[384px] w-full max-w-[640px] items-center justify-center scale-[0.6] sm:h-[480px] sm:scale-75 md:h-[640px] md:scale-100 origin-center">
-        {/* Orbit rings — SVG */}
+      {/* Orbital visualization — the diagram is 640×720 unscaled (see
+          orbit-layout.ts: ±320 wide for the outer nodes,
+          ±360 tall so the bottom node's label clears the legend). The layout
+          box height is that 720 × each breakpoint's `scale`, so it shrinks
+          with the visual instead of leaving dead space on mobile. */}
+      <div className="relative mx-auto flex h-[396px] w-full max-w-[640px] items-center justify-center scale-[0.55] sm:h-[540px] sm:scale-75 md:h-[720px] md:scale-100 origin-center">
+        {/* Orbit rings — fixed pixel size with a 1:1 viewBox, so the rings
+            pass exactly through the nodes at every breakpoint (previously
+            the SVG stretched to the box and drew the rings ~23% too large). */}
         <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="-260 -260 520 520"
+          className="absolute left-1/2 top-1/2 h-[720px] w-[640px] -translate-x-1/2 -translate-y-1/2"
+          viewBox="-320 -360 640 720"
           style={{ overflow: "visible" }}
         >
           <defs>
@@ -199,7 +188,7 @@ export function OrbitalPartners() {
           <motion.circle
             cx="0"
             cy="0"
-            r={innerRadius}
+            r={INNER_RADIUS}
             fill="none"
             stroke="url(#orbitStroke)"
             strokeWidth="1"
@@ -213,7 +202,7 @@ export function OrbitalPartners() {
           <motion.circle
             cx="0"
             cy="0"
-            r={outerRadius}
+            r={OUTER_RADIUS}
             fill="none"
             stroke="url(#orbitStroke)"
             strokeWidth="1"
@@ -240,11 +229,7 @@ export function OrbitalPartners() {
 
         {/* Inner ring — Local partners */}
         {localPartners.map((partner, index) => {
-          const pos = getOrbitPosition(
-            index,
-            localPartners.length,
-            innerRadius
-          );
+          const pos = orbitPosition(index, localPartners.length, INNER_RADIUS, innerOffset);
           return (
             <motion.div
               key={`local-${partner.id}`}
@@ -273,12 +258,7 @@ export function OrbitalPartners() {
 
         {/* Outer ring — Overseas/Global partners */}
         {overseasPartners.map((partner, index) => {
-          const pos = getOrbitPosition(
-            index,
-            overseasPartners.length,
-            outerRadius,
-            outerAngleOffset
-          );
+          const pos = orbitPosition(index, overseasPartners.length, OUTER_RADIUS, outerOffset);
           return (
             <motion.div
               key={`overseas-${partner.id}`}

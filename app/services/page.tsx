@@ -17,7 +17,7 @@ export default function ServicesPage() {
         title="Our Services"
         description="Comprehensive solutions to help your organization achieve its strategic objectives and build lasting capabilities."
         backgroundImage="/images/hero/services-hero-background.png"
-        backgroundPositionClass="bg-top"
+        imagePositionClass="object-[center_15%]"
         contentWrapperClassName="ml-4 lg:mr-30"
         condensed
       />
