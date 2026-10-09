@@ -7,116 +7,32 @@ import { NewsModal } from "@/components/home/news-modal";
 import { HighlightsSpotlight } from "./highlights-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, isHighlight, getMainTag, type NewsItem } from "@/hooks/use-news";
-import { SafeImage } from "@/components/shared/safe-image";
-import { cn } from "@/lib/utils";
+import { NewsCard } from "./news-card";
+import { NewsFilterBar, type LocationFilter } from "./news-filter-bar";
 import { Container } from "@/components/shared/container";
 
-const INITIAL_ITEMS = 18;
-
-type LocationFilter = "All" | "Local" | "Overseas";
+// Fetch in pages of 18 but reveal 9 (a 3×3 grid) per click, so there's always
+// a buffer of already-loaded articles ready to show the instant Load More is
+// pressed while the next page is prefetched behind it.
+const FETCH_PAGE_SIZE = 18;
+const REVEAL_STEP = 9;
 
 function isLocal(item: NewsItem): boolean {
   return !item.scope || item.scope === "local";
 }
 
-function NewsCard({
-  item,
-  onReadMore,
-  index,
-  isVisible,
-}: {
-  item: NewsItem;
-  onReadMore: (item: NewsItem) => void;
-  index: number;
-  isVisible: boolean;
-}) {
-  const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  return (
-    <article
-      className={cn(
-        "group flex flex-col h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
-      )}
-      style={{
-        transitionDelay: isVisible ? `${Math.min(index, 8) * 75}ms` : "0ms",
-      }}
-      onClick={() => onReadMore(item)}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onReadMore(item);
-        }
-      }}
-    >
-      {/* Image */}
-      <div className="relative aspect-video overflow-hidden bg-muted">
-        {(item.main_image ?? item.extra_images?.[0]) ? (
-          <SafeImage
-            src={item.main_image ?? item.extra_images?.[0] ?? ""}
-            alt={item.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            fallbackClassName="absolute inset-0"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 to-transparent" />
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-5">
-        {/* Category & Date */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-              {getMainTag(item)}
-            </span>
-          </div>
-          <time className="text-xs text-muted-foreground shrink-0">{formattedDate}</time>
-        </div>
-
-        {/* Title */}
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-gold-600 transition-colors">
-          {item.title}
-        </h3>
-
-        {/* Excerpt */}
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 flex-1">
-          {item.subtitle}
-        </p>
-
-        {/* Read more */}
-        <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-all group-hover:text-gold-600 group-hover:gap-3">
-          Read more
-          <ArrowRight className="h-4 w-4" />
-        </span>
-      </div>
-    </article>
-  );
-}
-
 export default function NewsPage() {
-  const { data, loading, isLoadingMore, hasMore, loadMore, categories } =
-    useNews(INITIAL_ITEMS);
+  const { data, loading, isFetchingMore, hasMore, fetchFailed, fetchNextPage, categories } =
+    useNews(FETCH_PAGE_SIZE);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState<LocationFilter>("All");
-  // Default "All"+"All" view starts capped to a clean 3×3 grid; "Load More"
-  // reveals more of what's already fetched before falling back to the real
-  // server-side loadMore(). Resets whenever the filters change so returning
-  // to the default view doesn't carry over a stale expanded count.
-  const [visibleCount, setVisibleCount] = useState(9);
+  // Reveal cursor into the filtered list. Resets on any filter change so a
+  // new view always starts at one clean 3×3 grid.
+  const [visibleCount, setVisibleCount] = useState(REVEAL_STEP);
   useEffect(() => {
-    setVisibleCount(9);
+    setVisibleCount(REVEAL_STEP);
   }, [selectedCategory, selectedLocation]);
 
   const { ref, isVisible } = useScrollAnimation<HTMLElement>({
@@ -146,27 +62,29 @@ export default function NewsPage() {
     return result;
   }, [data, selectedCategory, selectedLocation]);
 
-  // On the default "All"+"All" view, start capped to a clean 3×3 grid —
-  // "Load More" raises visibleCount rather than hiding the rest permanently
-  // (previously a hard slice(0, 9) with no way to reach anything past it
-  // unless the total non-highlighted count happened to be ≤ 9).
-  const displayedItems = useMemo(() => {
-    if (selectedLocation === "All" && selectedCategory === "All") {
-      return filteredNews.slice(0, visibleCount);
-    }
-    return filteredNews;
-  }, [filteredNews, selectedLocation, selectedCategory, visibleCount]);
+  const displayedItems = useMemo(
+    () => filteredNews.slice(0, visibleCount),
+    [filteredNews, visibleCount]
+  );
 
-  // More to show from what's already fetched (client-side reveal), before
-  // falling back to the server-paginated loadMore().
-  const hasMoreLocallyStaged = displayedItems.length < filteredNews.length;
+  // Keep at least one more step of unseen matches buffered. Each fetch grows
+  // `data`, which re-runs this, so a sparse filter back-fills page by page
+  // until it has enough or the API runs out. Paused after a failed fetch
+  // (clicking Load More retries).
+  const bufferShort = filteredNews.length - visibleCount < REVEAL_STEP;
+  useEffect(() => {
+    if (!loading && hasMore && bufferShort && !isFetchingMore && !fetchFailed) {
+      fetchNextPage();
+    }
+  }, [loading, hasMore, bufferShort, isFetchingMore, fetchFailed, fetchNextPage]);
+
+  const canShowMore = displayedItems.length < filteredNews.length || hasMore;
+  // Only spin when the user has outrun the buffer and is waiting on the network.
+  const isWaitingForMore = visibleCount > filteredNews.length && isFetchingMore;
 
   const handleLoadMore = () => {
-    if (hasMoreLocallyStaged) {
-      setVisibleCount((c) => c + 9);
-    } else {
-      loadMore();
-    }
+    if (fetchFailed && bufferShort) fetchNextPage();
+    setVisibleCount((c) => Math.min(c, filteredNews.length) + REVEAL_STEP);
   };
 
   const handleReadMore = (item: NewsItem) => {
@@ -183,62 +101,14 @@ export default function NewsPage() {
           description="The latest updates, achievements, and insights from UCS Ethiopia."
         />
 
-        {/* Filter Section */}
-        <section className="sticky top-19 z-30 bg-background">
-          <Container>
-            <div className="flex items-center pt-4 pb-6 border-b border-border">
-              {/* Location pills */}
-              <div className="shrink-0 flex gap-2">
-                {(["All", "Local", "Overseas"] as LocationFilter[]).map((loc) => (
-                  <button
-                    key={loc}
-                    onClick={() => setSelectedLocation(loc)}
-                    aria-pressed={selectedLocation === loc}
-                    className={cn(
-                      "px-4 py-1.5 text-sm font-semibold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-                      selectedLocation === loc
-                        ? "bg-gold-500 text-navy-950"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {loc}
-                  </button>
-                ))}
-              </div>
-
-              {/* Divider */}
-              <div className="h-5 w-px bg-border mx-4 shrink-0" />
-
-              {/* Category filters — editorial underline style */}
-              <div className="flex-1 min-w-0 flex items-center gap-5 overflow-x-auto scrollbar-hide">
-                {loading ? (
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-4 w-16 shrink-0 rounded bg-muted animate-pulse"
-                    />
-                  ))
-                ) : (
-                  categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      aria-pressed={selectedCategory === category}
-                      className={cn(
-                        "shrink-0 px-1 pb-1 text-sm font-medium capitalize border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-                        selectedCategory === category
-                          ? "border-gold-500 text-foreground"
-                          : "border-transparent text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {category}
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-          </Container>
-        </section>
+        <NewsFilterBar
+          loading={loading}
+          categories={categories}
+          selectedLocation={selectedLocation}
+          selectedCategory={selectedCategory}
+          onLocationChange={setSelectedLocation}
+          onCategoryChange={setSelectedCategory}
+        />
 
         {/* News Grid */}
         <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
@@ -296,14 +166,14 @@ export default function NewsPage() {
                 </div>
 
                 {/* Load More Button */}
-                {(hasMoreLocallyStaged || (hasMore && selectedLocation === "Local")) && (
+                {canShowMore && (
                   <div className="mt-12 text-center">
                     <button
                       onClick={handleLoadMore}
-                      disabled={isLoadingMore}
+                      disabled={isWaitingForMore}
                       className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
                     >
-                      {isLoadingMore ? (
+                      {isWaitingForMore ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin" />
                           Loading...

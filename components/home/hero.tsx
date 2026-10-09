@@ -34,7 +34,7 @@ export function Hero() {
       <div className="absolute inset-0 top-26 z-0">
         <div className="absolute inset-0">
           <Image
-            src="/images/hero/hero-background.jpg"
+            src="/images/hero/hero-background.png"
             alt=""
             fill
             priority

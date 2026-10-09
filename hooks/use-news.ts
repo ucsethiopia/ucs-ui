@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
 
 export type { NewsItem };
@@ -75,71 +75,104 @@ export const useFirmNews = (_limit = 9) => {
 };
 
 // ─── useNews ──────────────────────────────────────────────────────────────────
-// Paginated hook for the /news archive page.
-// Initial load: GET /news/latest (first 9).
-// Load more: GET /news?page=N&per_page=9.
+// Server-paginated hook for the /news archive page: GET /feed?page=N&page_size=M.
+// The page owns *when* to fetch (it keeps a buffer of unseen items ahead of
+// what's on screen); this hook only owns fetching, merging and end detection.
+// The total is read from each response, never assumed.
 
-export const useNews = (initialLimit = 9) => {
+function fetchFeedPage(page: number, pageSize: number): Promise<PaginatedNewsResponse> {
+  return fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=${page}&page_size=${pageSize}`).then((res) => {
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    return res.json() as Promise<PaginatedNewsResponse>;
+  });
+}
+
+// Appends a page, skipping ids already loaded — an article published between
+// requests shifts the server's offsets, which would otherwise repeat an item.
+function mergeUnique(prev: NewsItem[], next: NewsItem[]): NewsItem[] {
+  const seen = new Set(prev.map((item) => item.id));
+  return [...prev, ...next.filter((item) => !seen.has(item.id))];
+}
+
+export const useNews = (pageSize = 18) => {
   const [data, setData] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  // Set when a "more" fetch fails, so the page stops auto-prefetching (which
+  // would otherwise retry in a tight loop) until the user clicks to retry.
+  const [fetchFailed, setFetchFailed] = useState(false);
+  // Refs, not state: the guard must flip synchronously so back-to-back calls
+  // (double click, or the page's prefetch effect re-running) can't request
+  // the same page twice.
+  const lastPageRef = useRef(0);
+  const inFlightRef = useRef(false);
 
-  // Initial load via /news/latest
+  const applyPage = useCallback(
+    (paginated: PaginatedNewsResponse, page: number, loadedBefore: number) => {
+      lastPageRef.current = page;
+      setTotal(paginated.total);
+      setHasMore(
+        paginated.items.length > 0 &&
+          loadedBefore + paginated.items.length < paginated.total
+      );
+    },
+    []
+  );
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    inFlightRef.current = true;
 
-    fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=1&page_size=${initialLimit}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`API error ${res.status}`);
-        return res.json() as Promise<PaginatedNewsResponse>;
-      })
+    fetchFeedPage(1, pageSize)
       .then((paginated) => {
         if (cancelled) return;
-        setData(paginated.items);
-        setPage(1);
-        setTotal(paginated.total);
-        setHasMore(paginated.items.length < paginated.total);
+        setData(mergeUnique([], paginated.items));
+        applyPage(paginated, 1, 0);
       })
       .catch((err) => {
         console.error("[useNews]", err);
-        if (!cancelled) setData([]);
+        if (!cancelled) {
+          setData([]);
+          setHasMore(false);
+        }
       })
       .finally(() => {
+        inFlightRef.current = false;
         if (!cancelled) setLoading(false);
       });
 
     return () => { cancelled = true; };
-  }, [initialLimit]);
+  }, [pageSize, applyPage]);
 
-  const loadMore = async () => {
-    if (isLoadingMore) return;
-    setIsLoadingMore(true);
-    const nextPage = page + 1;
+  // Offsets come from the server's page number, so `loadedBefore` is the
+  // count of server rows consumed (pages × size), not the de-duplicated length.
+  const fetchNextPage = useCallback(async () => {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
+    setIsFetchingMore(true);
+    const nextPage = lastPageRef.current + 1;
 
     try {
-      const res = await fetch(
-        `${BASE_URL}/${NEWS_PATH}/feed?page=${nextPage}&page_size=${initialLimit}`
-      );
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      const paginated: PaginatedNewsResponse = await res.json();
-      setData((prev) => [...prev, ...paginated.items]);
-      setPage(nextPage);
-      setTotal(paginated.total);
-      setHasMore(data.length + paginated.items.length < paginated.total);
+      const paginated = await fetchFeedPage(nextPage, pageSize);
+      setFetchFailed(false);
+      setData((prev) => mergeUnique(prev, paginated.items));
+      applyPage(paginated, nextPage, lastPageRef.current * pageSize);
     } catch (err) {
-      console.error("[useNews loadMore]", err);
+      // hasMore is left untouched so the button stays and can retry.
+      console.error("[useNews fetchNextPage]", err);
+      setFetchFailed(true);
     } finally {
-      setIsLoadingMore(false);
+      inFlightRef.current = false;
+      setIsFetchingMore(false);
     }
-  };
+  }, [pageSize, applyPage]);
 
   const categories = useMemo(() => deriveCategories(data), [data]);
 
-  return { data, loading, isLoadingMore, hasMore, loadMore, total, categories };
+  return { data, loading, isFetchingMore, hasMore, fetchFailed, fetchNextPage, total, categories };
 };
 
 // ─── useMarketNews (stub — no API endpoint) ───────────────────────────────────
