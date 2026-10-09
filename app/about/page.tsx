@@ -9,11 +9,14 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { VisionMissionTabs } from "@/components/about/vision-mission-tabs";
 import { OrbitalPartners } from "@/components/about/orbital-partners";
 import { TeamMemberCard } from "@/components/about/team-member-card";
+import { ConsultingPartners, isConsultingPartner } from "@/components/about/consulting-partners";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { cn, pickBalancedColumns } from "@/lib/utils";
 
 // Literal Tailwind classes for each candidate column count, so the JIT
 // compiler can see them even though the choice is made at runtime.
+const TEAM_COLUMN_OPTIONS = [4, 3];
+
 const LG_GRID_COLS: Record<number, string> = {
   4: "lg:grid-cols-4",
   3: "lg:grid-cols-3",
@@ -38,9 +41,16 @@ export default function AboutPage() {
   const sortedTeam = [...team].sort(
     (a, b) => (a.org_order_index ?? 999) - (b.org_order_index ?? 999),
   );
-  const owner = sortedTeam[0] ?? null;
-  const otherMembers = sortedTeam.slice(1);
-  const otherCols = pickBalancedColumns(otherMembers.length, [4, 3]);
+  // Consulting Partners render as their own tier below the core team.
+  const partners = sortedTeam.filter(isConsultingPartner);
+  const coreTeam = sortedTeam.filter((m) => !isConsultingPartner(m));
+  const owner = coreTeam[0] ?? null;
+  const otherMembers = coreTeam.slice(1);
+  // Prefer a column count that fills every row (6 → 3+3, 8 → 4+4); otherwise
+  // fall back to avoiding a lone orphan card (7 → 4+3).
+  const otherCols =
+    TEAM_COLUMN_OPTIONS.find((cols) => otherMembers.length % cols === 0) ??
+    pickBalancedColumns(otherMembers.length, TEAM_COLUMN_OPTIONS);
   // When the count doesn't divide evenly, the short row goes last, centered —
   // e.g. 7 members at 4 columns → a full 4 on top, then 3 (centered) below.
   // Members stay in their natural order (full rows first, remainder is
@@ -395,6 +405,8 @@ export default function AboutPage() {
                 </div>
               )}
             </div>
+
+            {!isLoading && <ConsultingPartners members={partners} />}
           </Container>
         </section>
       </main>
