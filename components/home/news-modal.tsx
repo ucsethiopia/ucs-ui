@@ -12,9 +12,11 @@ interface NewsModalProps {
   news: NewsItem | null;
   isOpen: boolean;
   onClose: () => void;
+  /** Runs after the close animation finishes (e.g. to navigate back). */
+  onExitComplete?: () => void;
 }
 
-export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
+export const NewsModal = ({ news, isOpen, onClose, onExitComplete }: NewsModalProps) => {
   const titleId = useId();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [slideIndex, setSlideIndex] = useState(0);
@@ -108,7 +110,7 @@ export const NewsModal = ({ news, isOpen, onClose }: NewsModalProps) => {
   const mainTag = getMainTag(news);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {isOpen && (
         <>
           {/* Backdrop */}

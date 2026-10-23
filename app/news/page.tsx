@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/shared/page-hero";
-import { NewsModal } from "@/components/home/news-modal";
 import { HighlightsSpotlight } from "./highlights-spotlight";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useNews, isHighlight, getMainTag, type NewsItem } from "@/hooks/use-news";
@@ -24,8 +23,6 @@ function isLocal(item: NewsItem): boolean {
 export default function NewsPage() {
   const { data, loading, isFetchingMore, hasMore, fetchFailed, fetchNextPage, categories } =
     useNews(FETCH_PAGE_SIZE);
-  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState<LocationFilter>("All");
   // Reveal cursor into the filtered list. Resets on any filter change so a
@@ -87,121 +84,99 @@ export default function NewsPage() {
     setVisibleCount((c) => Math.min(c, filteredNews.length) + REVEAL_STEP);
   };
 
-  const handleReadMore = (item: NewsItem) => {
-    setSelectedNews(item);
-    setIsModalOpen(true);
-  };
-
   return (
-    <>
-      <main id="main-content">
-        <PageHero
-          eyebrow="Stay Informed"
-          title="News & Insights"
-          description="The latest updates, achievements, and insights from UCS Ethiopia."
-        />
+    <main id="main-content">
+      <PageHero
+        eyebrow="Stay Informed"
+        title="News & Insights"
+        description="The latest updates, achievements, and insights from UCS Ethiopia."
+      />
 
-        <NewsFilterBar
-          loading={loading}
-          categories={categories}
-          selectedLocation={selectedLocation}
-          selectedCategory={selectedCategory}
-          onLocationChange={setSelectedLocation}
-          onCategoryChange={setSelectedCategory}
-        />
+      <NewsFilterBar
+        loading={loading}
+        categories={categories}
+        selectedLocation={selectedLocation}
+        selectedCategory={selectedCategory}
+        onLocationChange={setSelectedLocation}
+        onCategoryChange={setSelectedCategory}
+      />
 
-        {/* News Grid */}
-        <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
-          <Container>
-            {selectedLocation === "All" && selectedCategory === "All" && !loading && (
-              <HighlightsSpotlight
-                items={highlightedItems}
-                onReadMore={handleReadMore}
-                paused={isModalOpen}
-              />
-            )}
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-card border border-border rounded-lg overflow-hidden"
-                  >
-                    <div className="aspect-[3/2] bg-muted animate-pulse" />
-                    <div className="p-5 space-y-3">
-                      <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-                      <div className="h-6 w-full bg-muted animate-pulse rounded" />
-                      <div className="h-4 w-full bg-muted animate-pulse rounded" />
-                      <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
-                    </div>
+      {/* News Grid */}
+      <section ref={ref} className="pt-6 pb-10 sm:pb-16 lg:pb-20 bg-background" role="region" aria-label="News articles">
+        <Container>
+          {selectedLocation === "All" && selectedCategory === "All" && !loading && (
+            <HighlightsSpotlight items={highlightedItems} />
+          )}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-card border border-border rounded-lg overflow-hidden"
+                >
+                  <div className="aspect-[4/3] bg-muted animate-pulse" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+                    <div className="h-6 w-full bg-muted animate-pulse rounded" />
+                    <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                    <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
                   </div>
+                </div>
+              ))}
+            </div>
+          ) : displayedItems.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg">
+                No news items found in this category.
+              </p>
+              <button
+                onClick={() => setSelectedCategory("All")}
+                className="mt-4 text-gold-600 font-semibold hover:text-gold-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm"
+              >
+                View all news
+              </button>
+            </div>
+          ) : (
+            <>
+              <div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {displayedItems.map((item, index) => (
+                  <NewsCard
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    isVisible={isVisible}
+                  />
                 ))}
               </div>
-            ) : displayedItems.length === 0 ? (
-              <div className="text-center py-16">
-                <p className="text-muted-foreground text-lg">
-                  No news items found in this category.
-                </p>
-                <button
-                  onClick={() => setSelectedCategory("All")}
-                  className="mt-4 text-gold-600 font-semibold hover:text-gold-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm"
-                >
-                  View all news
-                </button>
-              </div>
-            ) : (
-              <>
-                <div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  {displayedItems.map((item, index) => (
-                    <NewsCard
-                      key={item.id}
-                      item={item}
-                      onReadMore={handleReadMore}
-                      index={index}
-                      isVisible={isVisible}
-                    />
-                  ))}
+
+              {/* Load More Button */}
+              {canShowMore && (
+                <div className="mt-12 text-center">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={isWaitingForMore}
+                    className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+                  >
+                    {isWaitingForMore ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      <>
+                        Load More Articles
+                        <ArrowRight className="h-5 w-5" />
+                      </>
+                    )}
+                  </button>
                 </div>
-
-                {/* Load More Button */}
-                {canShowMore && (
-                  <div className="mt-12 text-center">
-                    <button
-                      onClick={handleLoadMore}
-                      disabled={isWaitingForMore}
-                      className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-muted hover:border-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
-                    >
-                      {isWaitingForMore ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
-                      ) : (
-                        <>
-                          Load More Articles
-                          <ArrowRight className="h-5 w-5" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </Container>
-        </section>
-      </main>
-
-      {/* News Modal */}
-      <NewsModal
-        news={selectedNews}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedNews(null);
-        }}
-      />
-    </>
+              )}
+            </>
+          )}
+        </Container>
+      </section>
+    </main>
   );
 }

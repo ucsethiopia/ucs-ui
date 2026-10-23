@@ -6,10 +6,10 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { SafeImage } from "@/components/shared/safe-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFirmNews, getMainTag, type NewsItem } from "@/hooks/use-news";
+import { useFirmNews, getMainTag } from "@/hooks/use-news";
+import { articleHref } from "@/lib/news";
 import { Container } from "@/components/shared/container";
 import { NewsCarouselLayout } from "@/components/ui/news-carousel-layout";
-import { NewsModal } from "@/components/home/news-modal";
 import { Skeleton } from "@/components/ui/charts";
 
 export const FirmNews = () => {
@@ -18,8 +18,6 @@ export const FirmNews = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -36,11 +34,6 @@ export const FirmNews = () => {
       const scrollAmount = direction === "left" ? -400 : 400;
       containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
-  };
-
-  const handleNewsClick = (news: NewsItem) => {
-    setSelectedNews(news);
-    setIsModalOpen(true);
   };
 
   const handleLoadMore = () => {
@@ -107,78 +100,65 @@ export const FirmNews = () => {
                 : data.map((news, index) => (
                     <motion.article
                       key={news.id}
-                      className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group cursor-pointer flex flex-col h-[500px] outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 hover:shadow-xl"
+                      className="flex-shrink-0 w-80 sm:w-96 min-w-[320px] group h-[500px] focus-within:ring-2 focus-within:ring-gold-500 focus-within:ring-offset-2 rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 hover:shadow-xl"
                       style={{ scrollSnapAlign: "start" }}
                       initial={{ opacity: 0, y: 30 }}
                       animate={isInView ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.5, delay: index * 0.05 }}
                       whileHover={{ y: -5 }}
-                      onClick={() => handleNewsClick(news)}
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleNewsClick(news);
-                        }
-                      }}
                     >
-                      {/* Image */}
-                      <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
-                        {(news.main_image ?? news.extra_images?.[0]) ? (
-                          <SafeImage
-                            src={news.main_image ?? news.extra_images?.[0] ?? ""}
-                            alt={news.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            priority={index === 0}
-                            className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                            fallbackClassName="absolute inset-0"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
-                              {getMainTag(news)}
-                            </span>
-                          </div>
-                          <span className="text-xs text-muted-foreground shrink-0">
-                            {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                          </span>
+                      <Link href={articleHref(news)} aria-label={news.title} scroll={false} prefetch className="flex flex-col h-full outline-none">
+                        {/* Image */}
+                        <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
+                          {(news.main_image ?? news.extra_images?.[0]) ? (
+                            <SafeImage
+                              src={news.main_image ?? news.extra_images?.[0] ?? ""}
+                              alt={news.title}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              priority={index === 0}
+                              className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                              fallbackClassName="absolute inset-0"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-muted dark:bg-navy-900" />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
 
-                        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                          {news.title}
-                        </h3>
+                        {/* Content */}
+                        <div className="p-6 bg-card border border-t-0 group-hover:border-gold-500/30 transition-colors duration-300 flex-1 flex flex-col overflow-hidden">
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-medium rounded-full capitalize">
+                                {getMainTag(news)}
+                              </span>
+                            </div>
+                            <span className="text-xs text-muted-foreground shrink-0">
+                              {new Date(news.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </span>
+                          </div>
 
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                          {news.subtitle}
-                        </p>
+                          <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {news.title}
+                          </h3>
 
-                        <span className="inline-flex items-center text-gold-600 font-medium text-sm group-hover:gap-2 transition-all">
-                          Read more
-                          <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                            {news.subtitle ?? ""}
+                          </p>
+
+                          <span className="inline-flex items-center text-gold-600 font-medium text-sm group-hover:gap-2 transition-all">
+                            Read more
+                            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        </div>
+                      </Link>
                     </motion.article>
                   ))}
             </div>
           </div>
         </Container>
       </NewsCarouselLayout>
-
-      {/* Modal */}
-      <NewsModal
-        news={selectedNews}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 };

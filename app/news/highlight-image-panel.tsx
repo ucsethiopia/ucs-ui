@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { SafeImage } from "@/components/shared/safe-image";
-import { getMainTag } from "@/hooks/use-news";
+import { getMainTag } from "@/lib/news";
 import type { NewsItem } from "@/lib/types";
 
 const IMAGE_ARROW_CLASS =
@@ -57,7 +57,7 @@ export function HighlightImagePanel({
       <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/55 to-transparent pointer-events-none" />
 
       {/* Location + tag badges — top left */}
-      <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
+      <div className="absolute top-4 left-4 flex items-center gap-2 z-10 pointer-events-none">
         {item.location?.city && (
           <span className="px-2.5 py-1 bg-navy-950/80 text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
             {item.location.city}
@@ -70,23 +70,22 @@ export function HighlightImagePanel({
       </div>
 
       {/* Bottom overlay: date → title → read more → image controls */}
-      <div className="absolute bottom-0 left-0 right-0 px-6 pb-5 pt-16 z-10">
+      <div className="absolute bottom-0 left-0 right-0 px-6 pb-5 pt-16 z-10 pointer-events-none">
         <time className="text-[10px] text-white/50 mb-2 block uppercase tracking-wider">
           {formattedDate}
         </time>
-        <h3 className="font-serif text-xl sm:text-2xl font-bold text-white mb-3 line-clamp-3 leading-snug group-hover:text-gold-300 transition-colors">
+        {/* Visual duplicate of the text panel's heading, so not a heading itself */}
+        <p aria-hidden="true" className="font-serif text-xl sm:text-2xl font-bold text-white mb-3 line-clamp-3 leading-snug group-hover:text-gold-300 transition-colors">
           {item.title}
-        </h3>
+        </p>
         <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gold-400 group-hover:gap-3 transition-all">
           Read more <ArrowRight className="h-3.5 w-3.5" />
         </span>
 
         {images.length > 1 && (
           <div
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-navy-950/70 px-2 py-1 backdrop-blur-sm"
-            // Keep clicks/Enter on these buttons from opening the article modal
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
+            // Re-enable clicks (the overlay is pointer-events-none) and sit above the card's stretched link
+            className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-full bg-navy-950/70 px-2 py-1 backdrop-blur-sm"
           >
             <button onClick={onPrevImage} aria-label="Previous image" className={IMAGE_ARROW_CLASS}>
               <ChevronLeft className="h-4 w-4" />

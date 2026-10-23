@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
+import { NEWS_API_PATH as NEWS_PATH, getMainTag } from "@/lib/news";
+import { rememberNews } from "@/lib/news-store";
 
 export type { NewsItem };
 
 const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
-const NEWS_PATH = "news/ultimate-consultancy-services";
 
 // Each item carries exactly one content tag at tags[0]; a second tag
 // ("highlight") may follow it to mark the item for the Highlights spotlight
@@ -19,11 +20,7 @@ export function isHighlight(item: NewsItem): boolean {
   return (item.tags?.length ?? 0) > 1;
 }
 
-// The one real content tag for display (category pills, filters). Always
-// index 0 — never the "highlight" marker at index 1.
-export function getMainTag(item: NewsItem): string {
-  return item.tags?.[0] ?? "News";
-}
+export { getMainTag };
 
 // Derives the category filter list from each item's main tag (tags[0]) —
 // never the "highlight" marker — so the UI never offers a filter with zero
@@ -58,6 +55,7 @@ export const useFirmNews = (_limit = 9) => {
         return res.json() as Promise<{ items: NewsItem[] }>;
       })
       .then(({ items }) => {
+        rememberNews(items);
         if (!cancelled) setData(items);
       })
       .catch((err) => {
@@ -81,10 +79,15 @@ export const useFirmNews = (_limit = 9) => {
 // The total is read from each response, never assumed.
 
 function fetchFeedPage(page: number, pageSize: number): Promise<PaginatedNewsResponse> {
-  return fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=${page}&page_size=${pageSize}`).then((res) => {
-    if (!res.ok) throw new Error(`API error ${res.status}`);
-    return res.json() as Promise<PaginatedNewsResponse>;
-  });
+  return fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=${page}&page_size=${pageSize}`)
+    .then((res) => {
+      if (!res.ok) throw new Error(`API error ${res.status}`);
+      return res.json() as Promise<PaginatedNewsResponse>;
+    })
+    .then((paginated) => {
+      rememberNews(paginated.items);
+      return paginated;
+    });
 }
 
 // Appends a page, skipping ids already loaded — an article published between

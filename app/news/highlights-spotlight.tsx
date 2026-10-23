@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getMainTag } from "@/hooks/use-news";
+import { articleHref, getMainTag } from "@/lib/news";
 import type { NewsItem } from "@/lib/types";
 import { HighlightArticleNav } from "./highlight-article-nav";
 import { HighlightImagePanel } from "./highlight-image-panel";
@@ -19,15 +20,14 @@ function formatDate(dateStr: string) {
  * Articles auto-advance (interval set by `.animate-highlight-progress` in
  * globals.css — the bar's animationend drives `next()`); images within an
  * article change only via the manual pill. Autoplay pauses on hover/focus,
- * while `paused` is set (e.g. modal open), and under reduced motion.
+ * while `paused` is set, and under reduced motion. The title link is stretched
+ * over the whole card so it is one click target; the image pill sits above it.
  */
 export function HighlightsSpotlight({
   items,
-  onReadMore,
   paused = false,
 }: {
   items: NewsItem[];
-  onReadMore: (item: NewsItem) => void;
   paused?: boolean;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -87,17 +87,7 @@ export function HighlightsSpotlight({
       </div>
 
       {/* Full-width card — image left with overlay, text right */}
-      <article
-        className="relative grid grid-cols-1 lg:grid-cols-[3fr_2fr] rounded-lg overflow-hidden border border-border cursor-pointer group shadow-sm hover:shadow-lg transition-shadow"
-        onClick={() => onReadMore(featured)}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onReadMore(featured);
-          }
-        }}
-      >
+      <article className="relative grid grid-cols-1 lg:grid-cols-[3fr_2fr] rounded-lg overflow-hidden border border-border group shadow-sm hover:shadow-lg transition-shadow focus-within:ring-2 focus-within:ring-gold-500 focus-within:ring-offset-2">
         {/* Autoplay progress — finishing the animation advances the article */}
         {hasMultiple && (
           <div
@@ -105,7 +95,7 @@ export function HighlightsSpotlight({
             aria-hidden
             data-paused={paused}
             onAnimationEnd={() => goTo(currentIndex + 1)}
-            className="animate-highlight-progress absolute top-0 left-0 right-0 z-20 h-0.5 bg-gold-500"
+            className="animate-highlight-progress pointer-events-none absolute top-0 left-0 right-0 z-20 h-0.5 bg-gold-500"
           />
         )}
 
@@ -130,9 +120,16 @@ export function HighlightsSpotlight({
               </span>
             </div>
 
-            <h3 className="font-serif text-xl lg:text-2xl font-semibold text-foreground line-clamp-3 group-hover:text-gold-600 transition-colors leading-snug">
-              {featured.title}
-            </h3>
+            <h2 className="font-serif text-xl lg:text-2xl font-semibold text-foreground line-clamp-3 group-hover:text-gold-600 transition-colors leading-snug">
+              <Link
+                href={articleHref(featured)}
+                scroll={false}
+                prefetch
+                className="outline-none after:absolute after:inset-0 after:z-[5]"
+              >
+                {featured.title}
+              </Link>
+            </h2>
 
             {featured.subtitle && (
               <p className="text-sm text-muted-foreground leading-relaxed">

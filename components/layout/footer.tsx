@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
-    <span className={cn("relative block overflow-hidden rounded-full opacity-40", className)}>
+    <span aria-hidden="true" className={cn("relative block overflow-hidden rounded-full opacity-40", className)}>
       <Image
         src="/images/icons/tik-tok.png"
         alt=""
@@ -176,10 +176,6 @@ export function Footer() {
             <p className="text-xs text-white/50">
               © {new Date().getFullYear()} Ultimate Consultancy Services Ethiopia. All rights reserved.
             </p>
-            <div className="flex gap-6 text-xs text-white/50">
-              <span>Privacy Policy</span>
-              <span>Terms of Service</span>
-            </div>
           </div>
         </div>
       </Container>

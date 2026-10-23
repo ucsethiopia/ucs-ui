@@ -22,7 +22,11 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { triggerNavigation } = useNavigation();
+  const { triggerNavigation, pagePath } = useNavigation();
+  // Active link follows the page on screen, so opening an article modal
+  // (URL → /news/<slug>) doesn't flicker the highlight. A full article page
+  // counts as News.
+  const activePath = pagePath.startsWith("/news/") ? "/news" : pagePath;
 
   const handleNavClick = useCallback(() => {
     triggerNavigation();
@@ -87,7 +91,7 @@ export function Navbar() {
                 className={cn(
                   "text-sm font-medium tracking-wide transition-colors hover:text-gold-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-sm",
                   textClass,
-                  pathname === link.href && "text-gold-500",
+                  activePath === link.href && "text-gold-500",
                 )}
               >
                 {link.label}
@@ -129,7 +133,7 @@ export function Navbar() {
                   onClick={handleNavClick}
                   className={cn(
                     "px-4 py-3 text-base font-medium transition-colors hover:bg-white/5",
-                    pathname === link.href
+                    activePath === link.href
                       ? "text-gold-500 bg-white/5"
                       : "text-white/90",
                   )}
