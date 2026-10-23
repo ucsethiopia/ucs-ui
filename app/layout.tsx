@@ -10,6 +10,8 @@ import { PageRemountWrapper } from "@/components/page-remount-wrapper";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { ALLOW_INDEXING, SITE_URL } from "@/lib/site";
+
 import "./globals.css";
 
 const _sourceSans = Source_Sans_3({
@@ -24,10 +26,32 @@ const _playfairDisplay = Playfair_Display({
   display: "swap",
 });
 
+const SITE_NAME = "UCS Ethiopia";
+const SITE_TITLE = "UCS Ethiopia | Ultimate Consultancy Services";
+const SITE_DESCRIPTION =
+  "Driving growth and transformation for Ethiopian Organizations. Strategic advisory, training, research, and communications services based in Bole, Addis Ababa.";
+
 export const metadata: Metadata = {
-  title: "UCS Ethiopia | Ultimate Consultancy Services",
-  description:
-    "Driving growth and transformation for Ethiopian Organizations. Strategic advisory, training, research, and communications services based in Bole, Addis Ababa.",
+  // Production origin, not the request host: relative canonical/OG URLs on
+  // every page (dev host included) resolve to production.
+  metadataBase: new URL(SITE_URL),
+  // noindex everywhere until ALLOW_INDEXING=true (launch on the real domain)
+  ...(!ALLOW_INDEXING && { robots: { index: false, follow: false } }),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "./" },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 
   keywords: [
     "consultancy",
@@ -52,8 +76,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  /** Parallel route slot (app/@modal): article modal opened from a news card. */
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
@@ -103,6 +130,7 @@ export default function RootLayout({
               </PageRemountWrapper>
             </div>
             <Footer />
+            {modal}
           </NavigationProvider>
           <Analytics />
           <SpeedInsights />
