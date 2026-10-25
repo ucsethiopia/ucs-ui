@@ -107,7 +107,7 @@ export const FirmNews = () => {
                       transition={{ duration: 0.5, delay: index * 0.05 }}
                       whileHover={{ y: -5 }}
                     >
-                      <Link href={articleHref(news)} aria-label={news.title} scroll={false} prefetch className="flex flex-col h-full outline-none">
+                      <Link href={articleHref(news)} aria-label={news.title} className="flex flex-col h-full outline-none">
                         {/* Image */}
                         <div className="relative aspect-[3/2] flex-shrink-0 overflow-hidden">
                           {(news.main_image ?? news.extra_images?.[0]) ? (

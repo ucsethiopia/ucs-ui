@@ -76,11 +76,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-  modal,
 }: Readonly<{
   children: React.ReactNode;
-  /** Parallel route slot (app/@modal): article modal opened from a news card. */
-  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
@@ -130,7 +127,6 @@ export default function RootLayout({
               </PageRemountWrapper>
             </div>
             <Footer />
-            {modal}
           </NavigationProvider>
           <Analytics />
           <SpeedInsights />

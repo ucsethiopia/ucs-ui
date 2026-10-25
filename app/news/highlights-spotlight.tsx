@@ -123,8 +123,6 @@ export function HighlightsSpotlight({
             <h2 className="font-serif text-xl lg:text-2xl font-semibold text-foreground line-clamp-3 group-hover:text-gold-600 transition-colors leading-snug">
               <Link
                 href={articleHref(featured)}
-                scroll={false}
-                prefetch
                 className="outline-none after:absolute after:inset-0 after:z-[5]"
               >
                 {featured.title}
