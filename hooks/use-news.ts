@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
 import { NEWS_API_PATH as NEWS_PATH, getMainTag } from "@/lib/news";
-import { rememberNews } from "@/lib/news-store";
 
 export type { NewsItem };
 
@@ -55,7 +54,6 @@ export const useFirmNews = (_limit = 9) => {
         return res.json() as Promise<{ items: NewsItem[] }>;
       })
       .then(({ items }) => {
-        rememberNews(items);
         if (!cancelled) setData(items);
       })
       .catch((err) => {
@@ -79,15 +77,10 @@ export const useFirmNews = (_limit = 9) => {
 // The total is read from each response, never assumed.
 
 function fetchFeedPage(page: number, pageSize: number): Promise<PaginatedNewsResponse> {
-  return fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=${page}&page_size=${pageSize}`)
-    .then((res) => {
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      return res.json() as Promise<PaginatedNewsResponse>;
-    })
-    .then((paginated) => {
-      rememberNews(paginated.items);
-      return paginated;
-    });
+  return fetch(`${BASE_URL}/${NEWS_PATH}/feed?page=${page}&page_size=${pageSize}`).then((res) => {
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    return res.json() as Promise<PaginatedNewsResponse>;
+  });
 }
 
 // Appends a page, skipping ids already loaded — an article published between

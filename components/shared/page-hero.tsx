@@ -13,8 +13,12 @@ interface PageHeroProps {
   imagePositionClass?: string;
   contentWrapperClassName?: string;
   descriptionClassName?: string;
+  /** Replaces the default (non-condensed) title size, e.g. for long article headlines. */
+  titleSizeClassName?: string;
   condensed?: boolean;
   wideImage?: boolean;
+  /** Extra content under the description (default layout only), e.g. article meta. */
+  children?: React.ReactNode;
 }
 
 const fadeUp = (delay: number) => ({
@@ -31,8 +35,10 @@ export function PageHero({
   imagePositionClass = "object-center",
   contentWrapperClassName,
   descriptionClassName,
+  titleSizeClassName,
   condensed,
   wideImage,
+  children,
 }: PageHeroProps) {
   // Wide image layout - side by side design
   if (wideImage && backgroundImage) {
@@ -157,7 +163,7 @@ export function PageHero({
             className={`font-serif font-bold text-white text-balance ${
               condensed
                 ? "text-3xl sm:text-4xl lg:text-5xl mb-4"
-                : "text-4xl sm:text-5xl lg:text-6xl"
+                : titleSizeClassName ?? "text-4xl sm:text-5xl lg:text-6xl"
             }`}
           >
             {title}
@@ -169,6 +175,9 @@ export function PageHero({
             >
               {description}
             </motion.p>
+          )}
+          {children && (
+            <motion.div {...fadeUp(eyebrow ? 0.55 : 0.4)}>{children}</motion.div>
           )}
         </div>
       </Container>

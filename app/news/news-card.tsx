@@ -11,10 +11,13 @@ export function NewsCard({
   item,
   index,
   isVisible,
+  headingLevel: Heading = "h2",
 }: {
   item: NewsItem;
   index: number;
   isVisible: boolean;
+  /** h2 on /news; h3 where the cards sit under their own section heading. */
+  headingLevel?: "h2" | "h3";
 }) {
   const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
     month: "short",
@@ -32,7 +35,7 @@ export function NewsCard({
         transitionDelay: isVisible ? `${Math.min(index, 8) * 75}ms` : "0ms",
       }}
     >
-      <Link href={articleHref(item)} aria-label={item.title} scroll={false} prefetch className="flex flex-col h-full outline-none">
+      <Link href={articleHref(item)} aria-label={item.title} className="flex flex-col h-full outline-none">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           {(item.main_image ?? item.extra_images?.[0]) ? (
@@ -63,9 +66,9 @@ export function NewsCard({
           </div>
 
           {/* Title */}
-          <h2 className="font-serif text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-gold-600 transition-colors">
+          <Heading className="font-serif text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-gold-600 transition-colors">
             {item.title}
-          </h2>
+          </Heading>
 
           {/* Excerpt */}
           <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 flex-1">

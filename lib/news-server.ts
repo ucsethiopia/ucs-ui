@@ -51,3 +51,15 @@ export async function getAllArticlesSafe(): Promise<NewsItem[]> {
     return [];
   }
 }
+
+/**
+ * Other articles to read next: same main tag first, then the most recent.
+ * Never throws — a failure just hides the section.
+ */
+export async function getRelatedArticles(item: NewsItem, limit: number): Promise<NewsItem[]> {
+  const others = (await getAllArticlesSafe()).filter((other) => other.id !== item.id);
+  const tag = item.tags?.[0];
+  const sameTag = others.filter((other) => other.tags?.[0] === tag);
+  const rest = others.filter((other) => other.tags?.[0] !== tag);
+  return [...sameTag, ...rest].slice(0, limit);
+}
