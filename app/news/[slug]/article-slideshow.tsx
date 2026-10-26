@@ -46,7 +46,7 @@ export function ArticleSlideshow({ images, title }: { images: string[]; title: s
   return (
     <figure className="highlight-autoplay">
       <div
-        className="relative aspect-[4/3] sm:aspect-[16/10] w-full overflow-hidden rounded-lg border border-border bg-navy-950"
+        className="relative aspect-[4/3] sm:aspect-[16/10] w-full overflow-hidden rounded-lg border border-border bg-navy-950 shadow-2xl shadow-black/30"
         role="group"
         aria-roledescription="carousel"
         aria-label={`${title} photos`}

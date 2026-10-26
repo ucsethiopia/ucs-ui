@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Container } from "@/components/shared/container";
+import { cn } from "@/lib/utils";
 
 interface PageHeroProps {
   eyebrow?: string;
@@ -19,6 +20,10 @@ interface PageHeroProps {
   wideImage?: boolean;
   /** Extra content under the description (default layout only), e.g. article meta. */
   children?: React.ReactNode;
+  /** Content above the eyebrow (default layout only), e.g. a back link. */
+  topContent?: React.ReactNode;
+  /** Extra section classes (default layout only), e.g. more bottom room for overlapping content. */
+  className?: string;
 }
 
 const fadeUp = (delay: number) => ({
@@ -39,6 +44,8 @@ export function PageHero({
   condensed,
   wideImage,
   children,
+  topContent,
+  className,
 }: PageHeroProps) {
   // Wide image layout - side by side design
   if (wideImage && backgroundImage) {
@@ -117,9 +124,11 @@ export function PageHero({
   return (
     <>
     <section
-      className={`relative bg-navy-950 ${
-        condensed ? "min-h-[65vh] sm:min-h-[clamp(420px,42vw,585px)] py-20 lg:py-20 flex items-end" : "pt-32 pb-20"
-      }`}
+      className={cn(
+        "relative bg-navy-950",
+        condensed ? "min-h-[65vh] sm:min-h-[clamp(420px,42vw,585px)] py-20 lg:py-20 flex items-end" : "pt-32 pb-20",
+        className
+      )}
     >
       {/* Background Image */}
       {backgroundImage && (
@@ -151,8 +160,9 @@ export function PageHero({
 
       <Container className="relative z-10">
         <div
-          className={`${condensed ? "max-w-2xl" : "max-w-3xl"} ${contentWrapperClassName ?? ""}`}
+          className={cn(condensed ? "max-w-2xl" : "max-w-3xl", contentWrapperClassName)}
         >
+          {topContent && <motion.div {...fadeUp(0)}>{topContent}</motion.div>}
           {eyebrow && (
             <motion.p {...fadeUp(0.1)} className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-4">
               {eyebrow}
@@ -171,7 +181,7 @@ export function PageHero({
           {description && (
             <motion.p
               {...fadeUp(eyebrow ? 0.4 : 0.25)}
-              className={`text-lg text-white/70 leading-relaxed max-w-2xl ${descriptionClassName ?? ""}`}
+              className={cn("text-lg text-white/70 leading-relaxed max-w-2xl", descriptionClassName)}
             >
               {description}
             </motion.p>
