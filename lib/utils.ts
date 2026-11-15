@@ -37,3 +37,20 @@ export function sanitizeUrl(url: string): string {
     return "#";
   }
 }
+
+/** Minimum decimals shown for published rates (e.g. 16 → "16.00"). */
+const RATE_MIN_FRACTION_DIGITS = 2;
+/** Upper bound high enough that no source-provided precision is lost. */
+const RATE_MAX_FRACTION_DIGITS = 20;
+
+/**
+ * Formats a published rate exactly as the source reports it: never rounds or
+ * truncates, but pads to at least two decimals (5.453 → "5.453", 16 → "16.00").
+ */
+export function formatRate(value: number): string {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: RATE_MIN_FRACTION_DIGITS,
+    maximumFractionDigits: RATE_MAX_FRACTION_DIGITS,
+    useGrouping: false,
+  });
+}

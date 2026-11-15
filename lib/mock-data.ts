@@ -298,6 +298,13 @@ export const clientLogos: ClientLogo[] = [
     logo: "/images/logos/clients/hibret-insurance.png",
   },
   {
+    id: "22",
+    name: "Global Insurance Co. (S.C)",
+    logo: "/images/logos/clients/global-insurance.png",
+    // Skip the hover brighten: it washes the light-green ring text to white.
+    logoBoxClass: "h-14 md:h-20 group-hover:brightness-100",
+  },
+  {
     id: "19",
     name: "Kenera International Trading PLC",
     logo: "/images/logos/clients/kenera.png",
