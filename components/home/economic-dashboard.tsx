@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
 import { SparklineChart, Skeleton } from "@/components/ui/charts";
 import { AlertCircle, ArrowUpRight, RefreshCw } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatRate } from "@/lib/utils";
 
 // Chart colors — chosen for visibility on dark navy cards
 const COLORS = {
@@ -257,13 +257,13 @@ export function EconomicDashboard() {
           />
           <TextStatCard
             label="T-Bill Yield"
-            value={loading ? "—" : `${data?.interestRate?.tbillYield?.toFixed(2)}%`}
+            value={loading ? "—" : `${formatRate(data?.interestRate?.tbillYield ?? 0)}%`}
             subLabel="91-day NBE T-Bill"
             loading={loading}
           />
           <TextStatCard
             label="Policy Rate"
-            value={loading ? "—" : `${data?.interestRate?.policyRate?.toFixed(2)}%`}
+            value={loading ? "—" : `${formatRate(data?.interestRate?.policyRate ?? 0)}%`}
             subLabel="National Bank of Ethiopia"
             loading={loading}
           />
