@@ -3,7 +3,8 @@
 // ─── News ─────────────────────────────────────────────────────────────────────
 
 export interface NewsItem {
-  id: number;
+  id: number; // internal; changes when news is re-imported — never use in URLs
+  public_id: string; // stable UUID, used for article URLs
   title: string;
   subtitle: string | null;
   date: string; // "YYYY-MM-DD"

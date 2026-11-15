@@ -32,7 +32,7 @@ export async function RelatedNews({ item }: { item: NewsItem }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {related.map((other, index) => (
-            <NewsCard key={other.id} item={other} index={index} isVisible headingLevel="h3" />
+            <NewsCard key={other.public_id} item={other} index={index} isVisible headingLevel="h3" />
           ))}
         </div>
       </Container>

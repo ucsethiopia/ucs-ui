@@ -6,11 +6,13 @@ import type { NewsItem } from "@/lib/types";
 // (hooks/use-news.ts) and the server loader (lib/news-server.ts).
 export const NEWS_API_PATH = "news/ultimate-consultancy-services";
 
-// Article URLs are /news/{id}-{title-slug}. The numeric id is the source of
-// truth; the slug is cosmetic, so editing a headline never breaks a shared
-// link — the article page redirects stale slugs to the current one.
+// Article URLs are /news/{public_id}/{title-words}. The public_id (a UUID that
+// survives re-imports) is the source of truth; the title words are cosmetic, so
+// editing a headline never breaks a shared link — the article page redirects
+// outdated title words to the current ones.
 
 const MAX_SLUG_LENGTH = 80;
+const PUBLIC_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function slugify(title: string): string {
   return title
@@ -23,19 +25,14 @@ export function slugify(title: string): string {
     .replace(/-+$/, "");
 }
 
-export function articleSlug(item: Pick<NewsItem, "id" | "title">): string {
+export function articleHref(item: Pick<NewsItem, "public_id" | "title">): string {
   const titleSlug = slugify(item.title);
-  return titleSlug ? `${item.id}-${titleSlug}` : String(item.id);
+  return titleSlug ? `/news/${item.public_id}/${titleSlug}` : `/news/${item.public_id}`;
 }
 
-export function articleHref(item: Pick<NewsItem, "id" | "title">): string {
-  return `/news/${articleSlug(item)}`;
-}
-
-/** Leading integer of a slug ("365-ucs-signs…" → 365), or null if absent. */
-export function parseArticleId(slug: string): number | null {
-  const match = /^(\d+)(?:-|$)/.exec(slug);
-  return match ? Number(match[1]) : null;
+/** True for a well-formed public_id; anything else can skip the API call. */
+export function isPublicId(value: string): boolean {
+  return PUBLIC_ID_PATTERN.test(value);
 }
 
 // The one real content tag for display (category pills, filters). Always

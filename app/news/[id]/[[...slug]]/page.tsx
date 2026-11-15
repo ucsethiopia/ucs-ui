@@ -4,25 +4,25 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { PageHero } from "@/components/shared/page-hero";
-import { getArticleById } from "@/lib/news-server";
-import { articleHref, articleSlug, getMainTag, parseArticleId } from "@/lib/news";
+import { getArticle } from "@/lib/news-server";
+import { articleHref, getMainTag, isPublicId } from "@/lib/news";
 import type { NewsItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { ArticleBody } from "./article-body";
-import { ArticleMeta } from "./article-meta";
-import { ArticleSlideshow } from "./article-slideshow";
-import { RelatedNews } from "./related-news";
-import { ShareBar } from "./share-bar";
+import { ArticleBody } from "../article-body";
+import { ArticleMeta } from "../article-meta";
+import { ArticleSlideshow } from "../article-slideshow";
+import { RelatedNews } from "../related-news";
+import { ShareBar } from "../share-bar";
 
 const DESCRIPTION_MAX_LENGTH = 160;
 
 interface ArticlePageProps {
-  params: Promise<{ slug: string }>;
+  // /news/{public_id}/{title-words}; the title words are optional and cosmetic.
+  params: Promise<{ id: string; slug?: string[] }>;
 }
 
-async function loadArticle(slug: string): Promise<NewsItem | null> {
-  const id = parseArticleId(slug);
-  return id === null ? null : getArticleById(id);
+async function loadArticle(id: string): Promise<NewsItem | null> {
+  return isPublicId(id) ? getArticle(id) : null;
 }
 
 function describe(item: NewsItem): string {
@@ -41,7 +41,7 @@ function articleImages(item: NewsItem): string[] {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const item = await loadArticle((await params).slug);
+  const item = await loadArticle((await params).id);
   if (!item) return { title: "Article not found | UCS Ethiopia" };
 
   const description = describe(item);
@@ -71,13 +71,13 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { slug } = await params;
-  const item = await loadArticle(slug);
+  const { id, slug = [] } = await params;
+  const item = await loadArticle(id);
   if (!item) notFound();
-  // Headline edited since the link was shared → send to the current URL.
-  if (slug !== articleSlug(item)) permanentRedirect(articleHref(item));
-
   const href = articleHref(item);
+  // Missing or outdated title words (headline edited since the link was shared) → current URL.
+  if (`/news/${[id, ...slug].join("/")}` !== href) permanentRedirect(href);
+
   const images = articleImages(item);
   const hasImages = images.length > 0;
 
