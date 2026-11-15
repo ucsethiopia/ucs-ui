@@ -3,16 +3,15 @@ import { NEWS_API_PATH } from "@/lib/news";
 import type { NewsItem, PaginatedNewsResponse } from "@/lib/types";
 
 // Server-side news access for article pages and the sitemap.
-//
-// WORKAROUND: the social-stream API has no public single-article endpoint, so
-// we load the whole public feed (it's small) and look the id up in memory.
-// When the backend adds GET /news/{company}/{id}, replace getArticleById with
-// a direct fetch and keep getAllArticles for the sitemap only.
+// Single articles come from GET /news/{company}/items/{public_id}; the full feed
+// is only loaded for the sitemap and the "More from UCS" list.
 
 const BASE_URL = process.env.NEXT_PUBLIC_SOCIAL_STREAM_URL ?? "";
 const SCAN_PAGE_SIZE = 50; // API rejects page_size > 50
 const MAX_SCAN_PAGES = 10; // safety cap: 500 articles
 const ARTICLES_TTL_SECONDS = 300;
+const NOT_FOUND = 404; // missing or unpublished
+const INVALID_ID = 422; // malformed public_id
 
 async function fetchFeedPage(page: number): Promise<PaginatedNewsResponse> {
   const res = await fetch(
@@ -38,9 +37,18 @@ const getAllArticles = unstable_cache(
   { revalidate: ARTICLES_TTL_SECONDS, tags: ["news"] }
 );
 
-export async function getArticleById(id: number): Promise<NewsItem | null> {
-  const items = await getAllArticles();
-  return items.find((item) => item.id === id) ?? null;
+/**
+ * One article by public_id, or null if it doesn't exist or isn't published.
+ * Server-only (the endpoint isn't open to browsers). Cached in the Vercel Data
+ * Cache and deduplicated between generateMetadata and the page render.
+ */
+export async function getArticle(publicId: string): Promise<NewsItem | null> {
+  const res = await fetch(`${BASE_URL}/${NEWS_API_PATH}/items/${encodeURIComponent(publicId)}`, {
+    next: { revalidate: ARTICLES_TTL_SECONDS, tags: ["news"] },
+  });
+  if (res.status === NOT_FOUND || res.status === INVALID_ID) return null;
+  if (!res.ok) throw new Error(`news item ${publicId}: ${res.status}`);
+  return res.json() as Promise<NewsItem>;
 }
 
 export async function getAllArticlesSafe(): Promise<NewsItem[]> {
@@ -57,7 +65,7 @@ export async function getAllArticlesSafe(): Promise<NewsItem[]> {
  * Never throws — a failure just hides the section.
  */
 export async function getRelatedArticles(item: NewsItem, limit: number): Promise<NewsItem[]> {
-  const others = (await getAllArticlesSafe()).filter((other) => other.id !== item.id);
+  const others = (await getAllArticlesSafe()).filter((other) => other.public_id !== item.public_id);
   const tag = item.tags?.[0];
   const sameTag = others.filter((other) => other.tags?.[0] === tag);
   const rest = others.filter((other) => other.tags?.[0] !== tag);

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
 import { SparklineChart, Skeleton } from "@/components/ui/charts";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, ArrowUpRight, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Chart colors — chosen for visibility on dark navy cards
@@ -16,6 +16,16 @@ const COLORS = {
   eur:    "var(--color-gold-400)",   // oklch(0.82 0.12 85)   — light gold
   cny:    "var(--color-gold-600)",   // oklch(0.65 0.15 85)   — deep amber
 } as const;
+
+// Upstream providers used by the market-data service (see its scrapers/ and
+// app/services/). The API does not expose these yet, so they live here.
+const DATA_SOURCES = [
+  { label: "Policy Rate & T-Bill Yield", name: "nbe.gov.et", href: "https://nbe.gov.et" },
+  { label: "GDP", name: "World Bank", href: "https://www.worldbank.org/ext/en/home" },
+  { label: "Gold & Silver", name: "Swissquote", href: "https://www.swissquote.com" },
+  { label: "Coffee", name: "Yahoo Finance", href: "https://finance.yahoo.com/quote/KC=F" },
+  { label: "FX Rates", name: "FXRatesAPI", href: "https://fxratesapi.com" },
+] as const;
 
 // ─── TextStatCard ─────────────────────────────────────────────────────────────
 
@@ -333,17 +343,24 @@ export function EconomicDashboard() {
         {/* Source attribution */}
         <div className="mt-4 pt-3 border-t border-border/40 flex flex-wrap items-center gap-x-4 gap-y-1 lg:px-4 xl:px-8">
           <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">Sources</span>
-          <a href="https://nbe.gov.et" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
-            GDP, T-Bill &amp; Interest Rates &mdash; nbe.gov.et
-          </a>
-          <span className="text-xs text-muted-foreground/40">&middot;</span>
-          <a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
-            Commodities &mdash; Yahoo Finance
-          </a>
-          <span className="text-xs text-muted-foreground/40">&middot;</span>
-          <a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors">
-            FX Rates &mdash; Yahoo Finance
-          </a>
+          {DATA_SOURCES.map((source, i) => (
+            <span key={source.label} className="flex items-center gap-x-4">
+              {i > 0 && <span className="text-xs text-muted-foreground/40">&middot;</span>}
+              <span className="text-xs text-muted-foreground">
+                {source.label}:{" "}
+                <a
+                  href={source.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-0.5 text-foreground/80 underline decoration-muted-foreground/40 underline-offset-2 transition-colors hover:text-foreground hover:decoration-accent"
+                >
+                  {source.name}
+                  <ArrowUpRight aria-hidden className="size-3 text-muted-foreground transition-colors group-hover:text-accent" />
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              </span>
+            </span>
+          ))}
         </div>
       </div>
     </section>
