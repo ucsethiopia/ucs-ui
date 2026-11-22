@@ -37,7 +37,7 @@ export function Hero() {
             src="/images/hero/hero-background.png"
             alt=""
             fill
-            priority
+            preload
             sizes="100vw"
             className="object-cover object-right-top sm:object-top"
           />

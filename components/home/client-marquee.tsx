@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+import { usePressPause } from "@/hooks/use-press-pause";
 
 // Fixed navbar (top-19 = 76px) + ticker bar (h-10 = 40px). The logo track only
 // counts as visible once it clears them.
@@ -79,13 +80,14 @@ function ClientLogo({
 }
 
 export function ClientMarquee() {
-  const [paused, setPaused] = useState(false);
+  const { paused: pressPaused, handlers: pressHandlers } = usePressPause();
   const duplicatedClients = [...clientLogos, ...clientLogos];
   const trackRef = useRef<HTMLDivElement>(null);
   const trackInView = useInView(trackRef, {
     margin: `-${FIXED_HEADER_HEIGHT_PX}px 0px 0px 0px`,
   });
-  const { setClientMarqueeInView } = useMarqueeFocus();
+  const { setClientMarqueeInView, motionPaused } = useMarqueeFocus();
+  const paused = pressPaused || motionPaused;
 
   useEffect(() => {
     setClientMarqueeInView(trackInView);
@@ -117,9 +119,8 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent select-none [-webkit-touch-callout:none]"
+          {...pressHandlers}
         >
           {/* Edge overlays — gradient colour fade */}
           <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />

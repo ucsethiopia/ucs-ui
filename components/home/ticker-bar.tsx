@@ -1,9 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
 import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+import { TickerPauseButton } from "@/components/home/ticker-pause-button";
 import { useAnimationPlaybackRate } from "@/hooks/use-animation-playback-rate";
+import { usePressPause } from "@/hooks/use-press-pause";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
@@ -72,9 +74,10 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 
 export function TickerBar() {
   const { data, loading, error } = useEconomicDashboardContext();
-  const [paused, setPaused] = useState(false);
+  const { paused: pressPaused, handlers: pressHandlers } = usePressPause();
   const trackRef = useRef<HTMLDivElement>(null);
-  const { clientMarqueeInView } = useMarqueeFocus();
+  const { clientMarqueeInView, motionPaused } = useMarqueeFocus();
+  const paused = pressPaused || motionPaused;
 
   useAnimationPlaybackRate(
     trackRef,
@@ -90,11 +93,11 @@ export function TickerBar() {
 
   return (
     <div
-      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden"
+      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden select-none [-webkit-touch-callout:none]"
+      role="region"
+      data-ticker-bar
       aria-label="Live financial data ticker"
-      aria-live="polite"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      {...pressHandlers}
     >
       {loading ? (
         <div className="flex items-center h-full px-4">
@@ -153,6 +156,7 @@ export function TickerBar() {
               ))}
             </div>
           </div>
+          <TickerPauseButton />
         </div>
       )}
     </div>

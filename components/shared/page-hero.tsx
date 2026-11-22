@@ -138,7 +138,7 @@ export function PageHero({
             alt=""
             fill
             sizes="100vw"
-            priority
+            preload
             className={`object-cover ${imagePositionClass}`}
           />
           {/* Overlay for readability */}

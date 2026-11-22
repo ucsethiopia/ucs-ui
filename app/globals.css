@@ -310,9 +310,18 @@
   }
 }
 
-/* Smooth scroll behavior */
+/* Smooth scroll behavior.
+   scroll-padding-top keeps anchor jumps and keyboard-focused elements clear
+   of the fixed header (WCAG 2.4.11): navbar h-19 (4.75rem), plus the h-10
+   (2.5rem) ticker bar on pages that render it, plus a little breathing room. */
 html {
   scroll-behavior: smooth;
+  --fixed-header-height: 4.75rem;
+  --header-scroll-gap: 0.5rem;
+  scroll-padding-top: calc(var(--fixed-header-height) + var(--header-scroll-gap));
+}
+html:has([data-ticker-bar]) {
+  --fixed-header-height: 7.25rem;
 }
 
 /* Hide scrollbar */

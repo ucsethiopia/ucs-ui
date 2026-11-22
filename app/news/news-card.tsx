@@ -29,7 +29,7 @@ export function NewsCard({
     <article
       className={cn(
         "group h-full bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 focus-within:ring-2 focus-within:ring-gold-500 focus-within:ring-offset-2",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 motion-reduce:translate-y-0",
       )}
       style={{
         transitionDelay: isVisible ? `${Math.min(index, 8) * 75}ms` : "0ms",

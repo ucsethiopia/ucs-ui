@@ -83,7 +83,7 @@ export function ArticleSlideshow({ images, title }: { images: string[]; title: s
                 src={current}
                 alt={hasMultiple ? `${title} (photo ${index + 1} of ${images.length})` : title}
                 fill
-                priority={index === 0}
+                preload={index === 0}
                 sizes={IMAGE_SIZES}
                 className="object-contain pointer-events-none select-none"
                 fallbackClassName="absolute inset-0"

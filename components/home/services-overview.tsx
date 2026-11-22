@@ -71,7 +71,7 @@ export function ServicesOverview() {
                   "group relative bg-card border border-border rounded-xl overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl hover:border-gold-500/50 hover:-translate-y-1",
                   isVisible
                     ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8",
+                    : "opacity-0 translate-y-8 motion-reduce:translate-y-0",
                 )}
                 style={{
                   transitionDelay: isVisible ? `${index * 100}ms` : "0ms",

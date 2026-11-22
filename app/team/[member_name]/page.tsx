@@ -111,7 +111,7 @@ export default function TeamMemberPage({ params }: TeamMemberPageProps) {
                 sizes="100vw"
                 className="object-cover object-top blur-sm scale-105"
                 fallbackClassName="absolute inset-0"
-                priority
+                preload
               />
             )}
             <div className="absolute inset-0 bg-gradient-to-b from-navy-950/80 via-navy-950/85 to-navy-950" />

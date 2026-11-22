@@ -217,7 +217,7 @@ export default function AboutPage() {
         {/* Team Section */}
         <section
           id="team"
-          className="py-10 md:py-16 bg-background scroll-mt-20"
+          className="py-10 md:py-16 bg-background"
         >
           <Container>
             {/* Section Header */}
