@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -40,12 +41,17 @@ export function ScrollReveal({ children, delay = 0, className = '' }: ScrollReve
   return (
     <div
       ref={elementRef}
-      className={className}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-        transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s ease-out ${delay}s`,
-      }}
+      // Classes, not inline styles: the reduced-motion override must come from
+      // CSS. A JS check would differ between server and client render, and
+      // React keeps the server's inline transform after hydration.
+      className={cn(
+        'transition-[opacity,translate] duration-600 ease-out',
+        isVisible
+          ? 'opacity-100 translate-y-0'
+          : 'opacity-0 translate-y-[30px] motion-reduce:translate-y-0',
+        className,
+      )}
+      style={{ transitionDelay: `${delay}s` }}
     >
       {children}
     </div>

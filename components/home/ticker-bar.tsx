@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
+import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+import { TickerPauseButton } from "@/components/home/ticker-pause-button";
+import { useAnimationPlaybackRate } from "@/hooks/use-animation-playback-rate";
+import { usePressPause } from "@/hooks/use-press-pause";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +17,11 @@ const FLAGS: Record<string, string> = {
   jpy: "🇯🇵",
   cny: "🇨🇳",
 };
+
+// While the client logo marquee is also on screen, two strips scrolling at
+// different speeds compete for attention; the ticker eases down to this rate.
+const FULL_SPEED = 1;
+const CALM_SPEED = 0.4;
 
 const FX_LABELS: Record<string, string> = {
   usd: "USD/ETB",
@@ -65,7 +74,16 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 
 export function TickerBar() {
   const { data, loading, error } = useEconomicDashboardContext();
-  const [paused, setPaused] = useState(false);
+  const { paused: pressPaused, handlers: pressHandlers } = usePressPause();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { clientMarqueeInView, motionPaused } = useMarqueeFocus();
+  const paused = pressPaused || motionPaused;
+
+  useAnimationPlaybackRate(
+    trackRef,
+    clientMarqueeInView ? CALM_SPEED : FULL_SPEED,
+    !loading && !!data,
+  );
 
   const isError = !loading && (error || !data);
 
@@ -75,11 +93,11 @@ export function TickerBar() {
 
   return (
     <div
-      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden"
+      className="fixed top-19 left-0 right-0 z-40 h-10 bg-navy-950/80 backdrop-blur-sm border-b border-white/10 overflow-hidden select-none [-webkit-touch-callout:none]"
+      role="region"
+      data-ticker-bar
       aria-label="Live financial data ticker"
-      aria-live="polite"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      {...pressHandlers}
     >
       {loading ? (
         <div className="flex items-center h-full px-4">
@@ -87,7 +105,7 @@ export function TickerBar() {
         </div>
       ) : (
         <div className="flex items-center h-full overflow-hidden">
-          <div className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
+          <div ref={trackRef} className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
             {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
               <TickerItem
                 key={code}
@@ -138,6 +156,7 @@ export function TickerBar() {
               ))}
             </div>
           </div>
+          <TickerPauseButton />
         </div>
       )}
     </div>

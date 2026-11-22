@@ -14,6 +14,13 @@ import {
   orbitPosition,
 } from "./orbit-layout";
 
+// Overseas nodes carry a solid gold rim plus a soft centred halo so the two
+// rings read as distinct groups at a glance; the legend swatch mirrors it.
+const OVERSEAS_GLOW =
+  "border-gold-500 shadow-[0_0_22px_-4px_color-mix(in_oklch,var(--gold-500)_55%,transparent)]";
+const OVERSEAS_SWATCH_GLOW =
+  "shadow-[0_0_8px_0_color-mix(in_oklch,var(--gold-500)_60%,transparent)]";
+
 function PartnerNode({
   name,
   logo,
@@ -45,27 +52,21 @@ function PartnerNode({
   return (
     <motion.div
       className={cn(
-        "relative -ml-10 -mt-10 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        isHovered
-          ? "border-gold-500"
-          : isGlobal
-            ? "border-gold-500/50"
-            : "border-border"
+        "relative -ml-10 -mt-10 flex h-20 w-20 items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300",
+        isGlobal ? OVERSEAS_GLOW : isHovered ? "border-gold-500" : "border-border"
       )}
-      tabIndex={0}
-      role="button"
-      aria-label={`${name}${country ? `, ${country}` : ""}`}
+      // Not interactive: no button role or tab stop. The name is visible
+      // text and the country is always in the screen-reader text below;
+      // hover only adds a visual reveal of the country for mouse users.
       whileHover={{ scale: 1.15, zIndex: 10 }}
       onHoverStart={onHover}
       onHoverEnd={onLeave}
-      onFocus={onHover}
-      onBlur={onLeave}
     >
       {logo && !imgError ? (
         <div className="relative h-full w-full">
           <Image
             src={logo}
-            alt={name}
+            alt=""
             fill
             className={cn("object-contain", logoDark && "dark:hidden")}
             onError={() => setImgError(true)}
@@ -74,7 +75,7 @@ function PartnerNode({
           {logoDark && (
             <Image
               src={logoDark}
-              alt={name}
+              alt=""
               fill
               className="object-contain hidden dark:block"
               sizes="80px"
@@ -82,7 +83,7 @@ function PartnerNode({
           )}
         </div>
       ) : (
-        <span className="text-[10px] font-semibold text-muted-foreground tracking-wide">
+        <span aria-hidden="true" className="text-[10px] font-semibold text-muted-foreground tracking-wide">
           {initials}
         </span>
       )}
@@ -97,10 +98,12 @@ function PartnerNode({
           style={{ textShadow: "0 0 5px var(--background), 0 0 5px var(--background), 0 0 5px var(--background)" }}
         >
           {name}
+          {country && <span className="sr-only">, {country}</span>}
         </p>
         {/* Location — hover only */}
         {isHovered && country && (
           <motion.p
+            aria-hidden="true"
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-[10px] text-gold-600"
@@ -294,7 +297,7 @@ export function OrbitalPartners() {
           <span>Local Partners</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-gold-500/40 border border-gold-500/60" />
+          <div className={cn("h-2.5 w-2.5 rounded-full bg-gold-500/50 border border-gold-500", OVERSEAS_SWATCH_GLOW)} />
           <span>Overseas Partners</span>
         </div>
       </div>

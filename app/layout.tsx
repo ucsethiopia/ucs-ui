@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { NavigationProvider } from "@/components/navigation-provider";
+import { MotionProvider } from "@/components/motion-provider";
 import { PageRemountWrapper } from "@/components/page-remount-wrapper";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -91,6 +92,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange={false}
         >
+          <MotionProvider>
           <NavigationProvider>
             <a
               href="#main-content"
@@ -128,6 +130,7 @@ export default function RootLayout({
             </div>
             <Footer />
           </NavigationProvider>
+          </MotionProvider>
           <Analytics />
           <SpeedInsights />
           <Toaster

@@ -32,7 +32,7 @@ export function TeamMemberCard({
         <div
           className={cn(
             "group relative bg-card border border-border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 motion-reduce:translate-y-0",
           )}
           style={{
             transitionDelay: isVisible ? `${index * 100}ms` : "0ms",
@@ -98,7 +98,7 @@ export function TeamMemberCard({
       <div
         className={cn(
           "group relative bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gold-500/30 hover:-translate-y-1 cursor-pointer h-full",
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 motion-reduce:translate-y-0",
         )}
         style={{
           transitionDelay: isVisible ? `${index * 100}ms` : "0ms",

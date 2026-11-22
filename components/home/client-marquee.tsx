@@ -5,7 +5,14 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useInView } from "framer-motion";
+import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+import { usePressPause } from "@/hooks/use-press-pause";
+
+// Fixed navbar (top-19 = 76px) + ticker bar (h-10 = 40px). The logo track only
+// counts as visible once it clears them.
+const FIXED_HEADER_HEIGHT_PX = 116;
 
 function ClientLogo({
   name,
@@ -73,8 +80,21 @@ function ClientLogo({
 }
 
 export function ClientMarquee() {
-  const [paused, setPaused] = useState(false);
+  const { paused: pressPaused, handlers: pressHandlers } = usePressPause();
   const duplicatedClients = [...clientLogos, ...clientLogos];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const trackInView = useInView(trackRef, {
+    margin: `-${FIXED_HEADER_HEIGHT_PX}px 0px 0px 0px`,
+  });
+  const { setClientMarqueeInView, motionPaused } = useMarqueeFocus();
+  const paused = pressPaused || motionPaused;
+
+  useEffect(() => {
+    setClientMarqueeInView(trackInView);
+  }, [trackInView, setClientMarqueeInView]);
+
+  // Restore the ticker's speed if the marquee unmounts while on screen.
+  useEffect(() => () => setClientMarqueeInView(false), [setClientMarqueeInView]);
 
   return (
     <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden">
@@ -99,9 +119,8 @@ export function ClientMarquee() {
 
         {/* Marquee Container */}
         <div
-          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          className="relative rounded-sm bg-gradient-to-b from-transparent via-background/40 to-transparent select-none [-webkit-touch-callout:none]"
+          {...pressHandlers}
         >
           {/* Edge overlays — gradient colour fade */}
           <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-secondary/60 via-secondary/20 to-transparent z-10 pointer-events-none" />
@@ -118,7 +137,7 @@ export function ClientMarquee() {
           </ul>
 
           {/* Scrolling Track */}
-          <div className="overflow-hidden" aria-hidden="true">
+          <div ref={trackRef} className="overflow-hidden" aria-hidden="true">
             <div
               className="flex w-max animate-client-marquee py-5"
               style={{ animationPlayState: paused ? "paused" : "running" }}
