@@ -5,7 +5,13 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/shared/container";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useInView } from "framer-motion";
+import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+
+// Fixed navbar (top-19 = 76px) + ticker bar (h-10 = 40px). The logo track only
+// counts as visible once it clears them.
+const FIXED_HEADER_HEIGHT_PX = 116;
 
 function ClientLogo({
   name,
@@ -75,6 +81,18 @@ function ClientLogo({
 export function ClientMarquee() {
   const [paused, setPaused] = useState(false);
   const duplicatedClients = [...clientLogos, ...clientLogos];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const trackInView = useInView(trackRef, {
+    margin: `-${FIXED_HEADER_HEIGHT_PX}px 0px 0px 0px`,
+  });
+  const { setClientMarqueeInView } = useMarqueeFocus();
+
+  useEffect(() => {
+    setClientMarqueeInView(trackInView);
+  }, [trackInView, setClientMarqueeInView]);
+
+  // Restore the ticker's speed if the marquee unmounts while on screen.
+  useEffect(() => () => setClientMarqueeInView(false), [setClientMarqueeInView]);
 
   return (
     <section className="py-8 sm:py-10 lg:py-12 bg-secondary/30 overflow-hidden">
@@ -118,7 +136,7 @@ export function ClientMarquee() {
           </ul>
 
           {/* Scrolling Track */}
-          <div className="overflow-hidden" aria-hidden="true">
+          <div ref={trackRef} className="overflow-hidden" aria-hidden="true">
             <div
               className="flex w-max animate-client-marquee py-5"
               style={{ animationPlayState: paused ? "paused" : "running" }}

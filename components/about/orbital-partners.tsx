@@ -14,6 +14,13 @@ import {
   orbitPosition,
 } from "./orbit-layout";
 
+// Overseas nodes carry a solid gold rim plus a soft centred halo so the two
+// rings read as distinct groups at a glance; the legend swatch mirrors it.
+const OVERSEAS_GLOW =
+  "border-gold-500 shadow-[0_0_22px_-4px_color-mix(in_oklch,var(--gold-500)_55%,transparent)]";
+const OVERSEAS_SWATCH_GLOW =
+  "shadow-[0_0_8px_0_color-mix(in_oklch,var(--gold-500)_60%,transparent)]";
+
 function PartnerNode({
   name,
   logo,
@@ -46,11 +53,7 @@ function PartnerNode({
     <motion.div
       className={cn(
         "relative -ml-10 -mt-10 flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border bg-card/95 p-3 shadow-lg backdrop-blur-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2",
-        isHovered
-          ? "border-gold-500"
-          : isGlobal
-            ? "border-gold-500/50"
-            : "border-border"
+        isGlobal ? OVERSEAS_GLOW : isHovered ? "border-gold-500" : "border-border"
       )}
       tabIndex={0}
       role="button"
@@ -294,7 +297,7 @@ export function OrbitalPartners() {
           <span>Local Partners</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-gold-500/40 border border-gold-500/60" />
+          <div className={cn("h-2.5 w-2.5 rounded-full bg-gold-500/50 border border-gold-500", OVERSEAS_SWATCH_GLOW)} />
           <span>Overseas Partners</span>
         </div>
       </div>

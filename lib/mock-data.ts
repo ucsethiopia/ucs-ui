@@ -365,6 +365,13 @@ export const clientLogos: ClientLogo[] = [
     name: "Gemshu Beyene Construction",
     logo: "/images/logos/clients/gebecon.png",
   },
+  {
+    id: "23",
+    name: "Elilly Resort",
+    logo: "/images/logos/clients/elilly-resort.png",
+    // Circular badge: needs the taller box to read at the same optical size.
+    logoBoxClass: "h-14 md:h-20",
+  },
 ];
 
 // Strategic partners mock data

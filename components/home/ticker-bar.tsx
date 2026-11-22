@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useEconomicDashboardContext } from "@/components/home/economic-dashboard-provider";
+import { useMarqueeFocus } from "@/components/home/marquee-focus-provider";
+import { useAnimationPlaybackRate } from "@/hooks/use-animation-playback-rate";
 import { Skeleton } from "@/components/ui/charts";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +15,11 @@ const FLAGS: Record<string, string> = {
   jpy: "🇯🇵",
   cny: "🇨🇳",
 };
+
+// While the client logo marquee is also on screen, two strips scrolling at
+// different speeds compete for attention; the ticker eases down to this rate.
+const FULL_SPEED = 1;
+const CALM_SPEED = 0.4;
 
 const FX_LABELS: Record<string, string> = {
   usd: "USD/ETB",
@@ -66,6 +73,14 @@ function TickerItem({ icon, label, value, trend, percentageChange }: TickerItemP
 export function TickerBar() {
   const { data, loading, error } = useEconomicDashboardContext();
   const [paused, setPaused] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { clientMarqueeInView } = useMarqueeFocus();
+
+  useAnimationPlaybackRate(
+    trackRef,
+    clientMarqueeInView ? CALM_SPEED : FULL_SPEED,
+    !loading && !!data,
+  );
 
   const isError = !loading && (error || !data);
 
@@ -87,7 +102,7 @@ export function TickerBar() {
         </div>
       ) : (
         <div className="flex items-center h-full overflow-hidden">
-          <div className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
+          <div ref={trackRef} className="animate-marquee flex items-center h-full" style={{ animationPlayState: paused ? "paused" : "running" }}>
             {Object.entries(data?.fxRates || {}).map(([code, fx]) => (
               <TickerItem
                 key={code}
